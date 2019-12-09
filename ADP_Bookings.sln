@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.329
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADP_Bookings", "ADP_Bookings\ADP_Bookings.csproj", "{25431927-ED6A-4015-9153-9B95006D3A0F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25431927-ED6A-4015-9153-9B95006D3A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25431927-ED6A-4015-9153-9B95006D3A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25431927-ED6A-4015-9153-9B95006D3A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25431927-ED6A-4015-9153-9B95006D3A0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5A4FFDBE-4E9D-4018-8285-B399E205674C}
+	EndGlobalSection
+EndGlobal
