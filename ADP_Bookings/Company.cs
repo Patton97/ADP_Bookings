@@ -5,15 +5,23 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ADP_Bookings
 {
-    class Company
+    public class Company
     {
-        public Company() { /* */ }
-
+        public Company(int companyID, string name)
+        {
+            CompanyID = companyID;
+            Name = name;
+        }
+        
+        //Scalar Properties
         [Key]
         public int CompanyID { get; set; }
         public string Name { get; set; }
 
+        //Navigation Properties
         [ForeignKey("Departments")]
-        public List<Department> Departments { get; set; }
+        public virtual List<Department> Departments { get; set; }
+
+
     }
 }

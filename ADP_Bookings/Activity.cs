@@ -5,14 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ADP_Bookings
 {
-    class Activity
+    public class Activity
     {
         public Activity() { /* */ }
 
+        //Scalar Properties
         [Key]
         public int ActivityID { get; set; }
         public string Name { get; set; }
         public float Cost { get; set; }
-        public string Description { get; set; }
+        public string Notes { get; set; }
     }
 }

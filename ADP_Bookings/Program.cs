@@ -16,22 +16,52 @@ namespace ADP_Bookings
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            CreateDB();
+            /*
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                // Example1
+                var booking1 = unitOfWork.Bookings.Get(1);
+
+                // Example2
+                //var bookings = unitOfWork.Bookings.GetBookingsFromDepartment(1);
+
+                // Example3
+                var departments = unitOfWork.Authors.GetAuthorWithCourses(1);
+                unitOfWork.Courses.RemoveRange(author.Courses);
+                unitOfWork.Authors.Remove(author);
+                unitOfWork.Complete();
+            }*/
+
+
+            //Application.Run(new frm_CreateBooking());
         }
 
         static void CreateDB()
         {
-            using (var context = new MyDBEntities())
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
-                var studentList = context.Students.ToList();
-                Address a = new Address();
-                a.AddressID = 1;
-                a.NumberOrName = "20";
-                a.PostCode = "LL00 GP4";
-                a.Street = "BackOfBehond";
-                a.Town = "Trumpton";
+                unitOfWork.Departments.Add(new Department(1, "HR"));
 
-                context.Addresses.Add(a);
+                unitOfWork.Complete();
+            }
+        }
+
+        static void CreateDB2()
+        {
+            using (var context = new ADP_DBContext())
+            {
+
+                var companyList = context.Companies.ToList();
+                Company company = new Company(1, "Tesco");
+                Department hr = new Department(1, "HR");
+                Department legal = new Department(2, "Legal");
+                company.Departments.Add(hr);
+                company.Departments.Add(legal);
+
+
+
                 context.SaveChanges();
             }
         }

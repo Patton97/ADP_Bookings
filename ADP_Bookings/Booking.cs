@@ -5,13 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ADP_Bookings
 {
-    class Booking
+    public class Booking
     {
         public Booking()
         {
             Activities = new List<Activity>();
         }
 
+        //Scalar Properties
         [Key]
         public int BookingID { get; set; }
         public DateTime Date { get; set; }
@@ -19,9 +20,10 @@ namespace ADP_Bookings
         public float ActualCost { get; set; }
         public int NumAttendees { get; set; }
 
+        //Navigation Properties
         [ForeignKey("Activities")]
-        public List<Activity> Activities;
+        public virtual ICollection<Activity> Activities { get; set; }
         [ForeignKey("DepartmentID")]
-        public int DepartmentID;
+        public virtual Department Department { get; set; }
     }
 }
