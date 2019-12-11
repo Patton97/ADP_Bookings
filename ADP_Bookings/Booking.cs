@@ -21,9 +21,12 @@ namespace ADP_Bookings
         public int NumAttendees { get; set; }
 
         //Navigation Properties
-        [ForeignKey("Activities")]
+        [ForeignKey("ActivityID")]
         public virtual ICollection<Activity> Activities { get; set; }
         [ForeignKey("DepartmentID")]
+        public int DepartmentID { get; set; }
+
+        [ForeignKey("Department")]        
         public virtual Department Department { get; set; }
     }
 }

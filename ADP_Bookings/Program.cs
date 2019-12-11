@@ -17,7 +17,7 @@ namespace ADP_Bookings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            CreateDB();
+            CreateDB2();
             /*
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
@@ -43,8 +43,7 @@ namespace ADP_Bookings
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
                 unitOfWork.Departments.Add(new Department(1, "HR"));
-
-                unitOfWork.Complete();
+                unitOfWork.SaveChanges();
             }
         }
 
@@ -59,8 +58,7 @@ namespace ADP_Bookings
                 Department legal = new Department(2, "Legal");
                 company.Departments.Add(hr);
                 company.Departments.Add(legal);
-
-
+                companyList.Add(company);
 
                 context.SaveChanges();
             }

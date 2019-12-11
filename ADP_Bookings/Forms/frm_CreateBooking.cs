@@ -24,7 +24,7 @@ namespace ADP_Bookings
 
         void dgv_bookings_int()
         {
-            dgv_bookings.DataSource = BookingRepository.GetCompanies();
+            //dgv_bookings.DataSource = BookingRepository.GetCompanies();
         }
     }
 }

@@ -19,9 +19,9 @@ namespace ADP_Bookings
         public string Name { get; set; }
 
         //Navigation Properties
-        [ForeignKey("Bookings")]
-        public ICollection<Booking> Bookings { get; set; }
+        [ForeignKey("BookingID")]
+        public virtual ICollection<Booking> Bookings { get; set; }
         [ForeignKey("CompanyID")]
-        public int CompanyID { get; set; }
+        public virtual Company Company { get; set; }
     }
 }

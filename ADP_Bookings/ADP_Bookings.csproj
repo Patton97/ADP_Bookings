@@ -93,6 +93,8 @@
     <Compile Include="Activity.cs" />
     <Compile Include="Booking.cs" />
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="Repositories\ActivityRepository.cs" />
+    <Compile Include="Repositories\DepartmentRepository.cs" />
     <Compile Include="Repositories\CompanyRepository.cs" />
     <Compile Include="Repositories\BookingRepository.cs" />
     <Compile Include="Company.cs" />
@@ -104,6 +106,8 @@
       <DependentUpon>frm_CreateBooking.cs</DependentUpon>
     </Compile>
     <Compile Include="ADP_DBContext.cs" />
+    <Compile Include="Repositories\IActivityRepository.cs" />
+    <Compile Include="Repositories\IDepartmentRepository.cs" />
     <Compile Include="Repositories\ICompanyRepository.cs" />
     <Compile Include="Repositories\IBookingRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
