@@ -12,12 +12,15 @@ namespace ADP_Bookings
         public CompanyRepository(ADP_DBContext context) : base(context) { /* */ }
 
         //Get all bookings, include full department record (not just FK reference)
-        public IEnumerable<Company> GetCompaniesWithDepartments()
+        public IEnumerable<Company> GetAll(bool includeDepartments = false)
         {
-            return allEntities
-                .Include(c => c.Departments)
-                .OrderBy(c => c.CompanyID)
-                .ToList();
+            if (includeDepartments)
+                return allEntities
+                    .Include(c => c.Departments)
+                    .OrderBy(c => c.CompanyID)
+                    .ToList();
+            else
+                return GetAll();
         }
 
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;

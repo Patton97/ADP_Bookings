@@ -23,3 +23,32 @@
 \\pstudfsnb\home6\w16007006\My Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.CopyComplete
 \\pstudfsnb\home6\w16007006\My Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.exe
 \\pstudfsnb\home6\w16007006\My Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.pdb
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\db_ADP.mdf
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\db_ADP_log.ldf
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_Bookings.exe.config
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_Bookings.exe
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_Bookings.pdb
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\EntityFramework.dll
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Security.AccessControl.dll
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Security.Permissions.dll
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Security.Principal.Windows.dll
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\EntityFramework.xml
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Security.AccessControl.xml
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Security.Permissions.xml
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Security.Principal.Windows.xml
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csprojAssemblyReference.cache
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Properties.Resources.resources
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.GenerateResource.cache
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.CopyComplete
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.exe
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.pdb
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP.mdf
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_log.ldf
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\Database1.mdf
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\Database1_log.ldf
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_companies.resources

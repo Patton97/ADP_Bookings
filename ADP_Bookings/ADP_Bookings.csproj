@@ -15,6 +15,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,7 +28,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -92,19 +92,20 @@
   <ItemGroup>
     <Compile Include="Activity.cs" />
     <Compile Include="Booking.cs" />
+    <Compile Include="Forms\frm_companies.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frm_companies.Designer.cs">
+      <DependentUpon>frm_companies.cs</DependentUpon>
+    </Compile>
     <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\ActivityRepository.cs" />
     <Compile Include="Repositories\DepartmentRepository.cs" />
     <Compile Include="Repositories\CompanyRepository.cs" />
     <Compile Include="Repositories\BookingRepository.cs" />
     <Compile Include="Company.cs" />
     <Compile Include="Department.cs" />
-    <Compile Include="Forms\frm_CreateBooking.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frm_CreateBooking.Designer.cs">
-      <DependentUpon>frm_CreateBooking.cs</DependentUpon>
-    </Compile>
     <Compile Include="ADP_DBContext.cs" />
     <Compile Include="Repositories\IActivityRepository.cs" />
     <Compile Include="Repositories\IDepartmentRepository.cs" />
@@ -115,8 +116,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="UnitOfWork.cs" />
-    <EmbeddedResource Include="Forms\frm_CreateBooking.resx">
-      <DependentUpon>frm_CreateBooking.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frm_companies.resx">
+      <DependentUpon>frm_companies.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -139,9 +140,25 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ADP.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ADP_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>ADP.mdf</DependentUpon>
+    </Content>
+    <Content Include="Database1.mdf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Database1_log.ldf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DependentUpon>Database1.mdf</DependentUpon>
+    </Content>
     <Content Include="db_ADP.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

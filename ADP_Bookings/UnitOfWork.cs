@@ -13,7 +13,10 @@ namespace ADP_Bookings
         public UnitOfWork(ADP_DBContext context)
         {
             ctx = context;
+            Companies = new CompanyRepository(ctx);
+            Departments = new DepartmentRepository(ctx);
             Bookings = new BookingRepository(ctx);
+            Activities = new ActivityRepository(ctx);
         }
 
         public ICompanyRepository Companies { get; private set; }
@@ -22,7 +25,7 @@ namespace ADP_Bookings
         public IActivityRepository Activities { get; private set; }
 
 
-        public void SaveChanges() => ctx.SaveChanges();
+        public int SaveChanges() => ctx.SaveChanges();
         public void Dispose() => ctx.Dispose();
     }
 }

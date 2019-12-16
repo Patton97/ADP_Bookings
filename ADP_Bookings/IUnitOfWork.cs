@@ -9,6 +9,6 @@ namespace ADP_Bookings
     public interface IUnitOfWork : IDisposable
     {
         IBookingRepository Bookings { get; }
-        void SaveChanges();
+        int SaveChanges();
     }
 }

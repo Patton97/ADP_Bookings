@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Text;
 
 namespace ADP_Bookings
@@ -19,6 +20,7 @@ namespace ADP_Bookings
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            Database.SetInitializer<ADP_DBContext>(null);
             base.OnModelCreating(modelBuilder);
         }
     }

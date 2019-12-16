@@ -7,21 +7,27 @@ namespace ADP_Bookings
 {
     public class Department
     {
-        public Department(int departmentID, string name)
+        public Department()
+        {
+            Bookings = new List<Booking>();
+        }
+        public Department(int departmentID, string name, Company company) :this()
         {
             DepartmentID = departmentID;
             Name = name;
+            Company = company;
         }
         
         //Scalar Properties
         [Key]
         public int DepartmentID { get; set; }
+        [Required]
         public string Name { get; set; }
 
         //Navigation Properties
-        [ForeignKey("BookingID")]
-        public virtual ICollection<Booking> Bookings { get; set; }
-        [ForeignKey("CompanyID")]
+        [Required]
         public virtual Company Company { get; set; }
+        public virtual ICollection<Booking> Bookings { get; set; }
+        
     }
 }

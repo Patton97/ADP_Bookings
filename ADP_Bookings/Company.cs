@@ -7,7 +7,12 @@ namespace ADP_Bookings
 {
     public class Company
     {
-        public Company(int companyID, string name)
+        public Company()
+        {
+            Departments = new List<Department>();
+        }
+
+        public Company(int companyID, string name) : this()
         {
             CompanyID = companyID;
             Name = name;
@@ -19,9 +24,6 @@ namespace ADP_Bookings
         public string Name { get; set; }
 
         //Navigation Properties
-        [ForeignKey("Departments")]
-        public virtual List<Department> Departments { get; set; }
-
-
+        public virtual ICollection<Department> Departments { get; set; }
     }
 }

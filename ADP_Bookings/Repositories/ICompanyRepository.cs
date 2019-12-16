@@ -9,6 +9,6 @@ namespace ADP_Bookings
     public interface ICompanyRepository : IRepository<Company>
     {
         //Get all companies, include full department record (not just FK reference)
-        IEnumerable<Company> GetCompaniesWithDepartments();
+        IEnumerable<Company> GetAll(bool includeDepartments);
     }
 }
