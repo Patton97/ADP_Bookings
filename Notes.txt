@@ -1,0 +1,5 @@
+To solve FK issue, force eager-loading. EF by default using lazy-loading by creating proxy classes for navigation properties. When a "using" block ends, the context is disposed and any later attempts to access lazy-loaded properties will throw error.
+
+https://stackoverflow.com/questions/18398356/solving-the-objectcontext-instance-has-been-disposed-and-can-no-longer-be-used
+
+http://msdn.microsoft.com/en-us/data/jj574232.aspx

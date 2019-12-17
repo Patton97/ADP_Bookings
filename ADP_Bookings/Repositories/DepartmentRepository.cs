@@ -29,6 +29,15 @@ namespace ADP_Bookings
                 .ToList();
         }
 
+        public IEnumerable<Department> GetDepartmentsFromCompany(Company company)
+        {
+            return allEntities
+                .Where(d => d.Company.CompanyID == company.CompanyID)
+                .Include(d => d.Company)
+                .OrderBy(d => d.DepartmentID)
+                .ToList();
+        }
+
 
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;
     }
