@@ -26,7 +26,7 @@ namespace ADP_Bookings
 
         //Navigation Properties
         [Required]
-        public virtual Company Company { get; set; }
+        public Company Company { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
         
     }
