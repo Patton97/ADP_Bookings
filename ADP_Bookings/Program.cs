@@ -28,6 +28,14 @@ namespace ADP_Bookings
                 unitOfWork.Companies.Add(tesco);
                 */
                 unitOfWork.SaveChanges();
+
+                foreach(Company c in unitOfWork.Companies.GetAll())
+                {
+                    foreach (Department d in c.Departments)
+                    {
+                        Console.WriteLine(d.Company.Name + ": " + d.Name);
+                    }
+                }
             }
             Application.Run(new Forms.frm_companies());
         }

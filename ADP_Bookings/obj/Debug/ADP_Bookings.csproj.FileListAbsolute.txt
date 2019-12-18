@@ -23,8 +23,6 @@
 \\pstudfsnb\home6\w16007006\My Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.CopyComplete
 \\pstudfsnb\home6\w16007006\My Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.exe
 \\pstudfsnb\home6\w16007006\My Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.pdb
-C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\db_ADP.mdf
-C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\db_ADP_log.ldf
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_Bookings.exe.config
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_Bookings.exe
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_Bookings.pdb
@@ -49,8 +47,6 @@ C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.pdb
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP.mdf
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_log.ldf
-C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\Database1.mdf
-C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\Database1_log.ldf
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_companies.resources
 C:\Users\student\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP.mdf
 C:\Users\student\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\ADP_log.ldf

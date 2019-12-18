@@ -10,6 +10,5 @@ namespace ADP_Bookings
     {
         //Get all companies, include full department record (not just FK reference)
         IEnumerable<Company> GetAll(bool includeDepartments);
-        IEnumerable<Company> GetAll2();
     }
 }

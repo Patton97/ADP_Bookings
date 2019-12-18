@@ -23,14 +23,6 @@ namespace ADP_Bookings
                 return GetAll();
         }
 
-        //This should/could force eager loading but doesn't atm for some reason 
-        public IEnumerable<Company> GetAll2()
-        {
-            return allEntities
-                    .Include(c => c.Departments)
-                    .OrderBy(c => c.CompanyID);
-        }
-
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;
     }
 }

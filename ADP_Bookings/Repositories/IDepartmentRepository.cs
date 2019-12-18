@@ -11,5 +11,6 @@ namespace ADP_Bookings
         //Get all bookings, include full department record (not just FK reference)
         IEnumerable<Department> GetDepartmentsWithBookings();
         IEnumerable<Department> GetDepartmentsWithCompany();
+        IEnumerable<Department> GetDepartmentsFromCompany(Company company);
     }
 }

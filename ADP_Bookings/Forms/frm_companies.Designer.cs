@@ -28,8 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dgv_companies = new System.Windows.Forms.DataGridView();
-            this.dgv_companyDepartments = new System.Windows.Forms.DataGridView();
             this.txt_CompanyName = new System.Windows.Forms.TextBox();
             this.lbl_CompanyName = new System.Windows.Forms.Label();
             this.lbl_CompanyID = new System.Windows.Forms.Label();
@@ -38,26 +36,12 @@
             this.btn_CancelChanges = new System.Windows.Forms.Button();
             this.btn_ConfirmChanges = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_companies)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_companyDepartments)).BeginInit();
+            this.lbl_test = new System.Windows.Forms.Label();
+            this.lst_companies = new System.Windows.Forms.ListBox();
+            this.lbl_Companies = new System.Windows.Forms.Label();
+            this.btn_AddCompany = new System.Windows.Forms.Button();
+            this.lvw_CompanyDepartments = new System.Windows.Forms.ListView();
             this.SuspendLayout();
-            // 
-            // dgv_companies
-            // 
-            this.dgv_companies.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_companies.Location = new System.Drawing.Point(12, 12);
-            this.dgv_companies.Name = "dgv_companies";
-            this.dgv_companies.Size = new System.Drawing.Size(377, 306);
-            this.dgv_companies.TabIndex = 0;
-            this.dgv_companies.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_companies_CellContentDoubleClick);
-            // 
-            // dgv_companyDepartments
-            // 
-            this.dgv_companyDepartments.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgv_companyDepartments.Location = new System.Drawing.Point(411, 126);
-            this.dgv_companyDepartments.Name = "dgv_companyDepartments";
-            this.dgv_companyDepartments.Size = new System.Drawing.Size(377, 145);
-            this.dgv_companyDepartments.TabIndex = 1;
             // 
             // txt_CompanyName
             // 
@@ -119,6 +103,7 @@
             this.btn_ConfirmChanges.TabIndex = 8;
             this.btn_ConfirmChanges.Text = "Confirm";
             this.btn_ConfirmChanges.UseVisualStyleBackColor = true;
+            this.btn_ConfirmChanges.Click += new System.EventHandler(this.btn_ConfirmChanges_Click);
             // 
             // label1
             // 
@@ -129,11 +114,63 @@
             this.label1.TabIndex = 9;
             this.label1.Text = "Company Departments:";
             // 
+            // lbl_test
+            // 
+            this.lbl_test.AutoSize = true;
+            this.lbl_test.Location = new System.Drawing.Point(9, 428);
+            this.lbl_test.Name = "lbl_test";
+            this.lbl_test.Size = new System.Drawing.Size(28, 13);
+            this.lbl_test.TabIndex = 10;
+            this.lbl_test.Text = "Test";
+            // 
+            // lst_companies
+            // 
+            this.lst_companies.FormattingEnabled = true;
+            this.lst_companies.Location = new System.Drawing.Point(12, 54);
+            this.lst_companies.Name = "lst_companies";
+            this.lst_companies.Size = new System.Drawing.Size(369, 212);
+            this.lst_companies.TabIndex = 11;
+            this.lst_companies.SelectedIndexChanged += new System.EventHandler(this.lst_companies_SelectedIndexChanged);
+            // 
+            // lbl_Companies
+            // 
+            this.lbl_Companies.AutoSize = true;
+            this.lbl_Companies.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Companies.Location = new System.Drawing.Point(134, 17);
+            this.lbl_Companies.Name = "lbl_Companies";
+            this.lbl_Companies.Size = new System.Drawing.Size(87, 17);
+            this.lbl_Companies.TabIndex = 13;
+            this.lbl_Companies.Text = "Companies";
+            // 
+            // btn_AddCompany
+            // 
+            this.btn_AddCompany.Location = new System.Drawing.Point(106, 272);
+            this.btn_AddCompany.Name = "btn_AddCompany";
+            this.btn_AddCompany.Size = new System.Drawing.Size(128, 40);
+            this.btn_AddCompany.TabIndex = 14;
+            this.btn_AddCompany.Text = "Add New Company";
+            this.btn_AddCompany.UseVisualStyleBackColor = true;
+            this.btn_AddCompany.Click += new System.EventHandler(this.btn_AddCompany_Click);
+            // 
+            // lvw_CompanyDepartments
+            // 
+            this.lvw_CompanyDepartments.HideSelection = false;
+            this.lvw_CompanyDepartments.Location = new System.Drawing.Point(411, 120);
+            this.lvw_CompanyDepartments.Name = "lvw_CompanyDepartments";
+            this.lvw_CompanyDepartments.Size = new System.Drawing.Size(377, 146);
+            this.lvw_CompanyDepartments.TabIndex = 15;
+            this.lvw_CompanyDepartments.UseCompatibleStateImageBehavior = false;
+            // 
             // frm_companies
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lvw_CompanyDepartments);
+            this.Controls.Add(this.btn_AddCompany);
+            this.Controls.Add(this.lbl_Companies);
+            this.Controls.Add(this.lst_companies);
+            this.Controls.Add(this.lbl_test);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_ConfirmChanges);
             this.Controls.Add(this.btn_CancelChanges);
@@ -142,22 +179,15 @@
             this.Controls.Add(this.txt_CompanyID);
             this.Controls.Add(this.lbl_CompanyName);
             this.Controls.Add(this.txt_CompanyName);
-            this.Controls.Add(this.dgv_companyDepartments);
-            this.Controls.Add(this.dgv_companies);
             this.Name = "frm_companies";
             this.Text = "frm_companies";
             this.Load += new System.EventHandler(this.frm_companies_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_companies)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dgv_companyDepartments)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.DataGridView dgv_companies;
-        private System.Windows.Forms.DataGridView dgv_companyDepartments;
         private System.Windows.Forms.TextBox txt_CompanyName;
         private System.Windows.Forms.Label lbl_CompanyName;
         private System.Windows.Forms.Label lbl_CompanyID;
@@ -166,5 +196,10 @@
         private System.Windows.Forms.Button btn_CancelChanges;
         private System.Windows.Forms.Button btn_ConfirmChanges;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbl_test;
+        private System.Windows.Forms.ListBox lst_companies;
+        private System.Windows.Forms.Label lbl_Companies;
+        private System.Windows.Forms.Button btn_AddCompany;
+        private System.Windows.Forms.ListView lvw_CompanyDepartments;
     }
 }
