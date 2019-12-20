@@ -4,6 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+// Project Specific imports
+// Required due to folder structure
+using ADP_Bookings.Forms;
+
 namespace ADP_Bookings
 {
     static class Program
@@ -28,16 +32,8 @@ namespace ADP_Bookings
                 unitOfWork.Companies.Add(tesco);
                 */
                 unitOfWork.SaveChanges();
-
-                foreach(Company c in unitOfWork.Companies.GetAll())
-                {
-                    foreach (Department d in c.Departments)
-                    {
-                        Console.WriteLine(d.Company.Name + ": " + d.Name);
-                    }
-                }
             }
-            Application.Run(new Forms.frm_companies());
+            Application.Run(new frm_companies());
         }
     }
 }

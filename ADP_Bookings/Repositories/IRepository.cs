@@ -18,5 +18,7 @@ namespace ADP_Bookings
 
         void Remove(TEntity entity);
         void RemoveRange(IEnumerable<TEntity> entities);
+
+        void Update(TEntity entity);
     }
 }

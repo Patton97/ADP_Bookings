@@ -90,8 +90,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Activity.cs" />
-    <Compile Include="Booking.cs" />
+    <Compile Include="Models\Activity.cs" />
+    <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Presenters\CompanyPresenter.cs" />
     <Compile Include="Forms\frm_companies.cs">
@@ -106,8 +106,8 @@
     <Compile Include="Repositories\DepartmentRepository.cs" />
     <Compile Include="Repositories\CompanyRepository.cs" />
     <Compile Include="Repositories\BookingRepository.cs" />
-    <Compile Include="Company.cs" />
-    <Compile Include="Department.cs" />
+    <Compile Include="Models\Company.cs" />
+    <Compile Include="Models\Department.cs" />
     <Compile Include="ADP_DBContext.cs" />
     <Compile Include="Repositories\IActivityRepository.cs" />
     <Compile Include="Repositories\IDepartmentRepository.cs" />

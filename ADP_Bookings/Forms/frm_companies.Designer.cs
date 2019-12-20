@@ -37,10 +37,14 @@
             this.btn_ConfirmChanges = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.lbl_test = new System.Windows.Forms.Label();
-            this.lst_companies = new System.Windows.Forms.ListBox();
             this.lbl_Companies = new System.Windows.Forms.Label();
             this.btn_AddCompany = new System.Windows.Forms.Button();
             this.lvw_CompanyDepartments = new System.Windows.Forms.ListView();
+            this.lvw_companies = new System.Windows.Forms.ListView();
+            this.clm_CompanyID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_CompanyName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_DepartmentID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_DepartmentName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // txt_CompanyName
@@ -94,6 +98,7 @@
             this.btn_CancelChanges.TabIndex = 7;
             this.btn_CancelChanges.Text = "Cancel";
             this.btn_CancelChanges.UseVisualStyleBackColor = true;
+            this.btn_CancelChanges.Click += new System.EventHandler(this.btn_CancelChanges_Click);
             // 
             // btn_ConfirmChanges
             // 
@@ -123,15 +128,6 @@
             this.lbl_test.TabIndex = 10;
             this.lbl_test.Text = "Test";
             // 
-            // lst_companies
-            // 
-            this.lst_companies.FormattingEnabled = true;
-            this.lst_companies.Location = new System.Drawing.Point(12, 54);
-            this.lst_companies.Name = "lst_companies";
-            this.lst_companies.Size = new System.Drawing.Size(369, 212);
-            this.lst_companies.TabIndex = 11;
-            this.lst_companies.SelectedIndexChanged += new System.EventHandler(this.lst_companies_SelectedIndexChanged);
-            // 
             // lbl_Companies
             // 
             this.lbl_Companies.AutoSize = true;
@@ -144,7 +140,7 @@
             // 
             // btn_AddCompany
             // 
-            this.btn_AddCompany.Location = new System.Drawing.Point(106, 272);
+            this.btn_AddCompany.Location = new System.Drawing.Point(115, 278);
             this.btn_AddCompany.Name = "btn_AddCompany";
             this.btn_AddCompany.Size = new System.Drawing.Size(128, 40);
             this.btn_AddCompany.TabIndex = 14;
@@ -154,22 +150,57 @@
             // 
             // lvw_CompanyDepartments
             // 
+            this.lvw_CompanyDepartments.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clm_DepartmentID,
+            this.clm_DepartmentName});
             this.lvw_CompanyDepartments.HideSelection = false;
             this.lvw_CompanyDepartments.Location = new System.Drawing.Point(411, 120);
             this.lvw_CompanyDepartments.Name = "lvw_CompanyDepartments";
             this.lvw_CompanyDepartments.Size = new System.Drawing.Size(377, 146);
             this.lvw_CompanyDepartments.TabIndex = 15;
             this.lvw_CompanyDepartments.UseCompatibleStateImageBehavior = false;
+            this.lvw_CompanyDepartments.View = System.Windows.Forms.View.Details;
+            // 
+            // lvw_companies
+            // 
+            this.lvw_companies.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clm_CompanyID,
+            this.clm_CompanyName});
+            this.lvw_companies.FullRowSelect = true;
+            this.lvw_companies.HideSelection = false;
+            this.lvw_companies.Location = new System.Drawing.Point(12, 52);
+            this.lvw_companies.Name = "lvw_companies";
+            this.lvw_companies.Size = new System.Drawing.Size(339, 214);
+            this.lvw_companies.TabIndex = 16;
+            this.lvw_companies.UseCompatibleStateImageBehavior = false;
+            this.lvw_companies.View = System.Windows.Forms.View.Details;
+            this.lvw_companies.SelectedIndexChanged += new System.EventHandler(this.lvw_companies_SelectedIndexChanged);
+            // 
+            // clm_CompanyID
+            // 
+            this.clm_CompanyID.Text = "ID";
+            // 
+            // clm_CompanyName
+            // 
+            this.clm_CompanyName.Text = "Name";
+            // 
+            // clm_DepartmentID
+            // 
+            this.clm_DepartmentID.Text = "ID";
+            // 
+            // clm_DepartmentName
+            // 
+            this.clm_DepartmentName.Text = "Name";
             // 
             // frm_companies
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lvw_companies);
             this.Controls.Add(this.lvw_CompanyDepartments);
             this.Controls.Add(this.btn_AddCompany);
             this.Controls.Add(this.lbl_Companies);
-            this.Controls.Add(this.lst_companies);
             this.Controls.Add(this.lbl_test);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_ConfirmChanges);
@@ -197,9 +228,13 @@
         private System.Windows.Forms.Button btn_ConfirmChanges;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lbl_test;
-        private System.Windows.Forms.ListBox lst_companies;
         private System.Windows.Forms.Label lbl_Companies;
         private System.Windows.Forms.Button btn_AddCompany;
         private System.Windows.Forms.ListView lvw_CompanyDepartments;
+        private System.Windows.Forms.ListView lvw_companies;
+        private System.Windows.Forms.ColumnHeader clm_CompanyID;
+        private System.Windows.Forms.ColumnHeader clm_CompanyName;
+        private System.Windows.Forms.ColumnHeader clm_DepartmentID;
+        private System.Windows.Forms.ColumnHeader clm_DepartmentName;
     }
 }

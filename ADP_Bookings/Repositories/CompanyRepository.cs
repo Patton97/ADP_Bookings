@@ -23,6 +23,7 @@ namespace ADP_Bookings
                 return GetAll();
         }
 
+
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;
     }
 }

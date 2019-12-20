@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
 
+//For future reference: https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
+
 namespace ADP_Bookings
 {
     //This class is generic (not tied to the ADP System at hand)
@@ -32,5 +34,12 @@ namespace ADP_Bookings
         //Remove from set
         public void Remove(TEntity entity) => allEntities.Remove(entity);
         public void RemoveRange(IEnumerable<TEntity> entities) => allEntities.RemoveRange(entities);
+
+        //Update entity
+        public void Update(TEntity entity)
+        {
+            allEntities.Attach(entity);
+            Context.Entry(entity).State = EntityState.Modified;
+        }
     }
 }
