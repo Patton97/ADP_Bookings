@@ -11,34 +11,35 @@ namespace ADP_Bookings
     {
         public DepartmentRepository(ADP_DBContext context) : base(context) { /* */ }
 
-        //Get all departments, include full booking record for all bookings made by department
-        //(not just FK reference)
-        public IEnumerable<Department> GetDepartmentsWithBookings()
+        //Get all departments
+        //bool param forces eager loading of FK data
+        public IEnumerable<Department> GetAll(bool includeFKs = false)
         {
-            return allEntities
-                .Include(d => d.Bookings)
-                .OrderBy(d => d.DepartmentID)
-                .ToList();
-        }
-        //Get all departments, include full company record (not just FK reference)
-        public IEnumerable<Department> GetDepartmentsWithCompany()
-        {
-            return allEntities
-                .Include(d => d.Company)
-                .OrderBy(d => d.DepartmentID)
-                .ToList();
+            if (includeFKs)
+                return allEntities
+                    .Include(d => d.Bookings)
+                    .Include(d => d.Company)
+                    .OrderBy(d => d.DepartmentID);
+            else
+                return GetAll();
         }
 
-        public IEnumerable<Department> GetDepartmentsFromCompany(Company company)
+        //Get all departments belonging to specified company, include full record of company and any bookings (not just FK reference)
+        public IEnumerable<Department> GetDepartmentsFromCompany(Company company, bool includeFKs = false)
         {
-            return allEntities
-                .Where(d => d.Company.CompanyID == company.CompanyID)
-                .Include(d => d.Company)
-                .OrderBy(d => d.DepartmentID)
-                .ToList();
+            if (includeFKs)
+                return allEntities
+                    .Where(d => d.Company.CompanyID == company.CompanyID)
+                    .Include(d => d.Company)
+                    .Include(d => d.Bookings)
+                    .OrderBy(d => d.DepartmentID)
+                    .ToList();
+            else
+                return allEntities
+                    .Where(d => d.Company.CompanyID == company.CompanyID)
+                    .OrderBy(d => d.DepartmentID)
+                    .ToList();
         }
-
-
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;
     }
 }

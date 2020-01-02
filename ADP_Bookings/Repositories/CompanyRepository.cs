@@ -11,7 +11,8 @@ namespace ADP_Bookings
     {
         public CompanyRepository(ADP_DBContext context) : base(context) { /* */ }
 
-        //Get all bookings, include full department record (not just FK reference)
+        //Get all companies
+        //bool param forces eager loading of FK data
         public IEnumerable<Company> GetAll(bool includeDepartments = false)
         {
 
@@ -22,7 +23,6 @@ namespace ADP_Bookings
             else
                 return GetAll();
         }
-
 
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;
     }

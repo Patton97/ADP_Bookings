@@ -20,7 +20,7 @@ namespace ADP_Bookings.Forms
         private CompanyPresenter presenter;
         public List<Control> ctrls_CompanyList;
         public List<Control> ctrls_CurrentCompany;
-
+        
         public string CurrentCompanyID
         {
             get => txt_CompanyID.Text;
@@ -56,15 +56,14 @@ namespace ADP_Bookings.Forms
         public frm_companies()
         {
             InitializeComponent();
-            presenter = new CompanyPresenter(this);
-
             //Define groups of controls
             InitialiseControlGroups();
+
+            //Assign presenter
+            presenter = new CompanyPresenter(this);            
         }
 
         public void Register(CompanyPresenter presenter) => this.presenter = presenter;
-
-
 
         private void frm_companies_Load(object sender, EventArgs e)
         {
@@ -88,6 +87,7 @@ namespace ADP_Bookings.Forms
             ctrls_CurrentCompany.Add(lvw_CompanyDepartments);
             ctrls_CurrentCompany.Add(btn_ConfirmChanges);
             ctrls_CurrentCompany.Add(btn_CancelChanges);
+            ctrls_CurrentCompany.Add(btn_EditDepartments);
         }
 
         public int GetSelectedCompanyIndex() => lvw_companies.SelectedIndices[0];
@@ -104,7 +104,8 @@ namespace ADP_Bookings.Forms
 
         // Buttons
         private void btn_AddCompany_Click(object sender, EventArgs e) => presenter.btn_AddCompany_Click();
+        private void btn_EditDepartments_Click(object sender, EventArgs e) => presenter.btn_EditDepartments_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
-        private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
+        private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();        
     }
 }

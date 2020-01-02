@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ADP_Bookings.Views
 {
-    public interface ICompanyGUI
+    public interface ICompanyGUI : IGUI
     {
         string CurrentCompanyID { get; set; }
         string CurrentCompanyName { get; set; }

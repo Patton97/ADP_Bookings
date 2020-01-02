@@ -21,19 +21,20 @@ namespace ADP_Bookings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            //ForceDB();
+            
+            Application.Run(new frm_companies());
+        }
+
+        static void ForceDB()
+        {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
-                /*
-                Company tesco = new Company(1, "Tesco");
-                Department hr = new Department(1, "HR", tesco);
-                Department legal = new Department(2, "Legal", tesco);
-                tesco.Departments.Add(hr);
-                tesco.Departments.Add(legal);
-                unitOfWork.Companies.Add(tesco);
-                */
+                Company asda = unitOfWork.Companies.Get(6);
+                Department dpt = new Department(0, "HR", asda);
+                unitOfWork.Departments.Add(dpt);
                 unitOfWork.SaveChanges();
             }
-            Application.Run(new frm_companies());
         }
     }
 }

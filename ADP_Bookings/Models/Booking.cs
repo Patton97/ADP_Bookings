@@ -11,10 +11,18 @@ namespace ADP_Bookings
         {
             Activities = new List<Activity>();
         }
+        public Booking(int bookingID, string name, DateTime date, Department department) : this()
+        {
+            BookingID = bookingID;
+            Name = name;
+            Date = date;
+            Department = department;
+        }
 
         //Scalar Properties
         [Key]
         public int BookingID { get; set; }
+        public string Name { get; set; }
         public DateTime Date { get; set; }
         public float EstimatedCost { get; set; }
         public float ActualCost { get; set; }

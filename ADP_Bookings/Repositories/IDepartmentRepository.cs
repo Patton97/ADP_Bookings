@@ -8,9 +8,8 @@ namespace ADP_Bookings
 {
     public interface IDepartmentRepository : IRepository<Department>
     {
-        //Get all bookings, include full department record (not just FK reference)
-        IEnumerable<Department> GetDepartmentsWithBookings();
-        IEnumerable<Department> GetDepartmentsWithCompany();
-        IEnumerable<Department> GetDepartmentsFromCompany(Company company);
+        //Get all bookings - bool param forces eager loading of FK data
+        IEnumerable<Department> GetAll(bool includeFKs = false);
+        IEnumerable<Department> GetDepartmentsFromCompany(Company company, bool includeFKs = false);
     }
 }

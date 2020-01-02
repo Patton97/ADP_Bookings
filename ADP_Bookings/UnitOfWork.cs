@@ -24,7 +24,6 @@ namespace ADP_Bookings
         public IBookingRepository Bookings { get; private set; }
         public IActivityRepository Activities { get; private set; }
 
-
         public int SaveChanges() => ctx.SaveChanges();
         public void Dispose() => ctx.Dispose();
     }

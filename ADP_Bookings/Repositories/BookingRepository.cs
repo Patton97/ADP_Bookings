@@ -11,27 +11,31 @@ namespace ADP_Bookings
     {
         public BookingRepository(ADP_DBContext context) : base(context) { /* */ }
 
-        //Get all bookings, include full department record (not just FK reference)
-        public IEnumerable<Booking> GetBookingsWithDepartments()
+        //Get all bookings
+        //bool param forces eager loading of FK data
+        public IEnumerable<Booking> GetAll(bool includeFKs = false)
         {
-            return allEntities
-                .Include(b => b.Department)
-                .OrderBy(b => b.Department)
-                .ToList();
+            if (includeFKs)
+                return allEntities
+                    .Include(b => b.Department)
+                    .Include(b => b.Activities)
+                    .OrderBy(b => b.BookingID)
+                    .ToList();
+            else
+                return GetAll();
         }
 
         //Get all bookings made by a specific department
-        public List<Booking> GetBookingsFromDepartment(int departmentID)
+        //bool param forces eager loading of FK data
+        public List<Booking> GetAllBookingsFromDepartment(int departmentID, bool includeFKs = false)
         {
-            return allEntities
+            return GetAll(includeFKs)
                 .Where(b => b.Department.DepartmentID == departmentID)
                 .ToList();
         }
-        public List<Booking> GetBookingsFromDepartment(Department department)
+        public List<Booking> GetAllBookingsFromDepartment(Department department, bool includeFKs = false)
         {
-            return allEntities
-                .Where(b => b.Department == department)
-                .ToList();
+            return GetAllBookingsFromDepartment(department.DepartmentID, includeFKs);
         }
 
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;

@@ -8,11 +8,11 @@ namespace ADP_Bookings
 {
     public interface IBookingRepository : IRepository<Booking>
     {
-        //Get all bookings, include full department record (not just FK reference)
-        IEnumerable<Booking> GetBookingsWithDepartments();
+        //Get all bookings - bool param forces eager loading of FK data
+        IEnumerable<Booking> GetAll(bool includeFKs = false);
 
         //Get all bookings made by a specific department
-        List<Booking> GetBookingsFromDepartment(int departmentID);
-        List<Booking> GetBookingsFromDepartment(Department department);
+        List<Booking> GetAllBookingsFromDepartment(int departmentID, bool includeFKs = false);
+        List<Booking> GetAllBookingsFromDepartment(Department department, bool includeFKs = false);
     }
 }
