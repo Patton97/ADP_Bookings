@@ -22,7 +22,7 @@ namespace ADP_Bookings
             Application.SetCompatibleTextRenderingDefault(false);
 
             //ForceDB();
-            
+
             Application.Run(new frm_companies());
         }
 

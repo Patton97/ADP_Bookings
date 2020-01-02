@@ -100,3 +100,4 @@ C:\Users\w16007006\Downloads\ADP_Bookings-master\ADP_Bookings\bin\Debug\System.S
 C:\Users\w16007006\Downloads\ADP_Bookings-master\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.CopyComplete
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_departments.resources
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_bookings.resources
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Migrations.BookingName.resources

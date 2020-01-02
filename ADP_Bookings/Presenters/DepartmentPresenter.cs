@@ -71,7 +71,8 @@ namespace ADP_Bookings.Presenters
             foreach (Booking b in selectedDepartment.Bookings)
             {
                 ListViewItem lvi_booking = new ListViewItem(b.BookingID.ToString());
-                lvi_booking.SubItems.Add(b.Date.ToString()); //Perhaps change to something more informative
+                lvi_booking.SubItems.Add(b.Name);
+                lvi_booking.SubItems.Add(b.Date.ToString());
                 screen.CurrentDepartmentBookings.Add(lvi_booking);
             }
 

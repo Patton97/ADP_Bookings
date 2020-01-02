@@ -102,6 +102,10 @@
     <Compile Include="Forms\frm_departments.Designer.cs">
       <DependentUpon>frm_departments.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001022319455_Booking.Name.cs" />
+    <Compile Include="Migrations\202001022319455_Booking.Name.designer.cs">
+      <DependentUpon>202001022319455_Booking.Name.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\BookingModel.cs" />
@@ -146,6 +150,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frm_departments.resx">
       <DependentUpon>frm_departments.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001022319455_Booking.Name.resx">
+      <DependentUpon>202001022319455_Booking.Name.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.lvw_Departments = new System.Windows.Forms.ListView();
-            this.clm_CompanyID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.clm_CompanyName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lvw_DepartmentBookings = new System.Windows.Forms.ListView();
             this.clm_DepartmentID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_DepartmentName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lvw_DepartmentBookings = new System.Windows.Forms.ListView();
+            this.clm_BookingID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_BookingName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_AddDepartment = new System.Windows.Forms.Button();
             this.lbl_Departments = new System.Windows.Forms.Label();
             this.lbl_DepartmentBookings = new System.Windows.Forms.Label();
@@ -44,13 +44,16 @@
             this.txt_DepartmentID = new System.Windows.Forms.TextBox();
             this.lbl_DepartmentName = new System.Windows.Forms.Label();
             this.txt_DepartmentName = new System.Windows.Forms.TextBox();
+            this.lbl_divider = new System.Windows.Forms.Label();
+            this.btn_EditBookings = new System.Windows.Forms.Button();
+            this.clm_BookingDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // lvw_Departments
             // 
             this.lvw_Departments.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clm_CompanyID,
-            this.clm_CompanyName});
+            this.clm_DepartmentID,
+            this.clm_DepartmentName});
             this.lvw_Departments.FullRowSelect = true;
             this.lvw_Departments.HideSelection = false;
             this.lvw_Departments.Location = new System.Drawing.Point(12, 52);
@@ -61,27 +64,6 @@
             this.lvw_Departments.View = System.Windows.Forms.View.Details;
             this.lvw_Departments.SelectedIndexChanged += new System.EventHandler(this.lvw_Departments_SelectedIndexChanged);
             // 
-            // clm_CompanyID
-            // 
-            this.clm_CompanyID.Text = "ID";
-            // 
-            // clm_CompanyName
-            // 
-            this.clm_CompanyName.Text = "Name";
-            // 
-            // lvw_DepartmentBookings
-            // 
-            this.lvw_DepartmentBookings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clm_DepartmentID,
-            this.clm_DepartmentName});
-            this.lvw_DepartmentBookings.HideSelection = false;
-            this.lvw_DepartmentBookings.Location = new System.Drawing.Point(411, 120);
-            this.lvw_DepartmentBookings.Name = "lvw_DepartmentBookings";
-            this.lvw_DepartmentBookings.Size = new System.Drawing.Size(377, 146);
-            this.lvw_DepartmentBookings.TabIndex = 27;
-            this.lvw_DepartmentBookings.UseCompatibleStateImageBehavior = false;
-            this.lvw_DepartmentBookings.View = System.Windows.Forms.View.Details;
-            // 
             // clm_DepartmentID
             // 
             this.clm_DepartmentID.Text = "ID";
@@ -89,6 +71,28 @@
             // clm_DepartmentName
             // 
             this.clm_DepartmentName.Text = "Name";
+            // 
+            // lvw_DepartmentBookings
+            // 
+            this.lvw_DepartmentBookings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clm_BookingID,
+            this.clm_BookingName,
+            this.clm_BookingDate});
+            this.lvw_DepartmentBookings.HideSelection = false;
+            this.lvw_DepartmentBookings.Location = new System.Drawing.Point(411, 120);
+            this.lvw_DepartmentBookings.Name = "lvw_DepartmentBookings";
+            this.lvw_DepartmentBookings.Size = new System.Drawing.Size(377, 115);
+            this.lvw_DepartmentBookings.TabIndex = 27;
+            this.lvw_DepartmentBookings.UseCompatibleStateImageBehavior = false;
+            this.lvw_DepartmentBookings.View = System.Windows.Forms.View.Details;
+            // 
+            // clm_BookingID
+            // 
+            this.clm_BookingID.Text = "ID";
+            // 
+            // clm_BookingName
+            // 
+            this.clm_BookingName.Text = "Name";
             // 
             // btn_AddDepartment
             // 
@@ -182,11 +186,34 @@
             this.txt_DepartmentName.Size = new System.Drawing.Size(100, 20);
             this.txt_DepartmentName.TabIndex = 17;
             // 
+            // lbl_divider
+            // 
+            this.lbl_divider.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lbl_divider.Location = new System.Drawing.Point(381, 17);
+            this.lbl_divider.Name = "lbl_divider";
+            this.lbl_divider.Size = new System.Drawing.Size(2, 300);
+            this.lbl_divider.TabIndex = 44;
+            // 
+            // btn_EditBookings
+            // 
+            this.btn_EditBookings.Location = new System.Drawing.Point(411, 241);
+            this.btn_EditBookings.Name = "btn_EditBookings";
+            this.btn_EditBookings.Size = new System.Drawing.Size(377, 25);
+            this.btn_EditBookings.TabIndex = 45;
+            this.btn_EditBookings.Text = "Edit Bookings";
+            this.btn_EditBookings.UseVisualStyleBackColor = true;
+            // 
+            // clm_BookingDate
+            // 
+            this.clm_BookingDate.Text = "Date";
+            // 
             // frm_departments
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.btn_EditBookings);
+            this.Controls.Add(this.lbl_divider);
             this.Controls.Add(this.lvw_Departments);
             this.Controls.Add(this.lvw_DepartmentBookings);
             this.Controls.Add(this.btn_AddDepartment);
@@ -210,11 +237,11 @@
         #endregion
 
         private System.Windows.Forms.ListView lvw_Departments;
-        private System.Windows.Forms.ColumnHeader clm_CompanyID;
-        private System.Windows.Forms.ColumnHeader clm_CompanyName;
-        private System.Windows.Forms.ListView lvw_DepartmentBookings;
         private System.Windows.Forms.ColumnHeader clm_DepartmentID;
         private System.Windows.Forms.ColumnHeader clm_DepartmentName;
+        private System.Windows.Forms.ListView lvw_DepartmentBookings;
+        private System.Windows.Forms.ColumnHeader clm_BookingID;
+        private System.Windows.Forms.ColumnHeader clm_BookingName;
         private System.Windows.Forms.Button btn_AddDepartment;
         private System.Windows.Forms.Label lbl_Departments;
         private System.Windows.Forms.Label lbl_DepartmentBookings;
@@ -225,5 +252,8 @@
         private System.Windows.Forms.TextBox txt_DepartmentID;
         private System.Windows.Forms.Label lbl_DepartmentName;
         private System.Windows.Forms.TextBox txt_DepartmentName;
+        private System.Windows.Forms.Label lbl_divider;
+        private System.Windows.Forms.Button btn_EditBookings;
+        private System.Windows.Forms.ColumnHeader clm_BookingDate;
     }
 }

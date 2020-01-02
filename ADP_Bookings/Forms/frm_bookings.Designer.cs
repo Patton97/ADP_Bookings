@@ -46,6 +46,7 @@
             this.txt_BookingName = new System.Windows.Forms.TextBox();
             this.lbl_BookingDate = new System.Windows.Forms.Label();
             this.dtp_BookingDate = new System.Windows.Forms.DateTimePicker();
+            this.lbl_divider = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lvw_Bookings
@@ -196,11 +197,20 @@
             this.dtp_BookingDate.Size = new System.Drawing.Size(140, 20);
             this.dtp_BookingDate.TabIndex = 42;
             // 
+            // lbl_divider
+            // 
+            this.lbl_divider.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.lbl_divider.Location = new System.Drawing.Point(381, 17);
+            this.lbl_divider.Name = "lbl_divider";
+            this.lbl_divider.Size = new System.Drawing.Size(2, 300);
+            this.lbl_divider.TabIndex = 43;
+            // 
             // frm_bookings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.lbl_divider);
             this.Controls.Add(this.dtp_BookingDate);
             this.Controls.Add(this.lbl_BookingDate);
             this.Controls.Add(this.lvw_Bookings);
@@ -243,5 +253,6 @@
         private System.Windows.Forms.TextBox txt_BookingName;
         private System.Windows.Forms.Label lbl_BookingDate;
         private System.Windows.Forms.DateTimePicker dtp_BookingDate;
+        private System.Windows.Forms.Label lbl_divider;
     }
 }
