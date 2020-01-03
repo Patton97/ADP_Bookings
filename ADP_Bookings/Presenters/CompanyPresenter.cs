@@ -17,6 +17,7 @@ namespace ADP_Bookings.Presenters
         ICompanyGUI screen; //view
         List<Company> companies; //model
         Company selectedCompany;
+        public bool CurrentCompanyEdited = false; //Has the user begun editing the record yet
 
         public CompanyPresenter(ICompanyGUI screen)
         {
@@ -28,7 +29,7 @@ namespace ADP_Bookings.Presenters
         void InitialiseForm()
         {
             //Assign title to form window
-            screen.Text = "ADP Bookings > Companies";
+            screen.Text = "ADP > Companies";
 
             //Populate company list
             LoadCompanyList();
@@ -101,6 +102,7 @@ namespace ADP_Bookings.Presenters
             screen.CurrentCompanyName = "";
             screen.CurrentCompanyDepartments.Clear();
             DisableCurrentCompanyDisplay();
+            EnableCompanyListDisplay();
         }
 
         void EditDepartments()
@@ -115,22 +117,6 @@ namespace ADP_Bookings.Presenters
             screen.Show();            
         }
 
-        //Uses ID of the last entry in the list to predict the company's ID when saved
-        //NOTE: value here is visual only, EF will decide what the actual value should be when adding record
-        //Arguably, this produces false-positives and it might be better to show 0, or simply no value at all
-        int PredictNextID()
-        {
-            try
-            {
-                return companies[companies.Count-1].CompanyID + 1;
-            }
-            catch (ArgumentOutOfRangeException ioore)
-            {
-                Console.WriteLine(ioore + ioore.StackTrace);
-                return 0;
-            }
-        }
-
         //Control group toggling
         //Company List Display
         void EnableCompanyListDisplay() => screen.CompanyList_Enabled = true;
@@ -138,7 +124,6 @@ namespace ADP_Bookings.Presenters
         //Current Company Display
         void EnableCurrentCompanyDisplay() => screen.CurrentCompany_Enabled = true;
         void DisableCurrentCompanyDisplay() => screen.CurrentCompany_Enabled = false;
-
         
         // ********************************************************************************
         // Event Handlers *****************************************************************
@@ -147,13 +132,27 @@ namespace ADP_Bookings.Presenters
         // Companies ListBox - lst_companies
         public void lvw_companies_SelectedIndexChanged(int[] selectedIndices)
         {
-            //When using lvw.FullRowSelect == true, if the user changes rows
+            //First, check if company is currently being edited
+            if(screen.CurrentCompany_Enabled)
+            {
+                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                    SaveCompany();
+                else if (confirmResult == DialogResult.No)
+                    ClearCurrentCompany();
+                else if (confirmResult == DialogResult.Cancel)
+                    return; //Exit function, resume previous behaviour
+            }
+            //If code reaches this point, no company is currently being edited
+
+            //When using ListView with FullRowSelect, if the user changes rows
             //the list view first deselects the old row, then selects the new row
-            //Therefore, we need to ignore the first 'dud' call
+            //Therefore, we ignore the first 'dud' call where no rows are selected
             if (selectedIndices.Length <= 0)
-                return;
-            //ListView also allows for multiple row selection. If this is the case,
-            //the company details display should be wiped to avoid ambiguity
+                return; //Exit function, resume previous behaviour
+
+            //ListView also allows for multiple row selection. 
+            //If this is the case, the company details display is wiped to avoid ambiguity
             if (selectedIndices.Length > 1)
                 ClearCurrentCompany();
             else
@@ -166,25 +165,39 @@ namespace ADP_Bookings.Presenters
             //If a company is already being edited
             if(screen.CurrentCompany_Enabled)
             {
-                var confirmResult = MessageBox.Show("All changes will be lost!",
-                                                    "Are you sure?",
-                                                    MessageBoxButtons.YesNo);
-                if (confirmResult == DialogResult.No)
-                    return; //Exit function, continue previous behaviour
+                var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                    LoadNewCompany();
             }
+            //else, do nothing (continue previous behaviour)
+        }
 
-            //If code reaches this point, either no company is open or user
-            //is happy to discard previous changes
-            LoadNewCompany();
+        public void btn_DeleteCompany_Click()
+        {
+            if(selectedCompany == null)
+            {
+                MessageBox.Show("No company selected.","Cannot delete company", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                var confirmResult = MessageBox.Show("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    DeleteCompany(selectedCompany);
+
+                    //Reload form components to reflect changes
+                    ClearCurrentCompany();
+                    LoadCompanyList();
+                }
+            }            
         }
 
         public void btn_EditDepartments_Click() => EditDepartments();
         public void btn_ConfirmChanges_Click() => SaveCompany();
         public void btn_CancelChanges_Click()
         {
-            var confirmResult = MessageBox.Show("All changes will be lost!",
-                                                "Are you sure?",
-                                                MessageBoxButtons.YesNo);
+            var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirmResult == DialogResult.Yes)
                 ClearCurrentCompany();
             //else, do nothing (continue previous behaviour)

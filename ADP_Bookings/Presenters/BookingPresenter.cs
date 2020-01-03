@@ -18,6 +18,7 @@ namespace ADP_Bookings.Presenters
         List<Booking> bookings; //model
         Booking selectedBooking;
         Department department; //The department the displayed bookings belong to
+        public bool CurrentBookingEdited = false; //Has the user begun editing the record yet
 
         public BookingPresenter(IBookingGUI screen, Department department)
         {
@@ -30,7 +31,7 @@ namespace ADP_Bookings.Presenters
         void InitialiseForm()
         {
             //Assign title to form window
-            screen.Text = "ADP Bookings > " + department.Company.Name + " > " + department.Name + " > Bookings";
+            screen.Text = "ADP  > " + department.Company.Name + " > " + department.Name + " > Bookings";
 
             //Populate department list
             LoadBookingList();
@@ -48,10 +49,14 @@ namespace ADP_Bookings.Presenters
         {
             screen.BookingList.Clear();
             bookings = GetAllBookingsFrom(department);
-            foreach (Booking d in bookings)
+            foreach (Booking b in bookings)
             {
-                ListViewItem lvi_booking = new ListViewItem(d.BookingID.ToString());
-                lvi_booking.SubItems.Add(d.Name);
+                ListViewItem lvi_booking = new ListViewItem(b.BookingID.ToString());
+                lvi_booking.SubItems.Add(b.Name);
+                lvi_booking.SubItems.Add(b.Date.ToString());
+                lvi_booking.SubItems.Add(b.NumAttendees.ToString());
+                lvi_booking.SubItems.Add(b.EstimatedCost.ToString());
+                lvi_booking.SubItems.Add(b.ActualCost.ToString());
                 screen.BookingList.Add(lvi_booking);
             }
         }
@@ -73,6 +78,8 @@ namespace ADP_Bookings.Presenters
             {
                 ListViewItem lvi_activity = new ListViewItem(a.ActivityID.ToString());
                 lvi_activity.SubItems.Add(a.Name);
+                lvi_activity.SubItems.Add(a.Cost.ToString());
+                lvi_activity.SubItems.Add(a.Notes);
                 screen.CurrentBookingActivities.Add(lvi_activity);
             }
 
@@ -107,6 +114,13 @@ namespace ADP_Bookings.Presenters
             DisableCurrentBookingDisplay();
         }
 
+        void EditActivities()
+        {
+            /*
+             *
+             */
+        }
+
         //Uses ID of the last entry in the list to predict the booking's ID when saved
         //NOTE: value here is visual only, EF will decide what the actual value should be when adding record
         //Arguably, this produces false-positives and it might be better to show 0, or simply no value at all
@@ -135,16 +149,30 @@ namespace ADP_Bookings.Presenters
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
-        // Companies ListBox - lst_companies
+        // Bookings List - new item selected
         public void lvw_Bookings_SelectedIndexChanged(int[] selectedIndices)
         {
-            //When using lvw.FullRowSelect == true, if the user changes rows
+            //First, check if booking is currently being edited
+            if (screen.CurrentBooking_Enabled)
+            {
+                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                    SaveBooking();
+                else if (confirmResult == DialogResult.No)
+                    ClearCurrentBooking();
+                else if (confirmResult == DialogResult.Cancel)
+                    return; //Exit function, resume previous behaviour
+            }
+            //If code reaches this point, no booking is currently being edited
+
+            //When using ListView with FullRowSelect, if the user changes rows
             //the list view first deselects the old row, then selects the new row
-            //Therefore, we need to ignore the first 'dud' call
+            //Therefore, we ignore the first 'dud' call where no rows are selected
             if (selectedIndices.Length <= 0)
-                return;
-            //ListView also allows for multiple row selection. If this is the case,
-            //the CurrentBooking section is wiped to avoid ambiguity
+                return; //Exit function, resume previous behaviour
+
+            //ListView also allows for multiple row selection. 
+            //If this is the case, the company details display is wiped to avoid ambiguity
             if (selectedIndices.Length > 1)
                 ClearCurrentBooking();
             else
@@ -168,6 +196,7 @@ namespace ADP_Bookings.Presenters
             //is happy to discard previous changes
             LoadNewBooking();
         }
+        public void btn_EditActivities_Click() => EditActivities();
         public void btn_ConfirmChanges_Click() => SaveBooking();
         public void btn_CancelChanges_Click()
         {

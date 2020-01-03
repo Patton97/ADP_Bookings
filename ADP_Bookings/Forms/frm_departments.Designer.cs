@@ -34,6 +34,10 @@
             this.lvw_DepartmentBookings = new System.Windows.Forms.ListView();
             this.clm_BookingID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_BookingName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_BookingDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_BookingNumAttendees = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_BookingEstimatedCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.clm_BookingActualCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_AddDepartment = new System.Windows.Forms.Button();
             this.lbl_Departments = new System.Windows.Forms.Label();
             this.lbl_DepartmentBookings = new System.Windows.Forms.Label();
@@ -46,7 +50,7 @@
             this.txt_DepartmentName = new System.Windows.Forms.TextBox();
             this.lbl_divider = new System.Windows.Forms.Label();
             this.btn_EditBookings = new System.Windows.Forms.Button();
-            this.clm_BookingDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btn_DeleteDepartment = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lvw_Departments
@@ -77,7 +81,10 @@
             this.lvw_DepartmentBookings.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clm_BookingID,
             this.clm_BookingName,
-            this.clm_BookingDate});
+            this.clm_BookingDate,
+            this.clm_BookingNumAttendees,
+            this.clm_BookingEstimatedCost,
+            this.clm_BookingActualCost});
             this.lvw_DepartmentBookings.HideSelection = false;
             this.lvw_DepartmentBookings.Location = new System.Drawing.Point(411, 120);
             this.lvw_DepartmentBookings.Name = "lvw_DepartmentBookings";
@@ -94,9 +101,26 @@
             // 
             this.clm_BookingName.Text = "Name";
             // 
+            // clm_BookingDate
+            // 
+            this.clm_BookingDate.Text = "Date";
+            // 
+            // clm_BookingNumAttendees
+            // 
+            this.clm_BookingNumAttendees.Text = "Party Size";
+            // 
+            // clm_BookingEstimatedCost
+            // 
+            this.clm_BookingEstimatedCost.Text = "Cost (Est)";
+            // 
+            // clm_BookingActualCost
+            // 
+            this.clm_BookingActualCost.Text = "Cost (Final)";
+            this.clm_BookingActualCost.Width = 67;
+            // 
             // btn_AddDepartment
             // 
-            this.btn_AddDepartment.Location = new System.Drawing.Point(115, 278);
+            this.btn_AddDepartment.Location = new System.Drawing.Point(223, 278);
             this.btn_AddDepartment.Name = "btn_AddDepartment";
             this.btn_AddDepartment.Size = new System.Drawing.Size(128, 40);
             this.btn_AddDepartment.TabIndex = 26;
@@ -119,9 +143,9 @@
             this.lbl_DepartmentBookings.AutoSize = true;
             this.lbl_DepartmentBookings.Location = new System.Drawing.Point(408, 103);
             this.lbl_DepartmentBookings.Name = "lbl_DepartmentBookings";
-            this.lbl_DepartmentBookings.Size = new System.Drawing.Size(106, 13);
+            this.lbl_DepartmentBookings.Size = new System.Drawing.Size(109, 13);
             this.lbl_DepartmentBookings.TabIndex = 24;
-            this.lbl_DepartmentBookings.Text = "Deparment Bookings";
+            this.lbl_DepartmentBookings.Text = "Deparment Bookings:";
             // 
             // btn_ConfirmChanges
             // 
@@ -202,16 +226,24 @@
             this.btn_EditBookings.TabIndex = 45;
             this.btn_EditBookings.Text = "Edit Bookings";
             this.btn_EditBookings.UseVisualStyleBackColor = true;
+            this.btn_EditBookings.Click += new System.EventHandler(this.btn_EditBookings_Click);
             // 
-            // clm_BookingDate
+            // btn_DeleteDepartment
             // 
-            this.clm_BookingDate.Text = "Date";
+            this.btn_DeleteDepartment.Location = new System.Drawing.Point(12, 278);
+            this.btn_DeleteDepartment.Name = "btn_DeleteDepartment";
+            this.btn_DeleteDepartment.Size = new System.Drawing.Size(128, 40);
+            this.btn_DeleteDepartment.TabIndex = 46;
+            this.btn_DeleteDepartment.Text = "Delete Department";
+            this.btn_DeleteDepartment.UseVisualStyleBackColor = true;
+            this.btn_DeleteDepartment.Click += new System.EventHandler(this.btn_DeleteDepartment_Click);
             // 
             // frm_departments
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.btn_DeleteDepartment);
             this.Controls.Add(this.btn_EditBookings);
             this.Controls.Add(this.lbl_divider);
             this.Controls.Add(this.lvw_Departments);
@@ -227,7 +259,7 @@
             this.Controls.Add(this.lbl_DepartmentName);
             this.Controls.Add(this.txt_DepartmentName);
             this.Name = "frm_departments";
-            this.Text = "frm_departments";
+            this.Text = "ADP > Companies > Departments";
             this.Load += new System.EventHandler(this.frm_departments_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -255,5 +287,9 @@
         private System.Windows.Forms.Label lbl_divider;
         private System.Windows.Forms.Button btn_EditBookings;
         private System.Windows.Forms.ColumnHeader clm_BookingDate;
+        private System.Windows.Forms.ColumnHeader clm_BookingNumAttendees;
+        private System.Windows.Forms.ColumnHeader clm_BookingEstimatedCost;
+        private System.Windows.Forms.ColumnHeader clm_BookingActualCost;
+        private System.Windows.Forms.Button btn_DeleteDepartment;
     }
 }

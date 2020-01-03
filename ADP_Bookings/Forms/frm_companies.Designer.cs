@@ -46,6 +46,7 @@
             this.clm_CompanyName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_EditDepartments = new System.Windows.Forms.Button();
             this.lbl_divider = new System.Windows.Forms.Label();
+            this.btn_DeleteCompany = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txt_CompanyName
@@ -132,7 +133,7 @@
             // 
             // btn_AddCompany
             // 
-            this.btn_AddCompany.Location = new System.Drawing.Point(115, 278);
+            this.btn_AddCompany.Location = new System.Drawing.Point(223, 278);
             this.btn_AddCompany.Name = "btn_AddCompany";
             this.btn_AddCompany.Size = new System.Drawing.Size(128, 40);
             this.btn_AddCompany.TabIndex = 14;
@@ -202,11 +203,22 @@
             this.lbl_divider.Size = new System.Drawing.Size(2, 300);
             this.lbl_divider.TabIndex = 18;
             // 
+            // btn_DeleteCompany
+            // 
+            this.btn_DeleteCompany.Location = new System.Drawing.Point(12, 278);
+            this.btn_DeleteCompany.Name = "btn_DeleteCompany";
+            this.btn_DeleteCompany.Size = new System.Drawing.Size(128, 40);
+            this.btn_DeleteCompany.TabIndex = 19;
+            this.btn_DeleteCompany.Text = "Delete Company";
+            this.btn_DeleteCompany.UseVisualStyleBackColor = true;
+            this.btn_DeleteCompany.Click += new System.EventHandler(this.btn_DeleteCompany_Click);
+            // 
             // frm_companies
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.btn_DeleteCompany);
             this.Controls.Add(this.lbl_divider);
             this.Controls.Add(this.btn_EditDepartments);
             this.Controls.Add(this.lvw_companies);
@@ -222,7 +234,7 @@
             this.Controls.Add(this.lbl_CompanyName);
             this.Controls.Add(this.txt_CompanyName);
             this.Name = "frm_companies";
-            this.Text = "ADP Bookings System: Companies";
+            this.Text = "ADP > Companies";
             this.Load += new System.EventHandler(this.frm_companies_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -248,5 +260,6 @@
         private System.Windows.Forms.ColumnHeader clm_DepartmentName;
         private System.Windows.Forms.Button btn_EditDepartments;
         private System.Windows.Forms.Label lbl_divider;
+        private System.Windows.Forms.Button btn_DeleteCompany;
     }
 }

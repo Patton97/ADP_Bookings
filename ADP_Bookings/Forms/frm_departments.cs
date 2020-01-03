@@ -57,37 +57,56 @@ namespace ADP_Bookings.Forms
         public frm_departments(Company company)
         {
             InitializeComponent();
+
             //Define groups of controls
             InitialiseControlGroups();
 
             //Assign presenter
             presenter = new DepartmentPresenter(this, company);
         }
+        private void frm_departments_Load(object sender, EventArgs e) {  /**/ }
 
+        //Used by presenter to register itself once succesfully constructed
         public void Register(DepartmentPresenter presenter) => this.presenter = presenter;
 
-        private void frm_departments_Load(object sender, EventArgs e)
-        {
-
-        }
-
+        //Control groups allow for mass-enabling/disabling of form controls
+        //This prevents unauthorised editing and helps focus user attention
+        //Long-winded, slightly ugly, but very useful!
         void InitialiseControlGroups()
         {
             //Controls relating to the full department list display (left hand side)
-            ctrls_DepartmentList = new List<Control>();
-            ctrls_DepartmentList.Add(lbl_Departments);
-            ctrls_DepartmentList.Add(lvw_Departments);
-            ctrls_DepartmentList.Add(btn_AddDepartment);
+            ctrls_DepartmentList = new List<Control>()
+            {
+                lbl_Departments,
+                lvw_Departments,
+                btn_AddDepartment
+            };
 
             //Controls relating to the current department display (right hand side)
-            ctrls_CurrentDepartment = new List<Control>();
-            ctrls_CurrentDepartment.Add(lbl_DepartmentID);
-            ctrls_CurrentDepartment.Add(txt_DepartmentID);
-            ctrls_CurrentDepartment.Add(lbl_DepartmentName);
-            ctrls_CurrentDepartment.Add(txt_DepartmentName);
-            ctrls_CurrentDepartment.Add(lvw_DepartmentBookings);
-            ctrls_CurrentDepartment.Add(btn_ConfirmChanges);
-            ctrls_CurrentDepartment.Add(btn_CancelChanges);
+            ctrls_CurrentDepartment = new List<Control>()
+            {
+                lbl_EditDepartment,
+                lbl_DepartmentID,
+                txt_DepartmentID,
+                lbl_DepartmentName,
+                txt_DepartmentName,
+                lbl_DepartmentBookings,
+                lvw_DepartmentBookings,
+                btn_ConfirmChanges,
+                btn_CancelChanges
+            };
+        }
+
+        //To track if the user has begun to edit the open record,
+        //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
+        //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
+        //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        //NOTE: Only the presenter itself should reset this to false.
+        void InitialiseEventHandlers()
+        {
+            EventHandler handler = new EventHandler(delegate { presenter.CurrentDepartmentEdited = true; });
+            txt_DepartmentID.TextChanged += handler;
+            txt_DepartmentName.TextChanged += handler;
         }
 
         public int GetSelectedDepartmentIndex() => lvw_Departments.SelectedIndices[0];
@@ -104,6 +123,8 @@ namespace ADP_Bookings.Forms
 
         // Buttons
         private void btn_AddDepartment_Click(object sender, EventArgs e) => presenter.btn_AddDepartment_Click();
+        private void btn_DeleteDepartment_Click(object sender, EventArgs e) => presenter.btn_DeleteDepartment_Click();
+        private void btn_EditBookings_Click(object sender, EventArgs e) => presenter.btn_EditBookings_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
         private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
     }

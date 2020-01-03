@@ -74,22 +74,44 @@ namespace ADP_Bookings.Forms
         void InitialiseControlGroups()
         {
             //Controls relating to the full booking list display (left hand side)
-            ctrls_BookingList = new List<Control>();
-            ctrls_BookingList.Add(lbl_Bookings);
-            ctrls_BookingList.Add(lvw_Bookings);
-            ctrls_BookingList.Add(btn_AddBooking);
+            ctrls_BookingList = new List<Control>()
+            {
+                lbl_Bookings,
+                lvw_Bookings,
+                btn_AddBooking
+            };
 
             //Controls relating to the current booking display (right hand side)
-            ctrls_CurrentBooking = new List<Control>();
-            ctrls_CurrentBooking.Add(lbl_BookingID);
-            ctrls_CurrentBooking.Add(txt_BookingID);
-            ctrls_CurrentBooking.Add(lbl_BookingName);
-            ctrls_CurrentBooking.Add(txt_BookingName);
-            ctrls_CurrentBooking.Add(lbl_BookingDate);
-            ctrls_CurrentBooking.Add(dtp_BookingDate);
-            ctrls_CurrentBooking.Add(lvw_BookingActivities);
-            ctrls_CurrentBooking.Add(btn_ConfirmChanges);
-            ctrls_CurrentBooking.Add(btn_CancelChanges);
+            ctrls_CurrentBooking = new List<Control>()
+            {
+                lbl_BookingID,
+                txt_BookingID,
+                lbl_BookingName,
+                txt_BookingName,
+                lbl_BookingDate,
+                dtp_BookingDate,
+                lbl_BookingCost,
+                nud_BookingCost,
+                lvw_BookingActivities,
+                btn_EditBookings,
+                btn_ConfirmChanges,
+                btn_CancelChanges
+            };
+        }
+
+        //To track if the user has begun to edit the open record,
+        //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
+        //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
+        //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        //NOTE: Only the presenter itself should reset this to false.
+        void InitialiseEventHandlers()
+        {
+            EventHandler handler = new EventHandler(delegate { presenter.CurrentBookingEdited = true; });
+            txt_BookingID.TextChanged += handler;
+            txt_BookingName.TextChanged += handler;
+            dtp_BookingDate.TextChanged += handler;
+            dtp_BookingDate.ValueChanged += handler;
+            nud_BookingCost.ValueChanged += handler;
         }
 
         public int GetSelectedBookingIndex() => lvw_Bookings.SelectedIndices[0];
@@ -98,7 +120,7 @@ namespace ADP_Bookings.Forms
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
-        // Companies ListBox - lst_companies
+        // Bookings List - new item selected
         private void lvw_Bookings_SelectedIndexChanged(object sender, EventArgs e)
         {
             presenter.lvw_Bookings_SelectedIndexChanged(lvw_Bookings.SelectedIndices.Cast<int>().ToArray());
@@ -106,7 +128,8 @@ namespace ADP_Bookings.Forms
 
         // Buttons
         private void btn_AddBooking_Click(object sender, EventArgs e) => presenter.btn_AddBooking_Click();
+        private void btn_EditActivities_Click(object sender, EventArgs e) => presenter.btn_EditActivities_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
-        private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
+        private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();        
     }
 }

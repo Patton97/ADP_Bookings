@@ -50,12 +50,20 @@ namespace ADP_Bookings.Models
             }
         }
 
-
         public static void UpdateCompany(Company company)
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
                 unitOfWork.Companies.Update(company);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        public static void DeleteCompany(Company company)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Companies.Remove(unitOfWork.Companies.Get(company.CompanyID));
                 unitOfWork.SaveChanges();
             }
         }

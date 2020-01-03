@@ -18,6 +18,7 @@ namespace ADP_Bookings.Presenters
         List<Department> departments; //model
         Department selectedDepartment;
         Company company; //The company the displayed departments belong to
+        public bool CurrentDepartmentEdited = false; //Has the user begun editing the record yet
 
         public DepartmentPresenter(IDepartmentGUI screen, Company company)
         {
@@ -30,7 +31,7 @@ namespace ADP_Bookings.Presenters
         void InitialiseForm()
         {
             //Assign title to form window
-            screen.Text = "ADP Bookings > " + company.Name + " > Departments";
+            screen.Text = "ADP > " + company.Name + " > Departments";
 
             //Populate company list
             LoadDepartmentList();
@@ -73,6 +74,9 @@ namespace ADP_Bookings.Presenters
                 ListViewItem lvi_booking = new ListViewItem(b.BookingID.ToString());
                 lvi_booking.SubItems.Add(b.Name);
                 lvi_booking.SubItems.Add(b.Date.ToString());
+                lvi_booking.SubItems.Add(b.NumAttendees.ToString());
+                lvi_booking.SubItems.Add(b.EstimatedCost.ToString());
+                lvi_booking.SubItems.Add(b.ActualCost.ToString());
                 screen.CurrentDepartmentBookings.Add(lvi_booking);
             }
 
@@ -118,22 +122,6 @@ namespace ADP_Bookings.Presenters
             screen.Show();
         }
 
-        //Uses ID of the last entry in the list to predict the department's ID when saved
-        //NOTE: value here is visual only, EF will decide what the actual value should be when adding record
-        //Arguably, this produces false-positives and it might be better to show 0, or simply no value at all
-        int PredictNextID()
-        {
-            try
-            {
-                return departments[departments.Count - 1].DepartmentID + 1;
-            }
-            catch (ArgumentOutOfRangeException ioore)
-            {
-                Console.WriteLine(ioore + ioore.StackTrace);
-                return 0;
-            }
-        }
-
         //Control group toggling
         //Company List Display
         void EnableDepartmentListDisplay() => screen.DepartmentList_Enabled = true;
@@ -149,13 +137,27 @@ namespace ADP_Bookings.Presenters
         // Companies ListBox - lst_companies
         public void lvw_Departments_SelectedIndexChanged(int[] selectedIndices)
         {
-            //When using lvw.FullRowSelect == true, if the user changes rows
+            //First, check if department is currently being edited
+            if (screen.CurrentDepartment_Enabled)
+            {
+                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                    SaveDepartment();
+                else if (confirmResult == DialogResult.No)
+                    ClearCurrentDepartment();
+                else if (confirmResult == DialogResult.Cancel)
+                    return; //Exit function, resume previous behaviour
+            }
+            //If code reaches this point, no department is currently being edited
+
+            //When using ListView with FullRowSelect, if the user changes rows
             //the list view first deselects the old row, then selects the new row
-            //Therefore, we need to ignore the first 'dud' call
+            //Therefore, we ignore the first 'dud' call where no rows are selected
             if (selectedIndices.Length <= 0)
-                return;
-            //ListView also allows for multiple row selection. If this is the case,
-            //the CurrentDepartment section is wiped to avoid ambiguity
+                return; //Exit function, resume previous behaviour
+
+            //ListView also allows for multiple row selection. 
+            //If this is the case, the company details display is wiped to avoid ambiguity
             if (selectedIndices.Length > 1)
                 ClearCurrentDepartment();
             else
@@ -168,23 +170,39 @@ namespace ADP_Bookings.Presenters
             //If a company is already being edited
             if (screen.CurrentDepartment_Enabled)
             {
-                var confirmResult = MessageBox.Show("All changes will be lost!",
-                                                    "Are you sure?",
-                                                    MessageBoxButtons.YesNo);
-                if (confirmResult == DialogResult.No)
-                    return; //Exit function, continue previous behaviour
+                var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo);
+                if (confirmResult == DialogResult.Yes)
+                    LoadNewDepartment();
             }
-
-            //If code reaches this point, either no company is open or user
-            //is happy to discard previous changes
-            LoadNewDepartment();
+            //else, do nothing (continue previous behaviour)
         }
+
+        public void btn_DeleteDepartment_Click()
+        {
+            if (selectedDepartment == null)
+            {
+                MessageBox.Show("No department selected.", "Cannot delete department", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                var confirmResult = MessageBox.Show("This department and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    DeleteDepartment(selectedDepartment);
+
+                    //Reload form components to reflect changes
+                    ClearCurrentDepartment();
+                    LoadDepartmentList();
+                }
+            }
+        }
+
+        public void btn_EditBookings_Click() => EditBookings();
         public void btn_ConfirmChanges_Click() => SaveDepartment();
         public void btn_CancelChanges_Click()
         {
-            var confirmResult = MessageBox.Show("All changes will be lost!",
-                                                "Are you sure?",
-                                                MessageBoxButtons.YesNo);
+            var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo);
             if (confirmResult == DialogResult.Yes)
                 ClearCurrentDepartment();
             //else, do nothing (continue previous behaviour)

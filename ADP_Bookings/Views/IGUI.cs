@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace ADP_Bookings.Views
 {
-    //contains a group of controls all GUIs (ie screens/forms/views)
-    //can be guaranteed to have. Implementation is already provided within the winforms
-    //controls by default, this interface just enables their invokation by presenters
+    //Components all GUIs (ie screens/forms/views) are guaranteed to have
+    //Implementation for most components promised here is provided by default within 
+    //System.Windows.Forms, this interface just enables their invokation by presenters
     public interface IGUI
     {
+        //Existing WinForm components
         string Text { get; set; } //Title of the form window
         bool Visible { get; set; }
         void Hide();
