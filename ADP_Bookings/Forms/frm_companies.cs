@@ -101,7 +101,7 @@ namespace ADP_Bookings.Forms
         //  and attach a delegate which will update a bool within the presenter. 
         //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
         //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseEventHandlers()
+        void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
         {            
             EventHandler handler = new EventHandler(delegate { presenter.CurrentCompanyEdited = true; });
             txt_CompanyID.TextChanged += handler;

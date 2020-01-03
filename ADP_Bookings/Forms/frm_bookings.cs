@@ -60,17 +60,18 @@ namespace ADP_Bookings.Forms
         public frm_bookings(Department department)
         {
             InitializeComponent();
-            //Define groups of controls
             InitialiseControlGroups();
-
-            //Assign presenter
+            InitialiseEventHandlers();
             presenter = new BookingPresenter(this, department);
         }
-
-        public void Register(BookingPresenter presenter) => this.presenter = presenter;
-
         private void frm_bookings_Load(object sender, EventArgs e) { /* */ }
 
+        //Used by presenter to register itself once succesfully constructed
+        public void Register(BookingPresenter presenter) => this.presenter = presenter;
+                
+        //Control groups allow for mass-enabling/disabling of form controls
+        //This prevents unauthorised editing and helps focus user attention
+        //Long-winded, slightly ugly, but very useful!
         void InitialiseControlGroups()
         {
             //Controls relating to the full booking list display (left hand side)
@@ -104,7 +105,7 @@ namespace ADP_Bookings.Forms
         //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
         //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
         //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseEventHandlers()
+        void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
         {
             EventHandler handler = new EventHandler(delegate { presenter.CurrentBookingEdited = true; });
             txt_BookingID.TextChanged += handler;
