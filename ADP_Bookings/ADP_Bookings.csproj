@@ -90,6 +90,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\frm_activities.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frm_activities.Designer.cs">
+      <DependentUpon>frm_activities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frm_bookings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -142,6 +148,9 @@
     <Compile Include="Views\ICompanyGUI.cs" />
     <Compile Include="Views\IDepartmentGUI.cs" />
     <Compile Include="Views\IGUI.cs" />
+    <EmbeddedResource Include="Forms\frm_activities.resx">
+      <DependentUpon>frm_activities.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frm_bookings.resx">
       <DependentUpon>frm_bookings.cs</DependentUpon>
     </EmbeddedResource>

@@ -116,9 +116,14 @@ namespace ADP_Bookings.Presenters
 
         void EditActivities()
         {
-            /*
-             *
-             */
+            screen.Hide();
+            new Forms.frm_activities(selectedBooking).ShowDialog();
+            //NOTE: ShowDialog() means the below code won't resume until above form is closed
+
+            //Force reload to reflect any changes made in other form(s)
+            LoadBookingList();
+            LoadBooking(selectedBooking);
+            screen.Show();
         }
 
         //Uses ID of the last entry in the list to predict the booking's ID when saved
