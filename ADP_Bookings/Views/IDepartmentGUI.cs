@@ -17,7 +17,5 @@ namespace ADP_Bookings.Views
         bool CurrentDepartment_Enabled { get; set; }
 
         void Register(Presenters.DepartmentPresenter presenter);
-
-        int GetSelectedDepartmentIndex();
     }    
 }

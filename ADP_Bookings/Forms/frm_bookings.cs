@@ -107,7 +107,7 @@ namespace ADP_Bookings.Forms
         //NOTE: Only the presenter itself should reset this to false.
         void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
         {
-            EventHandler handler = new EventHandler(delegate { presenter.CurrentBookingEdited = true; });
+            EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_BookingID.TextChanged += handler;
             txt_BookingName.TextChanged += handler;
             dtp_BookingDate.TextChanged += handler;
@@ -115,22 +115,24 @@ namespace ADP_Bookings.Forms
             nud_BookingCost.ValueChanged += handler;
         }
 
-        public int GetSelectedBookingIndex() => lvw_Bookings.SelectedIndices[0];
+        int[] GetSelectedIndices() => lvw_Bookings.SelectedIndices.Cast<int>().ToArray();
+        int GetSelectedBookingIndex() => GetSelectedIndices()[0];
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
         // Bookings List - new item selected
-        private void lvw_Bookings_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            presenter.lvw_Bookings_SelectedIndexChanged(lvw_Bookings.SelectedIndices.Cast<int>().ToArray());
-        }
+        private void lvw_Bookings_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_Bookings_SelectedIndexChanged(GetSelectedIndices());
 
         // Buttons
         private void btn_AddBooking_Click(object sender, EventArgs e) => presenter.btn_AddBooking_Click();
+        private void btn_DeleteBooking_Click(object sender, EventArgs e) => presenter.btn_DeleteBooking_Click();
         private void btn_EditActivities_Click(object sender, EventArgs e) => presenter.btn_EditActivities_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
-        private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();        
+        private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
+
+        // Form is being closed
+        private void frm_bookings_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_bookings_FormClosing(e);
     }
 }

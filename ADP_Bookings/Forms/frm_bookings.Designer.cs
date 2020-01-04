@@ -56,6 +56,7 @@
             this.btn_EditBookings = new System.Windows.Forms.Button();
             this.lbl_BookingCost = new System.Windows.Forms.Label();
             this.nud_BookingCost = new System.Windows.Forms.NumericUpDown();
+            this.btn_DeleteBooking = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nud_BookingCost)).BeginInit();
             this.SuspendLayout();
             // 
@@ -76,6 +77,7 @@
             this.lvw_Bookings.TabIndex = 40;
             this.lvw_Bookings.UseCompatibleStateImageBehavior = false;
             this.lvw_Bookings.View = System.Windows.Forms.View.Details;
+            this.lvw_Bookings.SelectedIndexChanged += new System.EventHandler(this.lvw_Bookings_SelectedIndexChanged);
             // 
             // clm_BookingID
             // 
@@ -287,11 +289,22 @@
             this.nud_BookingCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nud_BookingCost.ThousandsSeparator = true;
             // 
+            // btn_DeleteBooking
+            // 
+            this.btn_DeleteBooking.Location = new System.Drawing.Point(12, 278);
+            this.btn_DeleteBooking.Name = "btn_DeleteBooking";
+            this.btn_DeleteBooking.Size = new System.Drawing.Size(128, 40);
+            this.btn_DeleteBooking.TabIndex = 50;
+            this.btn_DeleteBooking.Text = "Delete Booking";
+            this.btn_DeleteBooking.UseVisualStyleBackColor = true;
+            this.btn_DeleteBooking.Click += new System.EventHandler(this.btn_DeleteBooking_Click);
+            // 
             // frm_bookings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.btn_DeleteBooking);
             this.Controls.Add(this.nud_BookingCost);
             this.Controls.Add(this.lbl_BookingCost);
             this.Controls.Add(this.btn_EditBookings);
@@ -312,6 +325,7 @@
             this.Controls.Add(this.txt_BookingName);
             this.Name = "frm_bookings";
             this.Text = "ADP > Companies > Departments > Bookings";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frm_bookings_FormClosing);
             this.Load += new System.EventHandler(this.frm_bookings_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nud_BookingCost)).EndInit();
             this.ResumeLayout(false);
@@ -349,5 +363,6 @@
         private System.Windows.Forms.ColumnHeader clm_ActivityNotes;
         private System.Windows.Forms.Label lbl_BookingCost;
         private System.Windows.Forms.NumericUpDown nud_BookingCost;
+        private System.Windows.Forms.Button btn_DeleteBooking;
     }
 }

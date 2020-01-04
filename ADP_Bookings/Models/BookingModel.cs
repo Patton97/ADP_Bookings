@@ -56,5 +56,14 @@ namespace ADP_Bookings.Models
                 unitOfWork.SaveChanges();
             }
         }
+
+        public static void DeleteBooking(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Bookings.Remove(unitOfWork.Bookings.Get(booking.BookingID));
+                unitOfWork.SaveChanges();
+            }
+        }
     }
 }

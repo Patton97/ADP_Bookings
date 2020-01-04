@@ -58,7 +58,7 @@ namespace ADP_Bookings.Forms
         {
             InitializeComponent();
             InitialiseControlGroups();
-            InitialiseEventHandlers();
+            InitialiseChangeTracker();
             presenter = new CompanyPresenter(this);            
         }
         private void frm_companies_Load(object sender, EventArgs e) { /**/ }
@@ -96,29 +96,28 @@ namespace ADP_Bookings.Forms
             };
         }
 
-        //To track if the user has begun to edit the open record,
-        //  we subscribe to their relevant events (TextChanged, CheckChanged, etc)
-        //  and attach a delegate which will update a bool within the presenter. 
-        //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
-        //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
+        // To track if the user has begun to edit the open record,
+        //   we subscribe to their relevant events (TextChanged, CheckChanged, etc)
+        //   and attach a delegate which will update a bool within the presenter. 
+        // This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        // NOTE: Only the presenter itself should reset this to false.
+        void InitialiseChangeTracker()
         {            
-            EventHandler handler = new EventHandler(delegate { presenter.CurrentCompanyEdited = true; });
-            txt_CompanyID.TextChanged += handler;
-            txt_CompanyName.TextChanged += handler;
+            EventHandler tracker = new EventHandler(delegate { presenter.NewChangePending(); });
+            txt_CompanyID.TextChanged += tracker;
+            txt_CompanyName.TextChanged += tracker;
         }
 
-        public int GetSelectedCompanyIndex() => lvw_companies.SelectedIndices[0];
+        // Utility functions to retrieve currently selected list indices
+        int[] GetSelectedIndices() => lvw_companies.SelectedIndices.Cast<int>().ToArray();
+        int GetSelectedIndex() => GetSelectedIndices()[0];
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
         // Companies ListBox - lst_companies
-        private void lvw_companies_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            presenter.lvw_companies_SelectedIndexChanged(lvw_companies.SelectedIndices.Cast<int>().ToArray());
-        }
+        private void lvw_companies_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_companies_SelectedIndexChanged(GetSelectedIndices());
 
         // Buttons
         private void btn_AddCompany_Click(object sender, EventArgs e) => presenter.btn_AddCompany_Click();
@@ -126,5 +125,8 @@ namespace ADP_Bookings.Forms
         private void btn_EditDepartments_Click(object sender, EventArgs e) => presenter.btn_EditDepartments_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
         private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
+
+        //Form is being closed
+        private void frm_companies_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_companies_FormClosing(e);
     }
 }

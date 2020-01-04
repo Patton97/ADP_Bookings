@@ -12,21 +12,18 @@ using ADP_Bookings.Views;
 
 namespace ADP_Bookings.Presenters
 {
-    public class CompanyPresenter
+    public class CompanyPresenter : RecordPresenter<Company> 
     {
         ICompanyGUI screen; //view
-        List<Company> companies; //model
-        Company selectedCompany;
-        public bool CurrentCompanyEdited = false; //Has the user begun editing the record yet
 
-        public CompanyPresenter(ICompanyGUI screen)
+        public CompanyPresenter(ICompanyGUI screen) : base()
         {
             this.screen = screen;
             screen.Register(this);
             InitialiseForm();
         }
 
-        void InitialiseForm()
+        protected override void InitialiseForm()
         {
             //Assign title to form window
             screen.Text = "ADP > Companies";
@@ -45,8 +42,8 @@ namespace ADP_Bookings.Presenters
         void LoadCompanyList()
         {
             screen.CompanyList.Clear();
-            companies = GetAllCompanies();
-            foreach (Company c in companies)
+            records = GetAllCompanies();
+            foreach (Company c in records)
             {
                 ListViewItem lvi_company = new ListViewItem(c.CompanyID.ToString());
                 lvi_company.SubItems.Add(c.Name);
@@ -54,45 +51,35 @@ namespace ADP_Bookings.Presenters
             }
         }
 
-        void LoadCompany(Company selectedCompany)
+        protected override void LoadRecord(Company selectedRecord)
         {
-            this.selectedCompany = selectedCompany;
+            this.selectedRecord = selectedRecord;
 
             //Clear old data
-            ClearCurrentCompany();
+            ClearCurrentRecord();
 
             //Load in new data from selected company
             //Maybe switch from index to ID?
-            screen.CurrentCompanyID = selectedCompany.CompanyID.ToString();
-            screen.CurrentCompanyName = selectedCompany.Name;
+            screen.CurrentCompanyID = selectedRecord.CompanyID.ToString();
+            screen.CurrentCompanyName = selectedRecord.Name;
 
             //Load Departments
-            foreach (Department d in selectedCompany.Departments)
+            foreach (Department d in selectedRecord.Departments)
             {
                 ListViewItem lvi_department = new ListViewItem(d.DepartmentID.ToString());
                 lvi_department.SubItems.Add(d.Name);
                 screen.CurrentCompanyDepartments.Add(lvi_department);
             }
 
-            //Enabled user editing
+            //Enable user editing, reset tracking
             screen.CurrentCompany_Enabled = true;
-        }
-        void LoadNewCompany() => LoadCompany(new Company(0, ""));
-        
-        //Save company data back to database
-        void SaveCompany()
-        {
-            if (CompanyExists(selectedCompany))
-                UpdateCompany(new Company(int.Parse(screen.CurrentCompanyID), screen.CurrentCompanyName));
-            else
-                InsertNewCompany(new Company(int.Parse(screen.CurrentCompanyID), screen.CurrentCompanyName));
+            ChangesPending = false;
 
-            //Reload form components to reflect changes
-            ClearCurrentCompany();
-            LoadCompanyList();
         }
+        protected override void LoadNewRecord() => LoadRecord(new Company(0, ""));
 
-        void ClearCurrentCompany()
+        //Clear record (from screen) - local only, no DB operations
+        protected override void ClearCurrentRecord()
         {
             //Disable user editing
             screen.CurrentCompany_Enabled = false;
@@ -103,18 +90,55 @@ namespace ADP_Bookings.Presenters
             screen.CurrentCompanyDepartments.Clear();
             DisableCurrentCompanyDisplay();
             EnableCompanyListDisplay();
+
+            //Reset editing tracker
+            ChangesPending = false;
+        }
+        
+        protected override void DeleteRecord()
+        {
+            if (selectedRecord == null)
+            {
+                MessageBox.Show("No company selected.", "Cannot delete company", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                var confirmResult = MessageBox.Show("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    DeleteCompany(selectedRecord);
+
+                    //Reload form components to reflect changes
+                    ClearCurrentRecord();
+                    LoadCompanyList();
+                }
+            }
         }
 
         void EditDepartments()
         {
             screen.Hide();
-            new Forms.frm_departments(selectedCompany).ShowDialog();
+            new Forms.frm_departments(selectedRecord).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume until above form is closed
 
             //Force reload to reflect any changes made in other form(s)
             LoadCompanyList();
-            LoadCompany(selectedCompany);
-            screen.Show();            
+            LoadRecord(selectedRecord);
+            screen.Show();
+        }
+
+        //Save company data back to database
+        protected override void SaveRecord()
+        {
+            if (CompanyExists(selectedRecord))
+                UpdateCompany(new Company(int.Parse(screen.CurrentCompanyID), screen.CurrentCompanyName));
+            else
+                InsertNewCompany(new Company(int.Parse(screen.CurrentCompanyID), screen.CurrentCompanyName));
+
+            //Reload form components to reflect changes
+            ClearCurrentRecord();
+            LoadCompanyList();
         }
 
         //Control group toggling
@@ -124,83 +148,22 @@ namespace ADP_Bookings.Presenters
         //Current Company Display
         void EnableCurrentCompanyDisplay() => screen.CurrentCompany_Enabled = true;
         void DisableCurrentCompanyDisplay() => screen.CurrentCompany_Enabled = false;
-        
+
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
-        // Companies ListBox - lst_companies
-        public void lvw_companies_SelectedIndexChanged(int[] selectedIndices)
-        {
-            //First, check if company is currently being edited
-            if(screen.CurrentCompany_Enabled)
-            {
-                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                    SaveCompany();
-                else if (confirmResult == DialogResult.No)
-                    ClearCurrentCompany();
-                else if (confirmResult == DialogResult.Cancel)
-                    return; //Exit function, resume previous behaviour
-            }
-            //If code reaches this point, no company is currently being edited
-
-            //When using ListView with FullRowSelect, if the user changes rows
-            //the list view first deselects the old row, then selects the new row
-            //Therefore, we ignore the first 'dud' call where no rows are selected
-            if (selectedIndices.Length <= 0)
-                return; //Exit function, resume previous behaviour
-
-            //ListView also allows for multiple row selection. 
-            //If this is the case, the company details display is wiped to avoid ambiguity
-            if (selectedIndices.Length > 1)
-                ClearCurrentCompany();
-            else
-                LoadCompany(companies[selectedIndices[0]]);
-        }
+        // Companies ListBox - lst_records
+        public void lvw_companies_SelectedIndexChanged(int[] selectedIndices) => SelectRecord(selectedIndices);
 
         // Buttons
-        public void btn_AddCompany_Click()
-        {
-            //If a company is already being edited
-            if(screen.CurrentCompany_Enabled)
-            {
-                var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                    LoadNewCompany();
-            }
-            //else, do nothing (continue previous behaviour)
-        }
-
-        public void btn_DeleteCompany_Click()
-        {
-            if(selectedCompany == null)
-            {
-                MessageBox.Show("No company selected.","Cannot delete company", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                var confirmResult = MessageBox.Show("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
-                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                {
-                    DeleteCompany(selectedCompany);
-
-                    //Reload form components to reflect changes
-                    ClearCurrentCompany();
-                    LoadCompanyList();
-                }
-            }            
-        }
-
+        public void btn_AddCompany_Click() => AddRecord();
+        public void btn_DeleteCompany_Click() => DeleteRecord();
         public void btn_EditDepartments_Click() => EditDepartments();
-        public void btn_ConfirmChanges_Click() => SaveCompany();
-        public void btn_CancelChanges_Click()
-        {
-            var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (confirmResult == DialogResult.Yes)
-                ClearCurrentCompany();
-            //else, do nothing (continue previous behaviour)
-        }        
+        public void btn_ConfirmChanges_Click() => SaveRecord();
+        public void btn_CancelChanges_Click() => CancelChanges();
+
+        // Form is being closed
+        public void frm_companies_FormClosing(FormClosingEventArgs e) => CloseForm(e);
     }
 }

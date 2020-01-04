@@ -18,7 +18,5 @@ namespace ADP_Bookings.Views
         bool CurrentBooking_Enabled { get; set; }
 
         void Register(Presenters.BookingPresenter presenter);
-
-        int GetSelectedBookingIndex();
     }
 }

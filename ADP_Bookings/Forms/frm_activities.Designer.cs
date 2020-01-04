@@ -29,10 +29,9 @@
         private void InitializeComponent()
         {
             this.nud_ActivityCost = new System.Windows.Forms.NumericUpDown();
-            this.lbl_BookingCost = new System.Windows.Forms.Label();
-            this.btn_EditActivities = new System.Windows.Forms.Button();
+            this.lbl_ActivityCost = new System.Windows.Forms.Label();
             this.lbl_divider = new System.Windows.Forms.Label();
-            this.lvw_ActivityList = new System.Windows.Forms.ListView();
+            this.lvw_Activities = new System.Windows.Forms.ListView();
             this.clm_ActivityID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_ActivityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_ActivityCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -48,6 +47,7 @@
             this.lbl_ActivityName = new System.Windows.Forms.Label();
             this.txt_ActivityName = new System.Windows.Forms.TextBox();
             this.rtx_ActivityNotes = new System.Windows.Forms.RichTextBox();
+            this.clm_ActivityChosen = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.nud_ActivityCost)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,23 +66,14 @@
             this.nud_ActivityCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nud_ActivityCost.ThousandsSeparator = true;
             // 
-            // lbl_BookingCost
+            // lbl_ActivityCost
             // 
-            this.lbl_BookingCost.AutoSize = true;
-            this.lbl_BookingCost.Location = new System.Drawing.Point(610, 78);
-            this.lbl_BookingCost.Name = "lbl_BookingCost";
-            this.lbl_BookingCost.Size = new System.Drawing.Size(68, 13);
-            this.lbl_BookingCost.TabIndex = 66;
-            this.lbl_BookingCost.Text = "Activity Cost:";
-            // 
-            // btn_EditActivities
-            // 
-            this.btn_EditActivities.Location = new System.Drawing.Point(411, 241);
-            this.btn_EditActivities.Name = "btn_EditActivities";
-            this.btn_EditActivities.Size = new System.Drawing.Size(377, 25);
-            this.btn_EditActivities.TabIndex = 65;
-            this.btn_EditActivities.Text = "Edit Activities";
-            this.btn_EditActivities.UseVisualStyleBackColor = true;
+            this.lbl_ActivityCost.AutoSize = true;
+            this.lbl_ActivityCost.Location = new System.Drawing.Point(610, 78);
+            this.lbl_ActivityCost.Name = "lbl_ActivityCost";
+            this.lbl_ActivityCost.Size = new System.Drawing.Size(68, 13);
+            this.lbl_ActivityCost.TabIndex = 66;
+            this.lbl_ActivityCost.Text = "Activity Cost:";
             // 
             // lbl_divider
             // 
@@ -92,20 +83,24 @@
             this.lbl_divider.Size = new System.Drawing.Size(2, 300);
             this.lbl_divider.TabIndex = 64;
             // 
-            // lvw_ActivityList
+            // lvw_Activities
             // 
-            this.lvw_ActivityList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lvw_Activities.CheckBoxes = true;
+            this.lvw_Activities.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clm_ActivityChosen,
             this.clm_ActivityID,
             this.clm_ActivityName,
             this.clm_ActivityCost,
             this.clm_ActivityNotes});
-            this.lvw_ActivityList.HideSelection = false;
-            this.lvw_ActivityList.Location = new System.Drawing.Point(12, 37);
-            this.lvw_ActivityList.Name = "lvw_ActivityList";
-            this.lvw_ActivityList.Size = new System.Drawing.Size(339, 235);
-            this.lvw_ActivityList.TabIndex = 60;
-            this.lvw_ActivityList.UseCompatibleStateImageBehavior = false;
-            this.lvw_ActivityList.View = System.Windows.Forms.View.Details;
+            this.lvw_Activities.FullRowSelect = true;
+            this.lvw_Activities.HideSelection = false;
+            this.lvw_Activities.Location = new System.Drawing.Point(12, 37);
+            this.lvw_Activities.Name = "lvw_Activities";
+            this.lvw_Activities.Size = new System.Drawing.Size(339, 235);
+            this.lvw_Activities.TabIndex = 60;
+            this.lvw_Activities.UseCompatibleStateImageBehavior = false;
+            this.lvw_Activities.View = System.Windows.Forms.View.Details;
+            this.lvw_Activities.SelectedIndexChanged += new System.EventHandler(this.lvw_Activities_SelectedIndexChanged);
             // 
             // clm_ActivityID
             // 
@@ -123,7 +118,7 @@
             // clm_ActivityNotes
             // 
             this.clm_ActivityNotes.Text = "Notes";
-            this.clm_ActivityNotes.Width = 190;
+            this.clm_ActivityNotes.Width = 130;
             // 
             // btn_AddActivity
             // 
@@ -133,6 +128,7 @@
             this.btn_AddActivity.TabIndex = 59;
             this.btn_AddActivity.Text = "Add New Activity";
             this.btn_AddActivity.UseVisualStyleBackColor = true;
+            this.btn_AddActivity.Click += new System.EventHandler(this.btn_AddActivity_Click);
             // 
             // lbl_Activities
             // 
@@ -161,6 +157,7 @@
             this.btn_ConfirmChanges.TabIndex = 56;
             this.btn_ConfirmChanges.Text = "Confirm";
             this.btn_ConfirmChanges.UseVisualStyleBackColor = true;
+            this.btn_ConfirmChanges.Click += new System.EventHandler(this.btn_ConfirmChanges_Click);
             // 
             // btn_CancelChanges
             // 
@@ -170,6 +167,7 @@
             this.btn_CancelChanges.TabIndex = 55;
             this.btn_CancelChanges.Text = "Cancel";
             this.btn_CancelChanges.UseVisualStyleBackColor = true;
+            this.btn_CancelChanges.Click += new System.EventHandler(this.btn_CancelChanges_Click);
             // 
             // lbl_EditActivity
             // 
@@ -218,9 +216,13 @@
             // 
             this.rtx_ActivityNotes.Location = new System.Drawing.Point(411, 119);
             this.rtx_ActivityNotes.Name = "rtx_ActivityNotes";
-            this.rtx_ActivityNotes.Size = new System.Drawing.Size(377, 116);
+            this.rtx_ActivityNotes.Size = new System.Drawing.Size(377, 152);
             this.rtx_ActivityNotes.TabIndex = 68;
             this.rtx_ActivityNotes.Text = "";
+            // 
+            // clm_ActivityChosen
+            // 
+            this.clm_ActivityChosen.Text = "Chosen";
             // 
             // frm_activities
             // 
@@ -229,10 +231,9 @@
             this.ClientSize = new System.Drawing.Size(800, 330);
             this.Controls.Add(this.rtx_ActivityNotes);
             this.Controls.Add(this.nud_ActivityCost);
-            this.Controls.Add(this.lbl_BookingCost);
-            this.Controls.Add(this.btn_EditActivities);
+            this.Controls.Add(this.lbl_ActivityCost);
             this.Controls.Add(this.lbl_divider);
-            this.Controls.Add(this.lvw_ActivityList);
+            this.Controls.Add(this.lvw_Activities);
             this.Controls.Add(this.btn_AddActivity);
             this.Controls.Add(this.lbl_Activities);
             this.Controls.Add(this.lbl_ActivityNotes);
@@ -245,6 +246,8 @@
             this.Controls.Add(this.txt_ActivityName);
             this.Name = "frm_activities";
             this.Text = "frm_activities";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frm_activities_FormClosing);
+            this.Load += new System.EventHandler(this.frm_activities_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nud_ActivityCost)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -254,10 +257,9 @@
         #endregion
 
         private System.Windows.Forms.NumericUpDown nud_ActivityCost;
-        private System.Windows.Forms.Label lbl_BookingCost;
-        private System.Windows.Forms.Button btn_EditActivities;
+        private System.Windows.Forms.Label lbl_ActivityCost;
         private System.Windows.Forms.Label lbl_divider;
-        private System.Windows.Forms.ListView lvw_ActivityList;
+        private System.Windows.Forms.ListView lvw_Activities;
         private System.Windows.Forms.ColumnHeader clm_ActivityID;
         private System.Windows.Forms.ColumnHeader clm_ActivityName;
         private System.Windows.Forms.ColumnHeader clm_ActivityCost;
@@ -273,5 +275,6 @@
         private System.Windows.Forms.Label lbl_ActivityName;
         private System.Windows.Forms.TextBox txt_ActivityName;
         private System.Windows.Forms.RichTextBox rtx_ActivityNotes;
+        private System.Windows.Forms.ColumnHeader clm_ActivityChosen;
     }
 }

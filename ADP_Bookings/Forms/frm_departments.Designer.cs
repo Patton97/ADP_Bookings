@@ -260,6 +260,7 @@
             this.Controls.Add(this.txt_DepartmentName);
             this.Name = "frm_departments";
             this.Text = "ADP > Companies > Departments";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frm_departments_FormClosing);
             this.Load += new System.EventHandler(this.frm_departments_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

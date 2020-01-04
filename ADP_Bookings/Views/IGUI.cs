@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using ADP_Bookings.Presenters;
+
 namespace ADP_Bookings.Views
 {
     //Components all GUIs (ie screens/forms/views) are guaranteed to have
@@ -16,5 +18,6 @@ namespace ADP_Bookings.Views
         bool Visible { get; set; }
         void Hide();
         void Show();
+        //void Register(Presenter presenter);
     }
 }

@@ -60,7 +60,7 @@ namespace ADP_Bookings.Forms
 
             //Define groups of controls
             InitialiseControlGroups();
-
+            InitialiseChangeTracker();
             //Assign presenter
             presenter = new DepartmentPresenter(this, company);
         }
@@ -102,9 +102,9 @@ namespace ADP_Bookings.Forms
         //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
         //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
         //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
+        void InitialiseChangeTracker() //Admittedly poor function name, can't think of anything better
         {
-            EventHandler handler = new EventHandler(delegate { presenter.CurrentDepartmentEdited = true; });
+            EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_DepartmentID.TextChanged += handler;
             txt_DepartmentName.TextChanged += handler;
         }
@@ -127,5 +127,8 @@ namespace ADP_Bookings.Forms
         private void btn_EditBookings_Click(object sender, EventArgs e) => presenter.btn_EditBookings_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
         private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
+
+        // Form is being closed
+        private void frm_departments_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_departments_FormClosing(e);
     }
 }

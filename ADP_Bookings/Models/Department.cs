@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using ADP_Bookings.Models;
+
 namespace ADP_Bookings
 {
-    public class Department
+    public class Department : IRecord
     {
         public Department()
         {

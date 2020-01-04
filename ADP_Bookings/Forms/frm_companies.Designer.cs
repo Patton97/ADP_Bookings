@@ -235,6 +235,7 @@
             this.Controls.Add(this.txt_CompanyName);
             this.Name = "frm_companies";
             this.Text = "ADP > Companies";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frm_companies_FormClosing);
             this.Load += new System.EventHandler(this.frm_companies_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

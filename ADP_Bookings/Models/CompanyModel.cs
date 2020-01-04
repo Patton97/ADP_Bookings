@@ -8,6 +8,8 @@ namespace ADP_Bookings.Models
 {
     //Used as a store for all calls to the UoW from Presenter
     //static class because this solely acts as a window into the UoW
+    //NOTE: Not all functions here are necessarily used by the current application,
+    //      their inclusion is in anticipation of future development requirements
     static class CompanyModel
     {
         //Gets all companies in DB

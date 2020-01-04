@@ -12,13 +12,10 @@ using ADP_Bookings.Views;
 
 namespace ADP_Bookings.Presenters
 {
-    public class DepartmentPresenter
+    public class DepartmentPresenter : RecordPresenter<Department>
     {
         IDepartmentGUI screen; //view
-        List<Department> departments; //model
-        Department selectedDepartment;
         Company company; //The company the displayed departments belong to
-        public bool CurrentDepartmentEdited = false; //Has the user begun editing the record yet
 
         public DepartmentPresenter(IDepartmentGUI screen, Company company)
         {
@@ -28,7 +25,7 @@ namespace ADP_Bookings.Presenters
             InitialiseForm();
         }
 
-        void InitialiseForm()
+        protected override void InitialiseForm()
         {
             //Assign title to form window
             screen.Text = "ADP > " + company.Name + " > Departments";
@@ -47,8 +44,8 @@ namespace ADP_Bookings.Presenters
         void LoadDepartmentList()
         {
             screen.DepartmentList.Clear();
-            departments = GetAllDepartmentsFrom(company);
-            foreach (Department d in departments)
+            records = GetAllDepartmentsFrom(company);
+            foreach (Department d in records)
             {
                 ListViewItem lvi_department = new ListViewItem(d.DepartmentID.ToString());
                 lvi_department.SubItems.Add(d.Name);
@@ -56,20 +53,20 @@ namespace ADP_Bookings.Presenters
             }
         }
 
-        void LoadDepartment(Department selectedDepartment)
+        protected override void LoadRecord(Department selectedRecord)
         {
-            this.selectedDepartment = selectedDepartment;
+            this.selectedRecord = selectedRecord;
 
             //Clear old data
-            ClearCurrentDepartment();
+            ClearCurrentRecord();
 
             //Load in new data from selected department
             //Maybe switch from index to ID?
-            screen.CurrentDepartmentID = selectedDepartment.DepartmentID.ToString();
-            screen.CurrentDepartmentName = selectedDepartment.Name;
+            screen.CurrentDepartmentID = selectedRecord.DepartmentID.ToString();
+            screen.CurrentDepartmentName = selectedRecord.Name;
 
-            //Load Bookings
-            foreach (Booking b in selectedDepartment.Bookings)
+            //Load Department's Bookings
+            foreach (Booking b in selectedRecord.Bookings)
             {
                 ListViewItem lvi_booking = new ListViewItem(b.BookingID.ToString());
                 lvi_booking.SubItems.Add(b.Name);
@@ -80,25 +77,14 @@ namespace ADP_Bookings.Presenters
                 screen.CurrentDepartmentBookings.Add(lvi_booking);
             }
 
-            //Enabled user editing
+            //Enabled user editing, reset tracking
             screen.CurrentDepartment_Enabled = true;
+            ChangesPending = false;
         }
-        void LoadNewDepartment() => LoadDepartment(new Department(0, "", company));
-
-        //Save company data back to database
-        void SaveDepartment()
-        {
-            if (DepartmentExists(selectedDepartment))
-                UpdateDepartment(new Department(int.Parse(screen.CurrentDepartmentID), screen.CurrentDepartmentName, company));
-            else
-                InsertNewDepartment(new Department(0, screen.CurrentDepartmentName, company));
-
-            //Reload form components to reflect changes
-            ClearCurrentDepartment();
-            LoadDepartmentList();
-        }
-
-        void ClearCurrentDepartment()
+        protected override void LoadNewRecord() => LoadRecord(new Department(0, "", company));
+        
+        //Clear record (from screen) - local only, no DB operations
+        protected override void ClearCurrentRecord()
         {
             //Disable user editing
             screen.CurrentDepartment_Enabled = false;
@@ -110,15 +96,50 @@ namespace ADP_Bookings.Presenters
             DisableCurrentDepartmentDisplay();
         }
 
+        //Save department record back to database
+        protected override void SaveRecord()
+        {
+            if (DepartmentExists(selectedRecord))
+                UpdateDepartment(new Department(int.Parse(screen.CurrentDepartmentID), screen.CurrentDepartmentName, company));
+            else
+                InsertNewDepartment(new Department(0, screen.CurrentDepartmentName, company));
+
+            //Reload form components to reflect changes
+            ClearCurrentRecord();
+            LoadDepartmentList();
+        }
+
+        protected override void DeleteRecord()
+        {
+            if (selectedRecord == null)
+            {
+                MessageBox.Show("No department selected.", "Cannot delete department", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                var confirmResult = MessageBox.Show("This department and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (confirmResult == DialogResult.Yes)
+                {
+                    DeleteDepartment(selectedRecord);
+
+                    //Reload form components to reflect changes
+                    ClearCurrentRecord();
+                    LoadDepartmentList();
+                }
+            }
+        }
+
+        //Edit this department's bookings
         void EditBookings()
         {
             screen.Hide();
-            new Forms.frm_bookings(selectedDepartment).ShowDialog();
+            new Forms.frm_bookings(selectedRecord).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume until above form is closed
 
             //Force reload to reflect any changes made in other form(s)
             LoadDepartmentList();
-            LoadDepartment(selectedDepartment);
+            LoadRecord(selectedRecord);
             screen.Show();
         }
 
@@ -135,78 +156,16 @@ namespace ADP_Bookings.Presenters
         // ********************************************************************************        
 
         // Companies ListBox - lst_companies
-        public void lvw_Departments_SelectedIndexChanged(int[] selectedIndices)
-        {
-            //First, check if department is currently being edited
-            if (screen.CurrentDepartment_Enabled)
-            {
-                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                    SaveDepartment();
-                else if (confirmResult == DialogResult.No)
-                    ClearCurrentDepartment();
-                else if (confirmResult == DialogResult.Cancel)
-                    return; //Exit function, resume previous behaviour
-            }
-            //If code reaches this point, no department is currently being edited
-
-            //When using ListView with FullRowSelect, if the user changes rows
-            //the list view first deselects the old row, then selects the new row
-            //Therefore, we ignore the first 'dud' call where no rows are selected
-            if (selectedIndices.Length <= 0)
-                return; //Exit function, resume previous behaviour
-
-            //ListView also allows for multiple row selection. 
-            //If this is the case, the company details display is wiped to avoid ambiguity
-            if (selectedIndices.Length > 1)
-                ClearCurrentDepartment();
-            else
-                LoadDepartment(departments[selectedIndices[0]]);
-        }
+        public void lvw_Departments_SelectedIndexChanged(int[] selectedIndices) => SelectRecord(selectedIndices);
 
         // Buttons
-        public void btn_AddDepartment_Click()
-        {
-            //If a company is already being edited
-            if (screen.CurrentDepartment_Enabled)
-            {
-                var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo);
-                if (confirmResult == DialogResult.Yes)
-                    LoadNewDepartment();
-            }
-            //else, do nothing (continue previous behaviour)
-        }
-
-        public void btn_DeleteDepartment_Click()
-        {
-            if (selectedDepartment == null)
-            {
-                MessageBox.Show("No department selected.", "Cannot delete department", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else
-            {
-                var confirmResult = MessageBox.Show("This department and all associated records will be permenantly deleted.\nThis cannot be undone!",
-                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                {
-                    DeleteDepartment(selectedDepartment);
-
-                    //Reload form components to reflect changes
-                    ClearCurrentDepartment();
-                    LoadDepartmentList();
-                }
-            }
-        }
-
+        public void btn_AddDepartment_Click() => AddRecord();
+        public void btn_DeleteDepartment_Click() => DeleteRecord();
         public void btn_EditBookings_Click() => EditBookings();
-        public void btn_ConfirmChanges_Click() => SaveDepartment();
-        public void btn_CancelChanges_Click()
-        {
-            var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo);
-            if (confirmResult == DialogResult.Yes)
-                ClearCurrentDepartment();
-            //else, do nothing (continue previous behaviour)
-        }
+        public void btn_ConfirmChanges_Click() => SaveRecord();
+        public void btn_CancelChanges_Click() => CancelChanges();
 
+        // Form is being closed
+        public void frm_departments_FormClosing(FormClosingEventArgs e) => CloseForm(e);
     }
 }

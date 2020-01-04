@@ -18,6 +18,5 @@ namespace ADP_Bookings.Views
 
         void Register(Presenters.CompanyPresenter presenter);
 
-        int GetSelectedCompanyIndex();
     }
 }
