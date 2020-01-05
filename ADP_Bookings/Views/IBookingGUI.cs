@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ADP_Bookings.Views
 {
-    public interface IBookingGUI : IGUI
+    public interface IBookingGUI : IRecordGUI
     {
         string CurrentBookingID { get; set; }
         string CurrentBookingName { get; set; }

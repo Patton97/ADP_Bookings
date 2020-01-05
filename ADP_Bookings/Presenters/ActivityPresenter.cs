@@ -71,8 +71,9 @@ namespace ADP_Bookings.Presenters
             screen.CurrentActivityCost = decimal.Parse(selectedRecord.Cost.ToString());
             screen.CurrentActivityNotes = selectedRecord.Notes;
 
-            //Enable user editing
+            //Enable user editing, reset tracker
             screen.CurrentActivity_Enabled = true;
+            ChangesPending = false;
         }
         protected override void LoadNewRecord() => LoadRecord(new Activity(0, "", 0, ""));
 
@@ -105,6 +106,9 @@ namespace ADP_Bookings.Presenters
             screen.CurrentActivityCost = 0;
             screen.CurrentActivityNotes = "";
             DisableCurrentActivityDisplay();
+
+            //Reset editing tracker
+            ChangesPending = false;
         }
 
         protected override void DeleteRecord()
@@ -112,19 +116,18 @@ namespace ADP_Bookings.Presenters
             if (selectedRecord == null)
             {
                 MessageBox.Show("No booking selected.", "Cannot delete booking", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                var confirmResult = MessageBox.Show("This activity will be deleted and removed from all bookings.\nThis cannot be undone!",
-                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                {
-                    DeleteActivity(selectedRecord);
 
-                    //Reload form components to reflect changes
-                    ClearCurrentRecord();
-                    LoadActivityList();
-                }
+            var confirmResult = MessageBox.Show("This activity will be deleted and removed from all bookings.\nThis cannot be undone!",
+                                                "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirmResult == DialogResult.Yes)
+            {
+                DeleteActivity(selectedRecord);
+
+                //Reload form components to reflect changes
+                ClearCurrentRecord();
+                LoadActivityList();
             }
         }
 
@@ -136,6 +139,20 @@ namespace ADP_Bookings.Presenters
         void EnableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = true;
         void DisableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = false;
 
+        //This function is specific to Activity as it (currently) is the only 
+        //disconnected table, where updates to other records need to be sent backwards
+        //As such, it looks out of place and slightly breaks the structure of the program
+        void UpdateBooking()
+        {
+            List<Activity> chosenActivities = new List<Activity>();
+            foreach(int i in screen.GetChosenActivities())
+            {
+                chosenActivities.Add(records[i]);
+            }
+            booking.Activities = chosenActivities;
+            BookingModel.UpdateBooking(booking);
+        }
+
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
@@ -145,6 +162,7 @@ namespace ADP_Bookings.Presenters
 
         // Buttons
         public void btn_AddActivity_Click() => AddRecord();
+        public void btn_UpdateBooking_Click() => UpdateBooking();
         public void btn_DeleteActivity_Click() => DeleteRecord();
         public void btn_ConfirmChanges_Click() => SaveRecord();
         public void btn_CancelChanges_Click() => CancelChanges();

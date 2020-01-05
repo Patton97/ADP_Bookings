@@ -55,13 +55,11 @@ namespace ADP_Bookings.Presenters
 
         protected override void LoadRecord(Department selectedRecord)
         {
-            this.selectedRecord = selectedRecord;
-
             //Clear old data
             ClearCurrentRecord();
 
             //Load in new data from selected department
-            //Maybe switch from index to ID?
+            this.selectedRecord = selectedRecord;
             screen.CurrentDepartmentID = selectedRecord.DepartmentID.ToString();
             screen.CurrentDepartmentName = selectedRecord.Name;
 
@@ -87,13 +85,15 @@ namespace ADP_Bookings.Presenters
         protected override void ClearCurrentRecord()
         {
             //Disable user editing
-            screen.CurrentDepartment_Enabled = false;
+            DisableCurrentDepartmentDisplay();
 
-            //selectedCompany = null;
+            selectedRecord = null;
             screen.CurrentDepartmentID = "";
             screen.CurrentDepartmentName = "";
             screen.CurrentDepartmentBookings.Clear();
-            DisableCurrentDepartmentDisplay();
+
+            //Reset editing tracker
+            ChangesPending = false;
         }
 
         //Save department record back to database
@@ -133,13 +133,15 @@ namespace ADP_Bookings.Presenters
         //Edit this department's bookings
         void EditBookings()
         {
+            //Store selected index for reload when user returns to this form
+            int idx = screen.GetSelectedIndex();
             screen.Hide();
             new Forms.frm_bookings(selectedRecord).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume until above form is closed
 
-            //Force reload to reflect any changes made in other form(s)
+            //Force reload to reflect any changes made to DB in other form(s)
             LoadDepartmentList();
-            LoadRecord(selectedRecord);
+            LoadRecord(records[idx]);
             screen.Show();
         }
 

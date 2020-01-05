@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ADP_Bookings.Views
 {
-    public interface IActivityGUI : IGUI
+    public interface IActivityGUI : IRecordGUI
     {
         string CurrentActivityID { get; set; }
         string CurrentActivityName { get; set; }
@@ -19,6 +19,6 @@ namespace ADP_Bookings.Views
 
         void Register(Presenters.ActivityPresenter presenter);
 
-        int GetSelectedActivityIndex();
+        int[] GetChosenActivities();
     }
 }

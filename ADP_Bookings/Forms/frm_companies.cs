@@ -109,8 +109,8 @@ namespace ADP_Bookings.Forms
         }
 
         // Utility functions to retrieve currently selected list indices
-        int[] GetSelectedIndices() => lvw_companies.SelectedIndices.Cast<int>().ToArray();
-        int GetSelectedIndex() => GetSelectedIndices()[0];
+        public int[] GetSelectedIndices() => lvw_companies.SelectedIndices.Cast<int>().ToArray();
+        public int GetSelectedIndex() => GetSelectedIndices()[0];
 
         // ********************************************************************************
         // Event Handlers *****************************************************************

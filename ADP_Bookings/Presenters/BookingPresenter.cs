@@ -78,8 +78,9 @@ namespace ADP_Bookings.Presenters
                 screen.CurrentBookingActivities.Add(lvi_activity);
             }
 
-            //Enabled user editing
-            screen.CurrentBooking_Enabled = true;
+            //Enabled user editing, reset tracker
+            EnableCurrentBookingDisplay();
+            ChangesPending = false;
         }
         protected override void LoadNewRecord() => LoadRecord(new Booking(0, "", DateTime.Today, department));
 
@@ -107,6 +108,9 @@ namespace ADP_Bookings.Presenters
             screen.CurrentBookingDate = DateTime.Today;
             screen.CurrentBookingActivities.Clear();
             DisableCurrentBookingDisplay();
+
+            //Reset editing tracker
+            ChangesPending = false;
         }
 
         protected override void DeleteRecord()
@@ -133,13 +137,15 @@ namespace ADP_Bookings.Presenters
 
         void EditActivities()
         {
+            //Store selected index for reload when user returns to this form
+            int idx = screen.GetSelectedIndex();
             screen.Hide();
             new Forms.frm_activities(selectedRecord, screen.Text).ShowDialog();
-            //NOTE: ShowDialog() means the below code won't resume until above form is closed
+            //NOTE: ShowDialog() means the below code won't resume untidl above form is closed
 
-            //Force reload to reflect any changes made in other form(s)
+            //Force reload to reflect any changes made to DB in other form(s)
             LoadBookingList();
-            LoadRecord(selectedRecord);
+            LoadRecord(records[idx]);
             screen.Show();
         }
 

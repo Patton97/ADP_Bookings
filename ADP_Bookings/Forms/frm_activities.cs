@@ -62,7 +62,7 @@ namespace ADP_Bookings.Forms
             InitializeComponent();
             InitialiseControlGroups();
             InitialiseEventHandlers();
-            presenter = new ActivityPresenter(this, booking, userpath);
+            presenter = new ActivityPresenter(this, booking);
         }
 
         private void frm_activities_Load(object sender, EventArgs e) { /* */ }
@@ -107,31 +107,37 @@ namespace ADP_Bookings.Forms
         //NOTE: Only the presenter itself should reset this to false.
         void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
         {
-            EventHandler handler = new EventHandler(delegate { presenter.CurrentActivityEdited = true; });
+            EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_ActivityID.TextChanged += handler;
             txt_ActivityName.TextChanged += handler;
             nud_ActivityCost.ValueChanged += handler;
             rtx_ActivityNotes.TextChanged += handler;
         }
 
-        public int GetSelectedActivityIndex() => lvw_Activities.SelectedIndices[0];
+
+        public int[] GetSelectedIndices() => lvw_Activities.SelectedIndices.Cast<int>().ToArray();
+        public int GetSelectedIndex() => GetSelectedIndices()[0];
+
+        //This function is specific to Activity as it (currently) is the only 
+        //disconnected table, where updates to other records need to be sent backwards
+        //As such, it looks out of place and slightly breaks the structure of the program
+        public int[] GetChosenActivities() => lvw_Activities.CheckedIndices.Cast<int>().ToArray();
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
         // Activity List - new item selected
-        private void lvw_Activities_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            presenter.lvw_Activities_SelectedIndexChanged(lvw_Activities.SelectedIndices.Cast<int>().ToArray());
-        }
+        private void lvw_Activities_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_Activities_SelectedIndexChanged(GetSelectedIndices());
 
-        //Buttons
+        // Buttons
         private void btn_AddActivity_Click(object sender, EventArgs e) => presenter.btn_AddActivity_Click();
+        private void btn_UpdateBooking_Click(object sender, EventArgs e) => presenter.btn_UpdateBooking_Click();
         //DeleteButton goes here
         private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
 
-        //If the form is being closed
+        // If the form is being closed
         private void frm_activities_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_activities_FormClosing(e);
+
     }
 }

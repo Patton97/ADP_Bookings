@@ -81,10 +81,13 @@ namespace ADP_Bookings.Presenters
             if (ChangesPending)
             {
                 var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
+                if (confirmResult == DialogResult.No)
                     ClearCurrentRecord();
             }
-            //else, do nothing (continue previous behaviour)
+
+            //If code reaches this point,  either no changes
+            //are pending or user has agreed to discard them
+            ClearCurrentRecord();
         }
 
         //Called whenever the user selects a new record from the list

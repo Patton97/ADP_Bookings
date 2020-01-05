@@ -32,6 +32,7 @@
             this.lbl_ActivityCost = new System.Windows.Forms.Label();
             this.lbl_divider = new System.Windows.Forms.Label();
             this.lvw_Activities = new System.Windows.Forms.ListView();
+            this.clm_ActivityChosen = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_ActivityID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_ActivityName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.clm_ActivityCost = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -47,7 +48,7 @@
             this.lbl_ActivityName = new System.Windows.Forms.Label();
             this.txt_ActivityName = new System.Windows.Forms.TextBox();
             this.rtx_ActivityNotes = new System.Windows.Forms.RichTextBox();
-            this.clm_ActivityChosen = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.btn_UpdateBooking = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nud_ActivityCost)).BeginInit();
             this.SuspendLayout();
             // 
@@ -96,11 +97,15 @@
             this.lvw_Activities.HideSelection = false;
             this.lvw_Activities.Location = new System.Drawing.Point(12, 37);
             this.lvw_Activities.Name = "lvw_Activities";
-            this.lvw_Activities.Size = new System.Drawing.Size(339, 235);
+            this.lvw_Activities.Size = new System.Drawing.Size(339, 203);
             this.lvw_Activities.TabIndex = 60;
             this.lvw_Activities.UseCompatibleStateImageBehavior = false;
             this.lvw_Activities.View = System.Windows.Forms.View.Details;
             this.lvw_Activities.SelectedIndexChanged += new System.EventHandler(this.lvw_Activities_SelectedIndexChanged);
+            // 
+            // clm_ActivityChosen
+            // 
+            this.clm_ActivityChosen.Text = "Chosen";
             // 
             // clm_ActivityID
             // 
@@ -220,15 +225,22 @@
             this.rtx_ActivityNotes.TabIndex = 68;
             this.rtx_ActivityNotes.Text = "";
             // 
-            // clm_ActivityChosen
+            // btn_UpdateBooking
             // 
-            this.clm_ActivityChosen.Text = "Chosen";
+            this.btn_UpdateBooking.Location = new System.Drawing.Point(12, 246);
+            this.btn_UpdateBooking.Name = "btn_UpdateBooking";
+            this.btn_UpdateBooking.Size = new System.Drawing.Size(339, 25);
+            this.btn_UpdateBooking.TabIndex = 69;
+            this.btn_UpdateBooking.Text = "Update Booking";
+            this.btn_UpdateBooking.UseVisualStyleBackColor = true;
+            this.btn_UpdateBooking.Click += new System.EventHandler(this.btn_UpdateBooking_Click);
             // 
             // frm_activities
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.btn_UpdateBooking);
             this.Controls.Add(this.rtx_ActivityNotes);
             this.Controls.Add(this.nud_ActivityCost);
             this.Controls.Add(this.lbl_ActivityCost);
@@ -276,5 +288,6 @@
         private System.Windows.Forms.TextBox txt_ActivityName;
         private System.Windows.Forms.RichTextBox rtx_ActivityNotes;
         private System.Windows.Forms.ColumnHeader clm_ActivityChosen;
+        private System.Windows.Forms.Button btn_UpdateBooking;
     }
 }

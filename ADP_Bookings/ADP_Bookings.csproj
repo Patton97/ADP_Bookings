@@ -153,6 +153,7 @@
     <Compile Include="Views\ICompanyGUI.cs" />
     <Compile Include="Views\IDepartmentGUI.cs" />
     <Compile Include="Views\IGUI.cs" />
+    <Compile Include="Views\IRecordGUI.cs" />
     <EmbeddedResource Include="Forms\frm_activities.resx">
       <DependentUpon>frm_activities.cs</DependentUpon>
     </EmbeddedResource>

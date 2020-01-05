@@ -92,6 +92,7 @@ namespace ADP_Bookings.Forms
                 txt_DepartmentName,
                 lbl_DepartmentBookings,
                 lvw_DepartmentBookings,
+                btn_EditBookings,
                 btn_ConfirmChanges,
                 btn_CancelChanges
             };
@@ -109,17 +110,15 @@ namespace ADP_Bookings.Forms
             txt_DepartmentName.TextChanged += handler;
         }
 
-        public int GetSelectedDepartmentIndex() => lvw_Departments.SelectedIndices[0];
+        public int[] GetSelectedIndices() => lvw_Departments.SelectedIndices.Cast<int>().ToArray();
+        public int GetSelectedIndex() => GetSelectedIndices()[0];
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
         // Companies ListBox - lst_companies
-        private void lvw_Departments_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            presenter.lvw_Departments_SelectedIndexChanged(lvw_Departments.SelectedIndices.Cast<int>().ToArray());
-        }
+        private void lvw_Departments_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_Departments_SelectedIndexChanged(GetSelectedIndices());
 
         // Buttons
         private void btn_AddDepartment_Click(object sender, EventArgs e) => presenter.btn_AddDepartment_Click();

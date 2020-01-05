@@ -115,8 +115,8 @@ namespace ADP_Bookings.Forms
             nud_BookingCost.ValueChanged += handler;
         }
 
-        int[] GetSelectedIndices() => lvw_Bookings.SelectedIndices.Cast<int>().ToArray();
-        int GetSelectedBookingIndex() => GetSelectedIndices()[0];
+        public int[] GetSelectedIndices() => lvw_Bookings.SelectedIndices.Cast<int>().ToArray();
+        public int GetSelectedIndex() => GetSelectedIndices()[0];
 
         // ********************************************************************************
         // Event Handlers *****************************************************************

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ADP_Bookings.Views
 {
-    public interface ICompanyGUI : IGUI
+    public interface ICompanyGUI : IRecordGUI
     {
         string CurrentCompanyID { get; set; }
         string CurrentCompanyName { get; set; }
@@ -16,7 +16,6 @@ namespace ADP_Bookings.Views
         bool CompanyList_Enabled { get; set; }
         bool CurrentCompany_Enabled { get; set; }
 
-        void Register(Presenters.CompanyPresenter presenter);
-
+        void Register(Presenters.CompanyPresenter presenter);        
     }
 }

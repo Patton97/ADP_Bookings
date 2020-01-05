@@ -53,13 +53,11 @@ namespace ADP_Bookings.Presenters
 
         protected override void LoadRecord(Company selectedRecord)
         {
-            this.selectedRecord = selectedRecord;
-
             //Clear old data
             ClearCurrentRecord();
 
             //Load in new data from selected company
-            //Maybe switch from index to ID?
+            this.selectedRecord = selectedRecord;
             screen.CurrentCompanyID = selectedRecord.CompanyID.ToString();
             screen.CurrentCompanyName = selectedRecord.Name;
 
@@ -82,14 +80,12 @@ namespace ADP_Bookings.Presenters
         protected override void ClearCurrentRecord()
         {
             //Disable user editing
-            screen.CurrentCompany_Enabled = false;
+            DisableCurrentCompanyDisplay();
 
-            //selectedCompany = null;
+            selectedRecord = null;
             screen.CurrentCompanyID = "";
             screen.CurrentCompanyName = "";
             screen.CurrentCompanyDepartments.Clear();
-            DisableCurrentCompanyDisplay();
-            EnableCompanyListDisplay();
 
             //Reset editing tracker
             ChangesPending = false;
@@ -100,31 +96,32 @@ namespace ADP_Bookings.Presenters
             if (selectedRecord == null)
             {
                 MessageBox.Show("No company selected.", "Cannot delete company", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
-            {
-                var confirmResult = MessageBox.Show("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
-                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (confirmResult == DialogResult.Yes)
-                {
-                    DeleteCompany(selectedRecord);
 
-                    //Reload form components to reflect changes
-                    ClearCurrentRecord();
-                    LoadCompanyList();
-                }
+            var confirmResult = MessageBox.Show("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            if (confirmResult == DialogResult.Yes)
+            {
+                DeleteCompany(selectedRecord);
+
+                //Reload form components to reflect changes
+                ClearCurrentRecord();
+                LoadCompanyList();
             }
         }
 
         void EditDepartments()
         {
+            //Store selected index for reload when user returns to this form
+            int idx = screen.GetSelectedIndex();
             screen.Hide();
             new Forms.frm_departments(selectedRecord).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume until above form is closed
 
-            //Force reload to reflect any changes made in other form(s)
+            //Force reload to reflect any changes made to DB in other form(s)
             LoadCompanyList();
-            LoadRecord(selectedRecord);
+            LoadRecord(records[idx]);
             screen.Show();
         }
 
