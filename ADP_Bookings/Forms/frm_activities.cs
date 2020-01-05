@@ -61,7 +61,7 @@ namespace ADP_Bookings.Forms
         {
             InitializeComponent();
             InitialiseControlGroups();
-            InitialiseEventHandlers();
+            InitialiseChangeTracker();
             presenter = new ActivityPresenter(this, booking);
         }
 
@@ -81,12 +81,14 @@ namespace ADP_Bookings.Forms
                 lbl_Activities,
                 lvw_Activities,
                 btn_AddActivity,
-                //btn_DeleteActivity
+                btn_DeleteActivity,
+                btn_UpdateBooking
             };
 
             //Controls relating to the current activity display (right hand side)
             ctrls_CurrentActivity = new List<Control>()
             {
+                lbl_EditActivity,
                 lbl_ActivityID,
                 txt_ActivityID,
                 lbl_ActivityName,
@@ -104,8 +106,8 @@ namespace ADP_Bookings.Forms
         //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
         //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
         //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
-        //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
+        //NOTE: Only the presenter itself can reset this to false.
+        void InitialiseChangeTracker()
         {
             EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_ActivityID.TextChanged += handler;
@@ -117,6 +119,10 @@ namespace ADP_Bookings.Forms
 
         public int[] GetSelectedIndices() => lvw_Activities.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
+
+        // Allows presenter to manually override selected indices
+        public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_Activities.Items[index].Selected = true);
+        public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
         //This function is specific to Activity as it (currently) is the only 
         //disconnected table, where updates to other records need to be sent backwards
@@ -132,12 +138,13 @@ namespace ADP_Bookings.Forms
         // Buttons
         private void btn_AddActivity_Click(object sender, EventArgs e) => presenter.btn_AddActivity_Click();
         private void btn_UpdateBooking_Click(object sender, EventArgs e) => presenter.btn_UpdateBooking_Click();
-        //DeleteButton goes here
+        private void btn_DeleteActivity_Click(object sender, EventArgs e) => presenter.btn_DeleteActivity_Click();
         private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
         private void btn_ConfirmChanges_Click(object sender, EventArgs e) => presenter.btn_ConfirmChanges_Click();
 
         // If the form is being closed
         private void frm_activities_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_activities_FormClosing(e);
 
+        
     }
 }

@@ -45,7 +45,7 @@
             this.lbl_BookingActivities = new System.Windows.Forms.Label();
             this.btn_ConfirmChanges = new System.Windows.Forms.Button();
             this.btn_CancelChanges = new System.Windows.Forms.Button();
-            this.lbl_EditDepartment = new System.Windows.Forms.Label();
+            this.lbl_EditBooking = new System.Windows.Forms.Label();
             this.lbl_BookingID = new System.Windows.Forms.Label();
             this.txt_BookingID = new System.Windows.Forms.TextBox();
             this.lbl_BookingName = new System.Windows.Forms.Label();
@@ -187,15 +187,15 @@
             this.btn_CancelChanges.UseVisualStyleBackColor = true;
             this.btn_CancelChanges.Click += new System.EventHandler(this.btn_CancelChanges_Click);
             // 
-            // lbl_EditDepartment
+            // lbl_EditBooking
             // 
-            this.lbl_EditDepartment.AutoSize = true;
-            this.lbl_EditDepartment.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_EditDepartment.Location = new System.Drawing.Point(548, 17);
-            this.lbl_EditDepartment.Name = "lbl_EditDepartment";
-            this.lbl_EditDepartment.Size = new System.Drawing.Size(99, 17);
-            this.lbl_EditDepartment.TabIndex = 33;
-            this.lbl_EditDepartment.Text = "Edit Booking";
+            this.lbl_EditBooking.AutoSize = true;
+            this.lbl_EditBooking.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_EditBooking.Location = new System.Drawing.Point(548, 17);
+            this.lbl_EditBooking.Name = "lbl_EditBooking";
+            this.lbl_EditBooking.Size = new System.Drawing.Size(99, 17);
+            this.lbl_EditBooking.TabIndex = 33;
+            this.lbl_EditBooking.Text = "Edit Booking";
             // 
             // lbl_BookingID
             // 
@@ -318,7 +318,7 @@
             this.Controls.Add(this.lbl_BookingActivities);
             this.Controls.Add(this.btn_ConfirmChanges);
             this.Controls.Add(this.btn_CancelChanges);
-            this.Controls.Add(this.lbl_EditDepartment);
+            this.Controls.Add(this.lbl_EditBooking);
             this.Controls.Add(this.lbl_BookingID);
             this.Controls.Add(this.txt_BookingID);
             this.Controls.Add(this.lbl_BookingName);
@@ -346,7 +346,7 @@
         private System.Windows.Forms.Label lbl_BookingActivities;
         private System.Windows.Forms.Button btn_ConfirmChanges;
         private System.Windows.Forms.Button btn_CancelChanges;
-        private System.Windows.Forms.Label lbl_EditDepartment;
+        private System.Windows.Forms.Label lbl_EditBooking;
         private System.Windows.Forms.Label lbl_BookingID;
         private System.Windows.Forms.TextBox txt_BookingID;
         private System.Windows.Forms.Label lbl_BookingName;

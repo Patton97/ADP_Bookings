@@ -30,3 +30,4 @@ C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\bin\Debug\System.Securi
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csproj.CopyComplete
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.exe
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.pdb
+C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Migrations.Test.resources

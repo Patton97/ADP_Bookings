@@ -49,6 +49,7 @@
             this.txt_ActivityName = new System.Windows.Forms.TextBox();
             this.rtx_ActivityNotes = new System.Windows.Forms.RichTextBox();
             this.btn_UpdateBooking = new System.Windows.Forms.Button();
+            this.btn_DeleteActivity = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nud_ActivityCost)).BeginInit();
             this.SuspendLayout();
             // 
@@ -235,11 +236,22 @@
             this.btn_UpdateBooking.UseVisualStyleBackColor = true;
             this.btn_UpdateBooking.Click += new System.EventHandler(this.btn_UpdateBooking_Click);
             // 
+            // btn_DeleteActivity
+            // 
+            this.btn_DeleteActivity.Location = new System.Drawing.Point(12, 277);
+            this.btn_DeleteActivity.Name = "btn_DeleteActivity";
+            this.btn_DeleteActivity.Size = new System.Drawing.Size(128, 40);
+            this.btn_DeleteActivity.TabIndex = 70;
+            this.btn_DeleteActivity.Text = "Delete Activity";
+            this.btn_DeleteActivity.UseVisualStyleBackColor = true;
+            this.btn_DeleteActivity.Click += new System.EventHandler(this.btn_DeleteActivity_Click);
+            // 
             // frm_activities
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 330);
+            this.Controls.Add(this.btn_DeleteActivity);
             this.Controls.Add(this.btn_UpdateBooking);
             this.Controls.Add(this.rtx_ActivityNotes);
             this.Controls.Add(this.nud_ActivityCost);
@@ -289,5 +301,6 @@
         private System.Windows.Forms.RichTextBox rtx_ActivityNotes;
         private System.Windows.Forms.ColumnHeader clm_ActivityChosen;
         private System.Windows.Forms.Button btn_UpdateBooking;
+        private System.Windows.Forms.Button btn_DeleteActivity;
     }
 }

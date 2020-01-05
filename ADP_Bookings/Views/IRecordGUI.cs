@@ -10,5 +10,8 @@ namespace ADP_Bookings.Views
     {
         int[] GetSelectedIndices();
         int GetSelectedIndex();
+        
+        void SetSelectedIndices(int[] indices);
+        void SetSelectedIndex(int index);
     }
 }

@@ -46,11 +46,19 @@ namespace ADP_Bookings.Presenters
             {
                 //ActivityList works different to other windows - first column is a checkbox
                 //signfying whether the respective activity is part of the current booking
-                ListViewItem lvi_activity = new ListViewItem();
+                ListViewItem lvi_activity = new ListViewItem();                
                 lvi_activity.SubItems.Add(a.ActivityID.ToString());
                 lvi_activity.SubItems.Add(a.Name);
                 lvi_activity.SubItems.Add("£" + a.Cost.ToString());
                 lvi_activity.SubItems.Add(a.Notes);
+
+                //Additional cycle to check if activity is present in booking record FK
+                foreach (Activity activity in booking.Activities)
+                {
+                    if (activity.ActivityID == a.ActivityID)
+                        lvi_activity.Checked = true;
+                }
+
                 screen.ActivityList.Add(lvi_activity);
             }
         }
@@ -142,11 +150,23 @@ namespace ADP_Bookings.Presenters
         //As such, it looks out of place and slightly breaks the structure of the program
         void UpdateBooking()
         {
-            foreach(int i in screen.GetChosenActivities())
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
-                booking.Activities.Add(records[i].ActivityID);
+                List<Activity> activities = unitOfWork.Bookings.Get(booking.BookingID).Activities.ToList();
+                //First remove all activities from DB record
+                foreach(Activity a in activities)
+                {
+                    unitOfWork.Bookings.Get(booking.BookingID).Activities.Remove(a);
+                }
+                
+                //Then add new selection
+                foreach (int i in screen.GetChosenActivities())
+                {
+                    unitOfWork.Bookings.Get(booking.BookingID).Activities.Add(unitOfWork.Activities.Get(records[i].ActivityID));
+                }
+
+                unitOfWork.SaveChanges();
             }
-            BookingModel.UpdateBookingActivities(booking);
         }
 
         // ********************************************************************************

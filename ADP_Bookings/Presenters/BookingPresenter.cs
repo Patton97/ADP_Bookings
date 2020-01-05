@@ -66,7 +66,7 @@ namespace ADP_Bookings.Presenters
             screen.CurrentBookingCost = decimal.Parse(selectedRecord.EstimatedCost.ToString());
 
             //Load Activities
-            foreach (Activity a in GetAllActivitiesFrom(selectedRecord))
+            foreach (Activity a in selectedRecord.Activities)
             {
                 ListViewItem lvi_activity = new ListViewItem(a.ActivityID.ToString());
                 lvi_activity.SubItems.Add(a.Name);
@@ -150,6 +150,7 @@ namespace ADP_Bookings.Presenters
             //Force reload to reflect any changes made to DB in other form(s)
             LoadBookingList();
             LoadRecord(records[idx]);
+            screen.SetSelectedIndex(idx);
             screen.Show();
         }
 

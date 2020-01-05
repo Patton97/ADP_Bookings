@@ -118,6 +118,7 @@ namespace ADP_Bookings.Presenters
             //Force reload to reflect any changes made to DB in other form(s)
             LoadCompanyList();
             LoadRecord(records[idx]);
+            screen.SetSelectedIndex(idx);
             screen.Show();
         }
 

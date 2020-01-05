@@ -26,6 +26,14 @@ namespace ADP_Bookings.Models
             }
         }
 
+        public static List<Activity> GetAllActivitiesFrom(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Bookings.Get(booking.BookingID).Activities.ToList();
+            }
+        }
+
         public static Booking FindBooking(Booking booking)
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
@@ -76,18 +84,6 @@ namespace ADP_Bookings.Models
             }
         }
 
-        public static List<Activity> GetAllActivitiesFrom(Booking booking)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                List<Activity> activities = new List<Activity>();
-                foreach(int id in unitOfWork.Bookings.Get(booking.BookingID).Activities)
-                {
-                    activities.Add(unitOfWork.Activities.Get(id));                    
-                }
-                Console.WriteLine(activities.Count);
-                return activities;
-            }
-        }
+        
     }
 }

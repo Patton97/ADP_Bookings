@@ -102,8 +102,8 @@ namespace ADP_Bookings.Forms
         //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
         //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
         //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
-        //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseChangeTracker() //Admittedly poor function name, can't think of anything better
+        //NOTE: Only the presenter itself can reset this to false.
+        void InitialiseChangeTracker()
         {
             EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_DepartmentID.TextChanged += handler;
@@ -112,6 +112,17 @@ namespace ADP_Bookings.Forms
 
         public int[] GetSelectedIndices() => lvw_Departments.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
+
+        // Allows presenter to manually override selected indices
+        public void SetSelectedIndices(int[] indices)
+        {
+            foreach (int index in indices)
+            {
+                lvw_Departments.Items[index].Selected = true;
+            }
+            lvw_Departments.Select();
+        }
+        public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
         // ********************************************************************************
         // Event Handlers *****************************************************************

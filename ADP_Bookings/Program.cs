@@ -21,11 +21,12 @@ namespace ADP_Bookings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            ForceDB();
+            //ForceDB();
 
             Application.Run(new frm_companies());
         }
 
+        
         static void ForceDB()
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
@@ -40,7 +41,7 @@ namespace ADP_Bookings
                 unitOfWork.Departments.Add(d);               
 
                 Booking b = new Booking(0, "CLI_TEST", DateTime.Today, 67, d);
-                b.Activities.Add(a.ActivityID);
+                b.Activities.Add(a);
                 unitOfWork.Bookings.Add(b);
 
                 Console.WriteLine("Local: " + b.Activities.Count);

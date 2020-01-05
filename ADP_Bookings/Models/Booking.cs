@@ -11,7 +11,7 @@ namespace ADP_Bookings
     {
         public Booking()
         {
-            Activities = new List<int>();
+            Activities = new List<Activity>();
         }
         public Booking(int bookingID, string name, DateTime date, float cost, Department department) : this()
         {
@@ -32,7 +32,7 @@ namespace ADP_Bookings
         public int NumAttendees { get; set; }
 
         //Navigation Properties
-        public virtual ICollection<int> Activities { get; set; }
+        public virtual ICollection<Activity> Activities { get; set; }
         [Required]
         public virtual Department Department { get; set; }
     }

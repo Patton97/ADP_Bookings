@@ -66,7 +66,7 @@ namespace ADP_Bookings.Forms
         {
             InitializeComponent();
             InitialiseControlGroups();
-            InitialiseEventHandlers();
+            InitialiseChangeTracker();
             presenter = new BookingPresenter(this, department);
         }
         private void frm_bookings_Load(object sender, EventArgs e) { /* */ }
@@ -90,6 +90,7 @@ namespace ADP_Bookings.Forms
             //Controls relating to the current booking display (right hand side)
             ctrls_CurrentBooking = new List<Control>()
             {
+                lbl_EditBooking,
                 lbl_BookingID,
                 txt_BookingID,
                 lbl_BookingName,
@@ -109,8 +110,8 @@ namespace ADP_Bookings.Forms
         //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
         //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
         //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
-        //NOTE: Only the presenter itself should reset this to false.
-        void InitialiseEventHandlers() //Admittedly poor function name, can't think of anything better
+        //NOTE: Only the presenter itself can reset this to false.
+        void InitialiseChangeTracker() //Admittedly poor function name, can't think of anything better
         {
             EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_BookingID.TextChanged += handler;
@@ -122,6 +123,10 @@ namespace ADP_Bookings.Forms
 
         public int[] GetSelectedIndices() => lvw_Bookings.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
+
+        // Allows presenter to manually override selected indices
+        public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_Bookings.Items[index].Selected = true);
+        public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
         // ********************************************************************************
         // Event Handlers *****************************************************************

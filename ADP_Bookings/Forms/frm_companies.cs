@@ -21,7 +21,7 @@ namespace ADP_Bookings.Forms
         public List<Control> ctrls_CompanyList;
         public List<Control> ctrls_CurrentCompany;
         public List<EventHandler> ctrls_Editable; //Helps track whether record has been edited
-        
+
         public string CurrentCompanyID
         {
             get => txt_CompanyID.Text;
@@ -53,13 +53,12 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentCompany.ForEach(ctrl => ctrl.Enabled = value);
         }
 
-
         public frm_companies()
         {
             InitializeComponent();
             InitialiseControlGroups();
             InitialiseChangeTracker();
-            presenter = new CompanyPresenter(this);            
+            presenter = new CompanyPresenter(this);
         }
         private void frm_companies_Load(object sender, EventArgs e) { /**/ }
 
@@ -100,9 +99,9 @@ namespace ADP_Bookings.Forms
         //   we subscribe to their relevant events (TextChanged, CheckChanged, etc)
         //   and attach a delegate which will update a bool within the presenter. 
         // This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
-        // NOTE: Only the presenter itself should reset this to false.
+        // NOTE: Only the presenter itself can reset this to false.
         void InitialiseChangeTracker()
-        {            
+        {
             EventHandler tracker = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_CompanyID.TextChanged += tracker;
             txt_CompanyName.TextChanged += tracker;
@@ -111,6 +110,9 @@ namespace ADP_Bookings.Forms
         // Utility functions to retrieve currently selected list indices
         public int[] GetSelectedIndices() => lvw_companies.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
+        // Allows presenter to manually override selected indices
+        public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_companies.Items[index].Selected = true);
+        public void SetSelectedIndex(int index) => SetSelectedIndices(new int[]{index});
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
