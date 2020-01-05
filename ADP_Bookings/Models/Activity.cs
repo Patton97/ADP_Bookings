@@ -9,7 +9,7 @@ namespace ADP_Bookings
 {
     public class Activity : IRecord
     {
-        public Activity() { /* */ }
+        public Activity() { bookings = new List<Booking>(); }
 
         public Activity(int activityID, string name, float cost, string notes) : this()
         {
@@ -25,5 +25,8 @@ namespace ADP_Bookings
         public string Name { get; set; }
         public float Cost { get; set; }
         public string Notes { get; set; }
+
+        //Navigation Properties
+        public virtual ICollection<Booking> bookings { get; set; }
     }
 }
