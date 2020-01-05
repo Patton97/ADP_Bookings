@@ -112,6 +112,18 @@
     <Compile Include="Migrations\202001022319455_Booking.Name.designer.cs">
       <DependentUpon>202001022319455_Booking.Name.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001050242392_Booking.cs" />
+    <Compile Include="Migrations\202001050242392_Booking.designer.cs">
+      <DependentUpon>202001050242392_Booking.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001050248141_Booking1.cs" />
+    <Compile Include="Migrations\202001050248141_Booking1.designer.cs">
+      <DependentUpon>202001050248141_Booking1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001050421582_Booking.Activities.cs" />
+    <Compile Include="Migrations\202001050421582_Booking.Activities.designer.cs">
+      <DependentUpon>202001050421582_Booking.Activities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\ActivityModel.cs" />
     <Compile Include="Models\Booking.cs" />
@@ -168,6 +180,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202001022319455_Booking.Name.resx">
       <DependentUpon>202001022319455_Booking.Name.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001050242392_Booking.resx">
+      <DependentUpon>202001050242392_Booking.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001050248141_Booking1.resx">
+      <DependentUpon>202001050248141_Booking1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001050421582_Booking.Activities.resx">
+      <DependentUpon>202001050421582_Booking.Activities.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

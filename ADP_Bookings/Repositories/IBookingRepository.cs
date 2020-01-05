@@ -14,5 +14,8 @@ namespace ADP_Bookings
         //Get all bookings made by a specific department
         List<Booking> GetAllBookingsFromDepartment(int departmentID, bool includeFKs = false);
         List<Booking> GetAllBookingsFromDepartment(Department department, bool includeFKs = false);
+
+        //Force activities FK list to update
+        void UpdateBookingActivities(Booking booking);
     }
 }

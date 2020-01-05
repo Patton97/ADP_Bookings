@@ -21,7 +21,7 @@ namespace ADP_Bookings
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            //ForceDB();
+            ForceDB();
 
             Application.Run(new frm_companies());
         }
@@ -30,9 +30,22 @@ namespace ADP_Bookings
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
-                Company asda = unitOfWork.Companies.Get(6);
-                Department dpt = new Department(0, "HR", asda);
-                unitOfWork.Departments.Add(dpt);
+                Activity a = new Activity(0, "CLI_TEST", 36, "NotesTest");
+                unitOfWork.Activities.Add(a);
+
+                Company c = new Company(0, "CLI_TEST");
+                unitOfWork.Companies.Add(c);
+
+                Department d = new Department(0, "CLI_TEST", c);
+                unitOfWork.Departments.Add(d);               
+
+                Booking b = new Booking(0, "CLI_TEST", DateTime.Today, 67, d);
+                b.Activities.Add(a.ActivityID);
+                unitOfWork.Bookings.Add(b);
+
+                Console.WriteLine("Local: " + b.Activities.Count);
+                Console.WriteLine("DB:    " + unitOfWork.Bookings.Get(b.BookingID).Activities.Count);
+
                 unitOfWork.SaveChanges();
             }
         }

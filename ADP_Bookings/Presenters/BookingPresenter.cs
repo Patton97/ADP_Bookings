@@ -65,8 +65,8 @@ namespace ADP_Bookings.Presenters
             screen.CurrentBookingDate = selectedRecord.Date;
             screen.CurrentBookingCost = decimal.Parse(selectedRecord.EstimatedCost.ToString());
 
-            //Load Bookings
-            foreach (Activity a in selectedRecord.Activities)
+            //Load Activities
+            foreach (Activity a in GetAllActivitiesFrom(selectedRecord))
             {
                 ListViewItem lvi_activity = new ListViewItem(a.ActivityID.ToString());
                 lvi_activity.SubItems.Add(a.Name);

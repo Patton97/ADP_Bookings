@@ -38,6 +38,13 @@ namespace ADP_Bookings
             return GetAllBookingsFromDepartment(department.DepartmentID, includeFKs);
         }
 
+        public void UpdateBookingActivities(Booking booking)
+        {
+            Get(booking.BookingID).Activities = booking.Activities;
+            allEntities.Attach(booking);
+            Context.Entry(booking).State = EntityState.Modified;
+        }
+
         public ADP_DBContext ADP_DBContext => Context as ADP_DBContext;
     }
 }

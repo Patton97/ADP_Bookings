@@ -52,18 +52,17 @@ namespace ADP_Bookings.Models
             {
                 //Force booking to use correct department - ambiguity can arise leading to record duplication
                 booking.Department = unitOfWork.Departments.Get(booking.Department.DepartmentID);
-
-                //EF's independent association requires this FK to be explicitly updated
-                //NOTE: Can be avoided by instead using FK association (Booking would store just the activity IDs, not the objects)
-                List<Activity> activities = booking.Activities.ToList();
-                for(int i = 0; i < activities.Count; i++)
-                {
-                    activities[i] = unitOfWork.Activities.Get(activities[i].ActivityID);
-                }
-                booking.Activities = activities;
-                unitOfWork.Bookings.Get(booking.BookingID).Activities = booking.Activities;
-
+                
                 unitOfWork.Bookings.Update(booking);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        public static void UpdateBookingActivities(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Bookings.UpdateBookingActivities(booking);                
                 unitOfWork.SaveChanges();
             }
         }
@@ -74,6 +73,20 @@ namespace ADP_Bookings.Models
             {
                 unitOfWork.Bookings.Remove(unitOfWork.Bookings.Get(booking.BookingID));
                 unitOfWork.SaveChanges();
+            }
+        }
+
+        public static List<Activity> GetAllActivitiesFrom(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                List<Activity> activities = new List<Activity>();
+                foreach(int id in unitOfWork.Bookings.Get(booking.BookingID).Activities)
+                {
+                    activities.Add(unitOfWork.Activities.Get(id));                    
+                }
+                Console.WriteLine(activities.Count);
+                return activities;
             }
         }
     }

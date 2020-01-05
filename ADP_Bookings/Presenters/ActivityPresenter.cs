@@ -142,12 +142,11 @@ namespace ADP_Bookings.Presenters
         //As such, it looks out of place and slightly breaks the structure of the program
         void UpdateBooking()
         {
-            List<Activity> chosenActivities = new List<Activity>();
             foreach(int i in screen.GetChosenActivities())
             {
-                booking.Activities.Add(FindActivity(records[i]));
+                booking.Activities.Add(records[i].ActivityID);
             }
-            BookingModel.UpdateBooking(booking);
+            BookingModel.UpdateBookingActivities(booking);
         }
 
         // ********************************************************************************
