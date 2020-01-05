@@ -36,6 +36,11 @@ namespace ADP_Bookings.Forms
             get => dtp_BookingDate.Value;
             set => dtp_BookingDate.Value = value;
         }
+        public decimal CurrentBookingCost
+        {
+            get => nud_BookingCost.Value;
+            set => nud_BookingCost.Value = value;
+        }
         public ListView.ListViewItemCollection BookingList
         {
             get => lvw_Bookings.Items;

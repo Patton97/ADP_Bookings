@@ -13,11 +13,12 @@ namespace ADP_Bookings
         {
             Activities = new List<Activity>();
         }
-        public Booking(int bookingID, string name, DateTime date, Department department) : this()
+        public Booking(int bookingID, string name, DateTime date, float cost, Department department) : this()
         {
             BookingID = bookingID;
             Name = name;
             Date = date;
+            EstimatedCost = cost;
             Department = department;
         }
 

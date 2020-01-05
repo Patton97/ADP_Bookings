@@ -34,11 +34,7 @@ namespace ADP_Bookings.Presenters
             LoadDepartmentList();
 
             //Initialise current company panel
-            screen.CurrentDepartmentID = "";
-            screen.CurrentDepartmentName = "";
-            screen.DepartmentList = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentDepartmentBookings = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentDepartment_Enabled = false;
+            ClearCurrentRecord();
         }
 
         void LoadDepartmentList()
@@ -99,12 +95,17 @@ namespace ADP_Bookings.Presenters
         //Save department record back to database
         protected override void SaveRecord()
         {
-            if (DepartmentExists(selectedRecord))
-                UpdateDepartment(new Department(int.Parse(screen.CurrentDepartmentID), screen.CurrentDepartmentName, company));
-            else
-                InsertNewDepartment(new Department(0, screen.CurrentDepartmentName, company));
+            // Update any editable fields
+            // NOTE: Future development pass could instead map the below and iterate
+            selectedRecord.Name = screen.CurrentDepartmentName;
 
-            //Reload form components to reflect changes
+            // Send to DB
+            if (DepartmentExists(selectedRecord))
+                UpdateDepartment(selectedRecord);
+            else
+                InsertNewDepartment(selectedRecord);
+
+            // Reload form components to reflect changes
             ClearCurrentRecord();
             LoadDepartmentList();
         }

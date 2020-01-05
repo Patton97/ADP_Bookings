@@ -12,6 +12,7 @@ namespace ADP_Bookings.Views
         string CurrentBookingID { get; set; }
         string CurrentBookingName { get; set; }
         DateTime CurrentBookingDate { get; set; }
+        decimal CurrentBookingCost { get; set; }
         ListView.ListViewItemCollection BookingList { get; set; }
         ListView.ListViewItemCollection CurrentBookingActivities { get; set; }
         bool BookingList_Enabled { get; set; }

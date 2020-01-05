@@ -31,12 +31,8 @@ namespace ADP_Bookings.Presenters
             //Populate company list
             LoadCompanyList();
 
-            //Initialise current company panel
-            screen.CurrentCompanyID = "";
-            screen.CurrentCompanyName = "";
-            screen.CompanyList = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentCompanyDepartments = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentCompany_Enabled = false;
+            //Initialise current department panel
+            ClearCurrentRecord();
         }
 
         void LoadCompanyList()
@@ -70,7 +66,7 @@ namespace ADP_Bookings.Presenters
             }
 
             //Enable user editing, reset tracking
-            screen.CurrentCompany_Enabled = true;
+            EnableCurrentCompanyDisplay();
             ChangesPending = false;
 
         }
@@ -128,12 +124,17 @@ namespace ADP_Bookings.Presenters
         //Save company data back to database
         protected override void SaveRecord()
         {
-            if (CompanyExists(selectedRecord))
-                UpdateCompany(new Company(int.Parse(screen.CurrentCompanyID), screen.CurrentCompanyName));
-            else
-                InsertNewCompany(new Company(int.Parse(screen.CurrentCompanyID), screen.CurrentCompanyName));
+            // Update any editable fields
+            // NOTE: Future development pass could instead map the below and iterate
+            selectedRecord.Name = screen.CurrentCompanyName;
 
-            //Reload form components to reflect changes
+            // Send to DB
+            if (CompanyExists(selectedRecord))
+                UpdateCompany(selectedRecord);
+            else
+                InsertNewCompany(selectedRecord);
+
+            // Reload form components to reflect changes
             ClearCurrentRecord();
             LoadCompanyList();
         }

@@ -52,6 +52,17 @@ namespace ADP_Bookings.Models
             {
                 //Force booking to use correct department - ambiguity can arise leading to record duplication
                 booking.Department = unitOfWork.Departments.Get(booking.Department.DepartmentID);
+
+                //EF's independent association requires this FK to be explicitly updated
+                //NOTE: Can be avoided by instead using FK association (Booking would store just the activity IDs, not the objects)
+                List<Activity> activities = booking.Activities.ToList();
+                for(int i = 0; i < activities.Count; i++)
+                {
+                    activities[i] = unitOfWork.Activities.Get(activities[i].ActivityID);
+                }
+                booking.Activities = activities;
+                unitOfWork.Bookings.Get(booking.BookingID).Activities = booking.Activities;
+
                 unitOfWork.Bookings.Update(booking);
                 unitOfWork.SaveChanges();
             }

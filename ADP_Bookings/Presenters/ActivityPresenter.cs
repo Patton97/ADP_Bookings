@@ -35,11 +35,7 @@ namespace ADP_Bookings.Presenters
             LoadActivityList();
 
             //Initialise current booking panel
-            screen.CurrentActivityID = "";
-            screen.CurrentActivityName = "";
-            screen.CurrentActivityNotes = "";
-            screen.ActivityList = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentActivity_Enabled = false;
+            ClearCurrentRecord();
         }
 
         void LoadActivityList()
@@ -50,7 +46,7 @@ namespace ADP_Bookings.Presenters
             {
                 //ActivityList works different to other windows - first column is a checkbox
                 //signfying whether the respective activity is part of the current booking
-                ListViewItem lvi_activity = new ListViewItem(a.ActivityID.ToString());
+                ListViewItem lvi_activity = new ListViewItem();
                 lvi_activity.SubItems.Add(a.ActivityID.ToString());
                 lvi_activity.SubItems.Add(a.Name);
                 lvi_activity.SubItems.Add("£" + a.Cost.ToString());
@@ -80,17 +76,19 @@ namespace ADP_Bookings.Presenters
         //Save activity data back to database
         protected override void SaveRecord()
         {
-            if (ActivityExists(selectedRecord))
-                UpdateActivity(new Activity(int.Parse(screen.CurrentActivityID), 
-                                            screen.CurrentActivityName,
-                                            float.Parse(screen.CurrentActivityCost.ToString()), 
-                                            screen.CurrentActivityNotes));
-            else
-                InsertNewActivity(new Activity(0, screen.CurrentActivityName, 
-                                               float.Parse(screen.CurrentActivityCost.ToString()),
-                                               screen.CurrentActivityNotes));
+            // Update any editable fields
+            // NOTE: Future development pass could instead map the below and iterate
+            selectedRecord.Name = screen.CurrentActivityName;
+            selectedRecord.Cost = float.Parse(screen.CurrentActivityCost.ToString());
+            selectedRecord.Notes = screen.CurrentActivityNotes;
 
-            //Reload form components to reflect changes
+            // Send to DB
+            if (ActivityExists(selectedRecord))
+                UpdateActivity(selectedRecord);
+            else
+                InsertNewActivity(selectedRecord);
+
+            // Reload form components to reflect changes
             ClearCurrentRecord();
             LoadActivityList();
         }
@@ -147,9 +145,8 @@ namespace ADP_Bookings.Presenters
             List<Activity> chosenActivities = new List<Activity>();
             foreach(int i in screen.GetChosenActivities())
             {
-                chosenActivities.Add(records[i]);
+                booking.Activities.Add(FindActivity(records[i]));
             }
-            booking.Activities = chosenActivities;
             BookingModel.UpdateBooking(booking);
         }
 

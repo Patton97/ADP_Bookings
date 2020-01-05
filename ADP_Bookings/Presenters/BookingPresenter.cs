@@ -34,12 +34,7 @@ namespace ADP_Bookings.Presenters
             LoadBookingList();
 
             //Initialise current department panel
-            screen.CurrentBookingID = "";
-            screen.CurrentBookingName = "";
-            screen.CurrentBookingDate = DateTime.Today;
-            screen.BookingList = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentBookingActivities = new ListView.ListViewItemCollection(new ListView());
-            screen.CurrentBooking_Enabled = false;
+            ClearCurrentRecord();
         }
 
         void LoadBookingList()
@@ -67,6 +62,8 @@ namespace ADP_Bookings.Presenters
             this.selectedRecord = selectedRecord;
             screen.CurrentBookingID = selectedRecord.BookingID.ToString();
             screen.CurrentBookingName = selectedRecord.Name;
+            screen.CurrentBookingDate = selectedRecord.Date;
+            screen.CurrentBookingCost = decimal.Parse(selectedRecord.EstimatedCost.ToString());
 
             //Load Bookings
             foreach (Activity a in selectedRecord.Activities)
@@ -82,15 +79,22 @@ namespace ADP_Bookings.Presenters
             EnableCurrentBookingDisplay();
             ChangesPending = false;
         }
-        protected override void LoadNewRecord() => LoadRecord(new Booking(0, "", DateTime.Today, department));
+        protected override void LoadNewRecord() => LoadRecord(new Booking(0, "", DateTime.Today, 0, department));
 
         //Save department data back to database
         protected override void SaveRecord()
         {
+            // Update any editable fields
+            // NOTE: Future development pass could instead map the below and iterate
+            selectedRecord.Name = screen.CurrentBookingName;
+            selectedRecord.Date = screen.CurrentBookingDate;
+            selectedRecord.EstimatedCost = float.Parse(screen.CurrentBookingCost.ToString());
+
+            // Send to DB
             if (BookingExists(selectedRecord))
-                UpdateBooking(new Booking(int.Parse(screen.CurrentBookingID), screen.CurrentBookingName, screen.CurrentBookingDate, department));
+                UpdateBooking(selectedRecord);
             else
-                InsertNewBooking(new Booking(0, screen.CurrentBookingName, screen.CurrentBookingDate, department));
+                InsertNewBooking(selectedRecord);
 
             //Reload form components to reflect changes
             ClearCurrentRecord();
