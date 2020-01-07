@@ -67,6 +67,8 @@
             this.nud_ActivityCost.TabIndex = 67;
             this.nud_ActivityCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nud_ActivityCost.ThousandsSeparator = true;
+            this.nud_ActivityCost.Click += new System.EventHandler(this.nud_ActivityCost_Click);
+            this.nud_ActivityCost.Enter += new System.EventHandler(this.nud_ActivityCost_Enter);
             // 
             // lbl_ActivityCost
             // 

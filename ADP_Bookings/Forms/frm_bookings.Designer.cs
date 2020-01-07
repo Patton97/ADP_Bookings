@@ -288,6 +288,8 @@
             this.nud_BookingCost.TabIndex = 49;
             this.nud_BookingCost.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nud_BookingCost.ThousandsSeparator = true;
+            this.nud_BookingCost.Click += new System.EventHandler(this.nud_BookingCost_Click);
+            this.nud_BookingCost.Enter += new System.EventHandler(this.nud_BookingCost_Enter);
             // 
             // btn_DeleteBooking
             // 

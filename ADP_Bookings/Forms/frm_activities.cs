@@ -102,11 +102,11 @@ namespace ADP_Bookings.Forms
             };
         }
 
-        //To track if the user has begun to edit the open record,
-        //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
-        //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
-        //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
-        //NOTE: Only the presenter itself can reset this to false.
+        // To track if the user has begun to edit the open record,
+        // we create a custom EventHandler containing a delegate which updates a bool within the presenter
+        // then subscribe to any relevant events (TextChanged, CheckChanged, etc)
+        // This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        // NOTE: Only the presenter itself can reset this to false.
         void InitialiseChangeTracker()
         {
             EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
@@ -124,16 +124,23 @@ namespace ADP_Bookings.Forms
         public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_Activities.Items[index].Selected = true);
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
-        //This function is specific to Activity as it (currently) is the only 
-        //disconnected table, where updates to other records need to be sent backwards
-        //As such, it looks out of place and slightly breaks the structure of the program
+        // Get indices of items in listview which have been checked
+        // NOTE: This function is specific to Activity as it (currently) is the only 
+        //       disconnected table, where updates to other records need to be sent backwards
         public int[] GetChosenActivities() => lvw_Activities.CheckedIndices.Cast<int>().ToArray();
+
+        // NUD controls don't have a "FullSelect" property, this function emulates that
+        // NOTE: Could be moved to either the RecordPresenter superclass or some sort of generic form superclass 
+        void nud_ActivityCost_FullSelect() => nud_ActivityCost.Select(0, nud_ActivityCost.Text.Length);
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
         // Activity List - new item selected
         private void lvw_Activities_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_Activities_SelectedIndexChanged(GetSelectedIndices());
+        // Activity Cost - control is selected 
+        private void nud_ActivityCost_Enter(object sender, EventArgs e) => nud_ActivityCost_FullSelect();
+        private void nud_ActivityCost_Click(object sender, EventArgs e) => nud_ActivityCost_FullSelect();
 
         // Buttons
         private void btn_AddActivity_Click(object sender, EventArgs e) => presenter.btn_AddActivity_Click();
@@ -144,7 +151,5 @@ namespace ADP_Bookings.Forms
 
         // If the form is being closed
         private void frm_activities_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_activities_FormClosing(e);
-
-        
     }
 }

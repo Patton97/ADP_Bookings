@@ -128,12 +128,18 @@ namespace ADP_Bookings.Forms
         public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_Bookings.Items[index].Selected = true);
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
+        // NUD controls don't have a "FullSelect" property, this function emulates that
+        void nud_BookingCost_FullSelect() => nud_BookingCost.Select(0, nud.Text.Length);
+
         // ********************************************************************************
         // Event Handlers *****************************************************************
         // ********************************************************************************        
 
         // Bookings List - new item selected
         private void lvw_Bookings_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_Bookings_SelectedIndexChanged(GetSelectedIndices());
+        //Booking Cost - control selected
+        private void nud_BookingCost_Enter(object sender, EventArgs e) => nud_BookingCost_FullSelect();
+        private void nud_BookingCost_Click(object sender, EventArgs e) => nud_BookingCost_FullSelect();
 
         // Buttons
         private void btn_AddBooking_Click(object sender, EventArgs e) => presenter.btn_AddBooking_Click();
@@ -144,5 +150,7 @@ namespace ADP_Bookings.Forms
 
         // Form is being closed
         private void frm_bookings_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_bookings_FormClosing(e);
+
+        
     }
 }

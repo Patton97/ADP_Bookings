@@ -20,7 +20,7 @@ namespace ADP_Bookings
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            //AppDomain.SetData()
             //ForceDB();
 
             Application.Run(new frm_companies());
