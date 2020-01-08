@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 // Project Specific imports
-// Required due to folder structure
-using static ADP_Bookings.Models.BookingModel;
+// Required due to MVP structure reflected in folder/namespace heirarchy
 using ADP_Bookings.Views;
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings.Presenters
 {
@@ -17,11 +17,11 @@ namespace ADP_Bookings.Presenters
         IBookingGUI screen; //view
         Department department; //The department the displayed bookings belong to
 
-        public BookingPresenter(IBookingGUI screen, Department department)
+        public BookingPresenter(IBookingGUI screen, int departmentID)
         {
             this.screen = screen;
             screen.Register(this);
-            this.department = department;
+            this.department = FindDepartment(departmentID);
             InitialiseForm();
         }
 
@@ -144,7 +144,7 @@ namespace ADP_Bookings.Presenters
             //Store selected index for reload when user returns to this form
             int idx = screen.GetSelectedIndex();
             screen.Hide();
-            new Forms.frm_activities(selectedRecord, screen.Text).ShowDialog();
+            new Forms.frm_activities(selectedRecord.BookingID, screen.Text).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume untidl above form is closed
 
             //Force reload to reflect any changes made to DB in other form(s)
@@ -178,5 +178,98 @@ namespace ADP_Bookings.Presenters
 
         // Form is being closed
         public void frm_bookings_FormClosing(FormClosingEventArgs e) => CloseForm(e);
+
+        // ********************************************************************************
+        // Model (UoW) Communication ******************************************************
+        // ********************************************************************************
+
+        // Static classes used because they solely act as a communication window to the UoW
+        // NOTE: Not all functions here are necessarily used by the current application,
+        //       their inclusion is in anticipation of future development requirements
+        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc)
+        //       but moved to presenter to reflect format given in week 5 lecture slides
+
+        // Create new record in Bookings table
+        public static void InsertNewBooking(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                //Force booking to use correct department - ambiguity can arise leading to record duplication
+                booking.Department = unitOfWork.Departments.Get(booking.Department.DepartmentID);
+                unitOfWork.Bookings.Add(booking);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Retrieve all records from Bookings table
+        public static List<Booking> GetAllBookings()
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Bookings.GetAll().ToList();
+            }
+        }
+
+        // Retrieve all bookings belonging to a specified department
+        public static List<Booking> GetAllBookingsFrom(Department department)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Bookings.GetAllBookingsFromDepartment(department, true).ToList();
+            }
+        }
+
+        // Retrieve booking from a specified ID
+        public static Booking FindBooking(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Bookings.Get(booking.BookingID);
+            }
+        }
+        // Reports purely on the success/failure of booking retrieval
+        public static bool BookingExists(Booking booking) => FindBooking(booking) != null;
+
+        // Update existing record in Bookings table
+        public static void UpdateBooking(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                //Force booking to use correct department - ambiguity can arise leading to record duplication
+                booking.Department = unitOfWork.Departments.Get(booking.Department.DepartmentID);
+                unitOfWork.Bookings.Update(booking);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Update existing record's FK relating to activities chosen
+        public static void UpdateBookingActivities(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Bookings.UpdateBookingActivities(booking);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Delete record from Bookings table
+        public static void DeleteBooking(Booking booking)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Bookings.Remove(unitOfWork.Bookings.Get(booking.BookingID));
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Retrieve Department from specified ID
+        public static Department FindDepartment(int departmentID)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Departments.Get(departmentID);
+            }
+        }
+        public static Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
     }
 }

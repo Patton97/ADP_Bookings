@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 // Project Specific imports
-// Required due to folder structure
-using static ADP_Bookings.Models.DepartmentModel;
+// Required due to MVP structure reflected in folder/namespace heirarchy
 using ADP_Bookings.Views;
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings.Presenters
 {
@@ -17,11 +17,11 @@ namespace ADP_Bookings.Presenters
         IDepartmentGUI screen; //view
         Company company; //The company the displayed departments belong to
 
-        public DepartmentPresenter(IDepartmentGUI screen, Company company)
+        public DepartmentPresenter(IDepartmentGUI screen, int companyID)
         {
             this.screen = screen;
             screen.Register(this);
-            this.company = company;
+            this.company = FindCompany(companyID);
             InitialiseForm();
         }
 
@@ -137,7 +137,7 @@ namespace ADP_Bookings.Presenters
             //Store selected index for reload when user returns to this form
             int idx = screen.GetSelectedIndex();
             screen.Hide();
-            new Forms.frm_bookings(selectedRecord).ShowDialog();
+            new Forms.frm_bookings(selectedRecord.DepartmentID).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume until above form is closed
 
             //Force reload to reflect any changes made to DB in other form(s)
@@ -171,5 +171,96 @@ namespace ADP_Bookings.Presenters
 
         // Form is being closed
         public void frm_departments_FormClosing(FormClosingEventArgs e) => CloseForm(e);
+
+        // ********************************************************************************
+        // Model (UoW) Communication ******************************************************
+        // ********************************************************************************
+
+        // Static classes used because they solely act as a communication window to the UoW
+        // NOTE: Not all functions here are necessarily used by the current application,
+        //       their inclusion is in anticipation of future development requirements
+        // NOTE: Originally stored in separate classes (DepartmentModel.cs, etc)
+        //       but moved to presenter to reflect format given in week 5 lecture slides
+
+        // Create new record in Departments table
+        public static void InsertNewDepartment(Department department)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                //Force department to use correct company - ambiguity can arise leading to record duplication
+                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
+                unitOfWork.Departments.Add(department);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Retrieve all records in Departments table
+        public static List<Department> GetAllDepartments()
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Departments.GetAll().ToList();
+            }
+        }
+        // Retrieve all departments belonging to a specfied company
+        public static List<Department> GetAllDepartmentsFrom(Company company)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Departments.GetDepartmentsFromCompany(company, true).ToList();
+            }
+        }
+
+        // Retrieve Department from specified ID
+        public static Department FindDepartment(int departmentID)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Departments.Get(departmentID);
+            }
+        }
+        public static Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
+
+        // Reports purely success/failure of company retrieval
+        public static bool DepartmentExists(Department department) => FindDepartment(department) != null;
+                
+        // Update existing record in Departments table
+        public static void UpdateDepartment(Department department)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                //Force department to use correct company - ambiguity can arise leading to record duplication
+                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
+                unitOfWork.Departments.Update(department);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Delete record from Departments table
+        public static void DeleteDepartment(Department department)
+        {
+            //Ensure record actually exists before attempting to delete
+            if (!DepartmentExists(department))
+            {
+                Console.WriteLine("ERROR: Record delete failed!\n"
+                                + "       Department: #" + department.DepartmentID + "could not be found.");
+                return;
+            }
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Departments.Remove(unitOfWork.Departments.Get(department.DepartmentID));
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Retrieve company from specified ID
+        public static Company FindCompany(int companyID)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Companies.Get(companyID);
+            }
+        }
+        public static Company FindCompany(Company company) => FindCompany(company.CompanyID);
     }
 }

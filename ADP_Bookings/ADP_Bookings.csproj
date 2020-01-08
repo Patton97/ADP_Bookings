@@ -129,11 +129,7 @@
       <DependentUpon>202001051326198_Test.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Activity.cs" />
-    <Compile Include="Models\ActivityModel.cs" />
     <Compile Include="Models\Booking.cs" />
-    <Compile Include="Models\BookingModel.cs" />
-    <Compile Include="Models\CompanyModel.cs" />
-    <Compile Include="Models\DepartmentModel.cs" />
     <Compile Include="Models\IRecord.cs" />
     <Compile Include="Presenters\ActivityPresenter.cs" />
     <Compile Include="Presenters\BookingPresenter.cs" />
@@ -144,26 +140,26 @@
     <Compile Include="Forms\frm_companies.Designer.cs">
       <DependentUpon>frm_companies.cs</DependentUpon>
     </Compile>
-    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="Models\Unit of Work\IUnitOfWork.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Presenters\DepartmentPresenter.cs" />
     <Compile Include="Presenters\RecordPresenter.cs" />
-    <Compile Include="Repositories\ActivityRepository.cs" />
-    <Compile Include="Repositories\DepartmentRepository.cs" />
-    <Compile Include="Repositories\CompanyRepository.cs" />
-    <Compile Include="Repositories\BookingRepository.cs" />
+    <Compile Include="Models\Repositories\ActivityRepository.cs" />
+    <Compile Include="Models\Repositories\DepartmentRepository.cs" />
+    <Compile Include="Models\Repositories\CompanyRepository.cs" />
+    <Compile Include="Models\Repositories\BookingRepository.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\Department.cs" />
-    <Compile Include="ADP_DBContext.cs" />
-    <Compile Include="Repositories\IActivityRepository.cs" />
-    <Compile Include="Repositories\IDepartmentRepository.cs" />
-    <Compile Include="Repositories\ICompanyRepository.cs" />
-    <Compile Include="Repositories\IBookingRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Models\Unit of Work\ADP_DBContext.cs" />
+    <Compile Include="Models\Repositories\IActivityRepository.cs" />
+    <Compile Include="Models\Repositories\IDepartmentRepository.cs" />
+    <Compile Include="Models\Repositories\ICompanyRepository.cs" />
+    <Compile Include="Models\Repositories\IBookingRepository.cs" />
+    <Compile Include="Models\Repositories\IRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\Repository.cs" />
-    <Compile Include="UnitOfWork.cs" />
+    <Compile Include="Models\Repositories\Repository.cs" />
+    <Compile Include="Models\Unit of Work\UnitOfWork.cs" />
     <Compile Include="Views\IActivityGUI.cs" />
     <Compile Include="Views\IBookingGUI.cs" />
     <Compile Include="Views\ICompanyGUI.cs" />

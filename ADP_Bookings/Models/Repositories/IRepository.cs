@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ADP_Bookings
+namespace ADP_Bookings.Models
 {
     public interface IRepository<TEntity> where TEntity : class
     {

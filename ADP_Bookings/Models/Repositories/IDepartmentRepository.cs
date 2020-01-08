@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ADP_Bookings
+namespace ADP_Bookings.Models
 {
     public interface IDepartmentRepository : IRepository<Department>
     {

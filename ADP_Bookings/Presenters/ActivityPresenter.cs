@@ -7,9 +7,8 @@ using System.Windows.Forms;
 
 // Project Specific imports
 // Required due to MVP structure reflected in folder/namespace heirarchy
-using ADP_Bookings.Models;
 using ADP_Bookings.Views;
-using static ADP_Bookings.Models.ActivityModel; //allows static methods to be directly called
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings.Presenters
 {
@@ -18,11 +17,11 @@ namespace ADP_Bookings.Presenters
         IActivityGUI screen; //view
         Booking booking; //The booking the displayed activities belong to
 
-        public ActivityPresenter(IActivityGUI screen, Booking booking)
+        public ActivityPresenter(IActivityGUI screen, int bookingID)
         {
             this.screen = screen;
             screen.Register(this);
-            this.booking = booking;
+            this.booking = FindBooking(bookingID);
             InitialiseForm();
         }
 
@@ -185,5 +184,83 @@ namespace ADP_Bookings.Presenters
 
         // Form is being closed
         public void frm_activities_FormClosing(FormClosingEventArgs e) => CloseForm(e);
+
+        // ********************************************************************************
+        // Model (UoW) Communication ******************************************************
+        // ********************************************************************************
+
+        // Static classes used because they solely act as a communication window to the UoW
+        // NOTE: Not all functions here are necessarily used by the current application,
+        //       their inclusion is in anticipation of future development requirements
+        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc)
+        //       but moved to presenter to reflect format given in week 5 lecture slides
+
+        // Creates new record in Activities table
+        public static void InsertNewActivity(Activity activity)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Activities.Add(activity);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Retrieve all records from the Activities table
+        public static List<Activity> GetAllActivities()
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Activities.GetAll().ToList();
+            }
+        }
+
+        // Retrieve activity from specified ID
+        public static Activity FindActivity(int activityID)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Activities.Get(activityID);
+            }
+        }
+        public static Activity FindActivity(Activity activity) => FindActivity(activity.ActivityID);
+
+        // Reports purely success/failure of activity retrieval
+        public static bool ActivityExists(Activity activity) => FindActivity(activity) != null;
+
+        // Update existing record in Activities table
+        public static void UpdateActivity(Activity activity)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Activities.Update(activity);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Delete record from Activities table
+        public static void DeleteActivity(Activity activity)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Activities.Remove(unitOfWork.Activities.Get(activity.ActivityID));
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        /* NOTE: This function seems out of place, but this is due *
+         *       to the activity form needing to update the booking*
+         *       since activity records are 'static' ie have no FK *
+         *       relating to the booking(s) they are listed upon.  *
+         * NOTE: Could probably be reworked to send this info back *
+         *       to the booking form, and then update the record.  */
+        // Retrieve booking from a specified ID
+        public static Booking FindBooking(int bookingID)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Bookings.Get(bookingID);
+            }
+        }
+        public static Booking FindBooking(Booking booking) => FindBooking(booking.BookingID);
     }
 }

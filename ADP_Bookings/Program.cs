@@ -7,6 +7,7 @@ using System.Windows.Forms;
 // Project Specific imports
 // Required due to folder structure
 using ADP_Bookings.Forms;
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings
 {

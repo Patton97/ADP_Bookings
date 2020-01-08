@@ -8,7 +8,7 @@ using System.Data.Entity;
 
 //For future reference: https://docs.microsoft.com/en-us/aspnet/mvc/overview/older-versions/getting-started-with-ef-5-using-mvc-4/implementing-the-repository-and-unit-of-work-patterns-in-an-asp-net-mvc-application
 
-namespace ADP_Bookings
+namespace ADP_Bookings.Models
 {
     //This class is generic (not tied to the ADP System at hand)
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class

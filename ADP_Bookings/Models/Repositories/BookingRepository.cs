@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
 
-namespace ADP_Bookings
+namespace ADP_Bookings.Models
 {
     class BookingRepository : Repository<Booking>, IBookingRepository
     {

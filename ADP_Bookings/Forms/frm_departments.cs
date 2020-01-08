@@ -54,7 +54,7 @@ namespace ADP_Bookings.Forms
         }
 
 
-        public frm_departments(Company company)
+        public frm_departments(int companyID)
         {
             InitializeComponent();
 
@@ -62,7 +62,7 @@ namespace ADP_Bookings.Forms
             InitialiseControlGroups();
             InitialiseChangeTracker();
             //Assign presenter
-            presenter = new DepartmentPresenter(this, company);
+            presenter = new DepartmentPresenter(this, companyID);
         }
         private void frm_departments_Load(object sender, EventArgs e) {  /**/ }
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 // Project Specific imports
-// Required due to folder structure
-//using static ADP_Bookings.Models.CompanyModel;
+// Required due to MVP structure reflected in folder/namespace heirarchy
 using ADP_Bookings.Views;
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings.Presenters
 {
@@ -112,7 +112,7 @@ namespace ADP_Bookings.Presenters
             //Store selected index for reload when user returns to this form
             int idx = screen.GetSelectedIndex();
             screen.Hide();
-            new Forms.frm_departments(selectedRecord).ShowDialog();
+            new Forms.frm_departments(selectedRecord.CompanyID).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume until above form is closed
 
             //Force reload to reflect any changes made to DB in other form(s)
@@ -172,7 +172,7 @@ namespace ADP_Bookings.Presenters
         // Static classes used because they solely act as a communication window to the UoW
         // NOTE: Not all functions here are necessarily used by the current application,
         //       their inclusion is in anticipation of future development requirements
-        // NOTE: Originally stored in separate classes (CompanyModel.cs, Activity.cs, etc)
+        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc)
         //       but moved to presenter to reflect format given in week 5 lecture slides
 
         // Create new record in Companies table
@@ -185,7 +185,7 @@ namespace ADP_Bookings.Presenters
             }
         }
 
-        // Gets all companies in DB
+        // Retrieve all records in Companies table
         public static List<Company> GetAllCompanies()
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
@@ -218,8 +218,7 @@ namespace ADP_Bookings.Presenters
         // Delete record in Companies table
         public static void DeleteCompany(Company company)
         {
-            // Presenter could/should call this before any delete anyways
-            // but always best to be safe & double-check
+            //Ensure record actually exists before attempting to delete
             if(!CompanyExists(company))
             {
                 Console.WriteLine("ERROR: Record delete failed!\n"

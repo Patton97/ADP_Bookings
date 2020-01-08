@@ -57,12 +57,12 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentActivity.ForEach(ctrl => ctrl.Enabled = value);
         }
 
-        public frm_activities(Booking booking, string userpath)
+        public frm_activities(int bookingID, string userpath)
         {
             InitializeComponent();
             InitialiseControlGroups();
             InitialiseChangeTracker();
-            presenter = new ActivityPresenter(this, booking);
+            presenter = new ActivityPresenter(this, bookingID);
         }
 
         private void frm_activities_Load(object sender, EventArgs e) { /* */ }

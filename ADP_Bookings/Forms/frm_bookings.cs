@@ -62,12 +62,12 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentBooking.ForEach(ctrl => ctrl.Enabled = value);
         }
 
-        public frm_bookings(Department department)
+        public frm_bookings(int departmentID)
         {
             InitializeComponent();
             InitialiseControlGroups();
             InitialiseChangeTracker();
-            presenter = new BookingPresenter(this, department);
+            presenter = new BookingPresenter(this, departmentID);
         }
         private void frm_bookings_Load(object sender, EventArgs e) { /* */ }
 

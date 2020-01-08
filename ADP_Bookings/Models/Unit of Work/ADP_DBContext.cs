@@ -4,7 +4,7 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Text;
 
-namespace ADP_Bookings
+namespace ADP_Bookings.Models
 {
     public class ADP_DBContext : DbContext
     {
