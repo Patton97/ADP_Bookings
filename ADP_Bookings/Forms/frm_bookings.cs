@@ -129,7 +129,7 @@ namespace ADP_Bookings.Forms
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
         // NUD controls don't have a "FullSelect" property, this function emulates that
-        void nud_BookingCost_FullSelect() => nud_BookingCost.Select(0, nud.Text.Length);
+        void nud_BookingCost_FullSelect() => nud_BookingCost.Select(0, nud_BookingCost.Text.Length);
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
