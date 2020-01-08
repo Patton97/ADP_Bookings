@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 // Project Specific imports
 // Required due to folder structure
-using static ADP_Bookings.Models.CompanyModel;
+//using static ADP_Bookings.Models.CompanyModel;
 using ADP_Bookings.Views;
 
 namespace ADP_Bookings.Presenters
@@ -164,5 +164,74 @@ namespace ADP_Bookings.Presenters
 
         // Form is being closed
         public void frm_companies_FormClosing(FormClosingEventArgs e) => CloseForm(e);
+        
+        // ********************************************************************************
+        // Model (UoW) Communication ******************************************************
+        // ********************************************************************************
+
+        // Static classes used because they solely act as a communication window to the UoW
+        // NOTE: Not all functions here are necessarily used by the current application,
+        //       their inclusion is in anticipation of future development requirements
+        // NOTE: Originally stored in separate classes (CompanyModel.cs, Activity.cs, etc)
+        //       but moved to presenter to reflect format given in week 5 lecture slides
+
+        // Create new record in Companies table
+        public static void InsertNewCompany(Company company)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Companies.Add(company);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Gets all companies in DB
+        public static List<Company> GetAllCompanies()
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Companies.GetAll(true).ToList(); //bool param specifies eager loading of FK data
+            }
+        }
+
+        // Retrieve company from specified ID
+        public static Company FindCompany(Company company)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                return unitOfWork.Companies.Get(company.CompanyID);
+            }
+        }
+        // Reports purely success/failure of company retrieval
+        public static bool CompanyExists(Company company) => FindCompany(company) != null;
+
+        // Update existing record in Companies table
+        public static void UpdateCompany(Company company)
+        {
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Companies.Update(company);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Delete record in Companies table
+        public static void DeleteCompany(Company company)
+        {
+            // Presenter could/should call this before any delete anyways
+            // but always best to be safe & double-check
+            if(!CompanyExists(company))
+            {
+                Console.WriteLine("ERROR: Record delete failed!\n"
+                                + "       Company: #" + company.CompanyID + "could not be found.");
+                return;
+            }
+
+            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
+            {
+                unitOfWork.Companies.Remove(unitOfWork.Companies.Get(company.CompanyID));
+                unitOfWork.SaveChanges();
+            }
+        }
     }
 }
