@@ -11,8 +11,21 @@ namespace ADP_Bookings.Models
     {
         public BookingRepository(ADP_DBContext context) : base(context) { /* */ }
 
-        //Get all bookings
-        //bool param forces eager loading of FK data
+        // Retrieve department record, param toggles eager-loading FK data
+        public Booking Get(int id, bool includeFKs = false)
+        {
+            if (includeFKs)
+                return allEntities
+                    .Where(b => b.BookingID == id)
+                    .Include(b => b.Department)
+                    .Include(b => b.Department.Company)
+                    .Include(b => b.Activities)
+                    .First();
+            else
+                return Get(id);
+        }
+
+        //Get all bookings, param toggles eager-loading FK data
         public IEnumerable<Booking> GetAll(bool includeFKs = false)
         {
             if (includeFKs)
@@ -25,8 +38,7 @@ namespace ADP_Bookings.Models
                 return GetAll();
         }
 
-        //Get all bookings made by a specific department
-        //bool param forces eager loading of FK data
+        //Get all bookings made by a specific department, param toggles eager-loading FK data
         public List<Booking> GetAllBookingsFromDepartment(int departmentID, bool includeFKs = false)
         {
             return GetAll(includeFKs)

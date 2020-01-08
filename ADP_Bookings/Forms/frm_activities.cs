@@ -21,6 +21,12 @@ namespace ADP_Bookings.Forms
         public List<Control> ctrls_ActivityList;
         public List<Control> ctrls_CurrentActivity;
 
+        // ********************************************************************************
+        // View Properties ****************************************************************
+        // ******************************************************************************** 
+        
+        // Facilitates presenter in puppeting the view
+
         public string CurrentActivityID
         {
             get => txt_ActivityID.Text;
@@ -57,7 +63,7 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentActivity.ForEach(ctrl => ctrl.Enabled = value);
         }
 
-        public frm_activities(int bookingID, string userpath)
+        public frm_activities(int bookingID)
         {
             InitializeComponent();
             InitialiseControlGroups();

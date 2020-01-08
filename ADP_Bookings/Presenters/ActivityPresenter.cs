@@ -28,7 +28,10 @@ namespace ADP_Bookings.Presenters
         protected override void InitialiseForm()
         {
             //Update form window title
-            screen.Text = "ADP > " + booking.Department.Name + " > " + booking.Name + " > Activities";
+            screen.Text = "ADP: " + booking.Department.Company.Name 
+                        + " > " + booking.Department.Name 
+                        + " > " + booking.Name 
+                        + " > Activities";
 
             //Populate booking list
             LoadActivityList();
@@ -144,9 +147,8 @@ namespace ADP_Bookings.Presenters
         void EnableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = true;
         void DisableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = false;
 
-        //This function is specific to Activity as it (currently) is the only 
-        //disconnected table, where updates to other records need to be sent backwards
-        //As such, it looks out of place and slightly breaks the structure of the program
+        // This function is required as Activity records do not hold an FK to bookings which posses them
+        // so any changes regarding CHOSEN activities need to be sent back to the Bookings table itself
         void UpdateBooking()
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
@@ -154,15 +156,11 @@ namespace ADP_Bookings.Presenters
                 List<Activity> activities = unitOfWork.Bookings.Get(booking.BookingID).Activities.ToList();
                 //First remove all activities from DB record
                 foreach(Activity a in activities)
-                {
                     unitOfWork.Bookings.Get(booking.BookingID).Activities.Remove(a);
-                }
                 
                 //Then add new selection
                 foreach (int i in screen.GetChosenActivities())
-                {
                     unitOfWork.Bookings.Get(booking.BookingID).Activities.Add(unitOfWork.Activities.Get(records[i].ActivityID));
-                }
 
                 unitOfWork.SaveChanges();
             }
@@ -247,18 +245,13 @@ namespace ADP_Bookings.Presenters
             }
         }
 
-        /* NOTE: This function seems out of place, but this is due *
-         *       to the activity form needing to update the booking*
-         *       since activity records are 'static' ie have no FK *
-         *       relating to the booking(s) they are listed upon.  *
-         * NOTE: Could probably be reworked to send this info back *
-         *       to the booking form, and then update the record.  */
+        
         // Retrieve booking from a specified ID
         public static Booking FindBooking(int bookingID)
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
-                return unitOfWork.Bookings.Get(bookingID);
+                return unitOfWork.Bookings.Get(bookingID, true);
             }
         }
         public static Booking FindBooking(Booking booking) => FindBooking(booking.BookingID);

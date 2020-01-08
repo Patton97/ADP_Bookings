@@ -8,6 +8,8 @@ namespace ADP_Bookings.Models
 {
     public interface ICompanyRepository : IRepository<Company>
     {
+        //Get company, eagerload FKs
+
         //Get all companies, include full department record (not just FK reference)
         IEnumerable<Company> GetAll(bool includeDepartments);
     }

@@ -28,12 +28,12 @@ namespace ADP_Bookings.Presenters
         protected override void InitialiseForm()
         {
             //Assign title to form window
-            screen.Text = "ADP  > " + department.Company.Name + " > " + department.Name + " > Bookings";
+            screen.Text = "ADP: " + department.Company.Name + " > " + department.Name + " > Bookings";
 
-            //Populate department list
+            //Populate booking list
             LoadBookingList();
 
-            //Initialise current department panel
+            //Initialise current booking panel
             ClearCurrentRecord();
         }
 
@@ -144,7 +144,7 @@ namespace ADP_Bookings.Presenters
             //Store selected index for reload when user returns to this form
             int idx = screen.GetSelectedIndex();
             screen.Hide();
-            new Forms.frm_activities(selectedRecord.BookingID, screen.Text).ShowDialog();
+            new Forms.frm_activities(selectedRecord.BookingID).ShowDialog();
             //NOTE: ShowDialog() means the below code won't resume untidl above form is closed
 
             //Force reload to reflect any changes made to DB in other form(s)
@@ -242,16 +242,6 @@ namespace ADP_Bookings.Presenters
             }
         }
 
-        // Update existing record's FK relating to activities chosen
-        public static void UpdateBookingActivities(Booking booking)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Bookings.UpdateBookingActivities(booking);
-                unitOfWork.SaveChanges();
-            }
-        }
-
         // Delete record from Bookings table
         public static void DeleteBooking(Booking booking)
         {
@@ -267,7 +257,7 @@ namespace ADP_Bookings.Presenters
         {
             using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
             {
-                return unitOfWork.Departments.Get(departmentID);
+                return unitOfWork.Departments.Get(departmentID,true);
             }
         }
         public static Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
