@@ -22,7 +22,7 @@ namespace ADP_Bookings.Models
                     .Include(b => b.Activities)
                     .First();
             else
-                return Get(id);
+                return base.Get(id);
         }
 
         //Get all bookings, param toggles eager-loading FK data
@@ -35,7 +35,7 @@ namespace ADP_Bookings.Models
                     .OrderBy(b => b.BookingID)
                     .ToList();
             else
-                return GetAll();
+                return base.GetAll();
         }
 
         //Get all bookings made by a specific department, param toggles eager-loading FK data
