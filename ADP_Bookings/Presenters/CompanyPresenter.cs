@@ -20,10 +20,9 @@ namespace ADP_Bookings.Presenters
         {
             this.screen = screen;
             screen.Register(this);
-            InitialiseForm();
         }
 
-        protected override void InitialiseForm()
+        public override void InitialiseForm()
         {
             //Assign title to form window
             screen.Text = "ADP > Companies";

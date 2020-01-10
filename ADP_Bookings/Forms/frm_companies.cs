@@ -60,7 +60,7 @@ namespace ADP_Bookings.Forms
             InitialiseChangeTracker();
             presenter = new CompanyPresenter(this);
         }
-        private void frm_companies_Load(object sender, EventArgs e) { /**/ }
+        private void frm_companies_Load(object sender, EventArgs e) => presenter.InitialiseForm();
 
         //Used by presenter to register itself once succesfully constructed
         public void Register(CompanyPresenter presenter) => this.presenter = presenter;

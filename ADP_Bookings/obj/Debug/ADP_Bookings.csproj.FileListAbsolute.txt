@@ -1,4 +1,3 @@
-C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.csprojAssemblyReference.cache
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_activities.resources
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_bookings.resources
 C:\Users\User\Documents\GitHub\ADP_Bookings\ADP_Bookings\obj\Debug\ADP_Bookings.Forms.frm_companies.resources

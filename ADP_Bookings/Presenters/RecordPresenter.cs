@@ -31,7 +31,7 @@ namespace ADP_Bookings.Presenters
         //but are included to ensure any subclasses MUST include them
 
         //Initialise form & its components
-        protected abstract void InitialiseForm();
+        public abstract void InitialiseForm();
 
         //Load record for editing
         protected abstract void LoadRecord(T newRecord);

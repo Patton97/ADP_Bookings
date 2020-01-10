@@ -7,16 +7,16 @@ using System.Data.Entity;
 
 namespace ADP_Bookings.Models
 {
-    class CompanyRepository : Repository<Company>, ICompanyRepository
+    public class CompanyRepository : Repository<Company>, ICompanyRepository
     {
         public CompanyRepository(ADP_DBContext context) : base(context) { /* */ }
 
         //Get all companies
         //bool param forces eager loading of FK data
-        public IEnumerable<Company> GetAll(bool includeDepartments = false)
+        public IEnumerable<Company> GetAll(bool includeFKs = false)
         {
 
-            if (includeDepartments)
+            if (includeFKs)
                 return allEntities
                     .Include(c => c.Departments)
                     .OrderBy(c => c.CompanyID);

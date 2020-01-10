@@ -25,7 +25,7 @@ namespace ADP_Bookings.Presenters
             InitialiseForm();
         }
 
-        protected override void InitialiseForm()
+        public override void InitialiseForm()
         {
             //Assign title to form window
             screen.Text = "ADP: " + department.Company.Name + " > " + department.Name + " > Bookings";
