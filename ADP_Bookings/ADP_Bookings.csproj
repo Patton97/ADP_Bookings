@@ -130,7 +130,12 @@
     </Compile>
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\DepartmentModel.cs" />
+    <Compile Include="Models\CompanyModel.cs" />
     <Compile Include="Models\IRecord.cs" />
+    <Compile Include="Models\Unit of Work\IADP_DBContext.cs" />
+    <Compile Include="Models\Unit of Work\IUnitOfWorkFactory.cs" />
+    <Compile Include="Models\Unit of Work\UnitOfWorkFactory.cs" />
     <Compile Include="Presenters\ActivityPresenter.cs" />
     <Compile Include="Presenters\BookingPresenter.cs" />
     <Compile Include="Presenters\CompanyPresenter.cs" />

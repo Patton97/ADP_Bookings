@@ -183,84 +183,30 @@ namespace ADP_Bookings.Presenters
         //       but moved to presenter to reflect format given in week 5 lecture slides
 
         // Create new record in Departments table
-        public static void InsertNewDepartment(Department department)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                //Force department to use correct company - ambiguity can arise leading to record duplication
-                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
-                unitOfWork.Departments.Add(department);
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void InsertNewDepartment(Department department) => DepartmentModel.InsertNewDepartment(department, unitOfWorkFactory.Create());
 
         // Retrieve all records in Departments table
-        public static List<Department> GetAllDepartments()
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Departments.GetAll().ToList();
-            }
-        }
+        public List<Department> GetAllDepartments() => DepartmentModel.GetAllDepartments(unitOfWorkFactory.Create());
+
         // Retrieve all departments belonging to a specfied company
-        public static List<Department> GetAllDepartmentsFrom(Company company)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Departments.GetDepartmentsFromCompany(company, true).ToList();
-            }
-        }
+        public List<Department> GetAllDepartmentsFrom(Company company) => DepartmentModel.GetAllDepartmentsFrom(company, unitOfWorkFactory.Create());
 
         // Retrieve Department from specified ID
-        public static Department FindDepartment(int departmentID)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Departments.Get(departmentID);
-            }
-        }
-        public static Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
+        public Department FindDepartment(int departmentID) => DepartmentModel.FindDepartment(departmentID, unitOfWorkFactory.Create());
+        public Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
 
         // Reports purely success/failure of company retrieval
-        public static bool DepartmentExists(Department department) => FindDepartment(department) != null;
-                
+        public bool DepartmentExists(Department department) => DepartmentModel.DepartmentExists(department, unitOfWorkFactory.Create());
+
         // Update existing record in Departments table
-        public static void UpdateDepartment(Department department)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                //Force department to use correct company - ambiguity can arise leading to record duplication
-                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
-                unitOfWork.Departments.Update(department);
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void UpdateDepartment(Department department) => DepartmentModel.UpdateDepartment(department, unitOfWorkFactory.Create());
 
         // Delete record from Departments table
-        public static void DeleteDepartment(Department department)
-        {
-            //Ensure record actually exists before attempting to delete
-            if (!DepartmentExists(department))
-            {
-                Console.WriteLine("ERROR: Record delete failed!\n"
-                                + "       Department: #" + department.DepartmentID + "could not be found.");
-                return;
-            }
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Departments.Remove(unitOfWork.Departments.Get(department.DepartmentID));
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void DeleteDepartment(Department department) => DepartmentModel.DeleteDepartment(department, unitOfWorkFactory.Create());
 
         // Retrieve company from specified ID
-        public static Company FindCompany(int companyID)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Companies.Get(companyID);
-            }
-        }
-        public static Company FindCompany(Company company) => FindCompany(company.CompanyID);
+        // NOTE: These methods cause DepartmentPresenter to be couple with CompanyModel
+        public Company FindCompany(int companyID) => CompanyModel.FindCompany(companyID, unitOfWorkFactory.Create());
+        public Company FindCompany(Company company) => CompanyModel.FindCompany(company, unitOfWorkFactory.Create());
     }
 }

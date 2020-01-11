@@ -14,6 +14,7 @@ namespace ADP_Bookings.Presenters
 {
     public abstract class RecordPresenter<T> where T : IRecord
     {
+        protected IUnitOfWorkFactory unitOfWorkFactory; //Enables dependecy injection during testing
         protected List<T> records;
         protected T selectedRecord;
         protected bool ChangesPending = false; //Has the user begun editing the record yet
@@ -21,6 +22,7 @@ namespace ADP_Bookings.Presenters
         protected RecordPresenter()
         {
             records = new List<T>();
+            unitOfWorkFactory = new UnitOfWorkFactory();
         }
 
         // ********************************************************************************

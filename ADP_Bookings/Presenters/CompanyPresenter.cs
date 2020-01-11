@@ -163,73 +163,34 @@ namespace ADP_Bookings.Presenters
 
         // Form is being closed
         public void frm_companies_FormClosing(FormClosingEventArgs e) => CloseForm(e);
-        
+
         // ********************************************************************************
         // Model (UoW) Communication ******************************************************
         // ********************************************************************************
 
-        // Static classes used because they solely act as a communication window to the UoW
+        // Static class used because it solely act as a communication window to the UoW
         // NOTE: Not all functions here are necessarily used by the current application,
         //       their inclusion is in anticipation of future development requirements
-        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc)
-        //       but moved to presenter to reflect format given in week 5 lecture slides
+        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc) but moved
+        //       to presenter to reflect format given in week 5 lecture slides.
+        //       Arguably violates single-responsibility principle
 
         // Create new record in Companies table
-        public static void InsertNewCompany(Company company)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Companies.Add(company);
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void InsertNewCompany(Company company) => CompanyModel.InsertNewCompany(company, unitOfWorkFactory.Create());
 
         // Retrieve all records in Companies table
-        public static List<Company> GetAllCompanies()
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Companies.GetAll(true).ToList(); //bool param specifies eager loading of FK data
-            }
-        }
+        public List<Company> GetAllCompanies() => CompanyModel.GetAllCompanies(unitOfWorkFactory.Create());
 
         // Retrieve company from specified ID
-        public static Company FindCompany(Company company)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Companies.Get(company.CompanyID);
-            }
-        }
+        public Company FindCompany(Company company) => CompanyModel.FindCompany(company.CompanyID, unitOfWorkFactory.Create());
+
         // Reports purely success/failure of company retrieval
-        public static bool CompanyExists(Company company) => FindCompany(company) != null;
+        public bool CompanyExists(Company company) => CompanyModel.CompanyExists(company, unitOfWorkFactory.Create());
 
         // Update existing record in Companies table
-        public static void UpdateCompany(Company company)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Companies.Update(company);
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void UpdateCompany(Company company) => CompanyModel.UpdateCompany(company, unitOfWorkFactory.Create());
 
         // Delete record in Companies table
-        public static void DeleteCompany(Company company)
-        {
-            //Ensure record actually exists before attempting to delete
-            if(!CompanyExists(company))
-            {
-                Console.WriteLine("ERROR: Record delete failed!\n"
-                                + "       Company: #" + company.CompanyID + "could not be found.");
-                return;
-            }
-
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Companies.Remove(unitOfWork.Companies.Get(company.CompanyID));
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void DeleteCompany(Company company) => CompanyModel.DeleteCompany(company, unitOfWorkFactory.Create());
     }
 }

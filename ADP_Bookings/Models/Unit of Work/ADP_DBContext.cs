@@ -6,7 +6,7 @@ using System.Text;
 
 namespace ADP_Bookings.Models
 {
-    public class ADP_DBContext : DbContext
+    public class ADP_DBContext : DbContext, IADP_DBContext
     {
         public ADP_DBContext() : base("name=conString")
         {
