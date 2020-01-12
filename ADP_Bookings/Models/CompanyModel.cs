@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ADP_Bookings.Models
 {
-    public class CompanyModel : ICompanyModel
+    public class CompanyModel : RecordModel, ICompanyModel
     {
-        public CompanyModel() { }
-
-        private IUnitOfWork GetNewUnitOfWork() => new UnitOfWork(new ADP_DBContext());        
+        public CompanyModel(IUnitOfWorkFactory unitOfWorkFactory = null) : base(unitOfWorkFactory) { }
 
         // Retrieve all records in Companies table
         public List<Company> GetAllCompanies()
@@ -62,8 +60,6 @@ namespace ADP_Bookings.Models
                 }
             }
         }
-
-        
 
         // The below functions are private to force any Presenter to simply 
         // call SaveCompany(), and allow the Model to take over from there

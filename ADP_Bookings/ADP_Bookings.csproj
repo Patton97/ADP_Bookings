@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="Models\ActivityModel.cs" />
     <Compile Include="Models\IActivityModel.cs" />
+    <Compile Include="Models\RecordModel.cs" />
     <Compile Include="Models\Schemas\Activity.cs" />
     <Compile Include="Models\Schemas\Booking.cs" />
     <Compile Include="Models\BookingModel.cs" />
@@ -140,6 +141,8 @@
     <Compile Include="Models\IDepartmentModel.cs" />
     <Compile Include="Models\Schemas\IRecord.cs" />
     <Compile Include="Models\Unit of Work\IADP_DBContext.cs" />
+    <Compile Include="Models\Unit of Work\IUnitOfWorkFactory.cs" />
+    <Compile Include="Models\Unit of Work\UnitOfWorkFactory.cs" />
     <Compile Include="Presenters\ActivityPresenter.cs" />
     <Compile Include="Presenters\BookingPresenter.cs" />
     <Compile Include="Presenters\CompanyPresenter.cs" />

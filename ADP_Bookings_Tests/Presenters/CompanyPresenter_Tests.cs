@@ -44,11 +44,15 @@ namespace ADP_Bookings.Presenters.Tests
 
             #endregion Arrange
 
+            /**************************************************/
+
             #region Act            
 
             //Invoke the call being tested
             presenter.btn_AddCompany_Click();
             #endregion Act
+
+            /**************************************************/
 
             #region Assert
             // Request evaluation of screen properties
@@ -253,11 +257,7 @@ namespace ADP_Bookings.Presenters.Tests
         // ******************************************************************************** 
 
         // Evaluate the current properties on screen following test - entire function is "Assert"
-        // NOTE: Reduces code duplication, but there is dispute 
-        //       as to whether Unit Tests should be intra-dependant
-        // NOTE: VS throws a warning about TestMethods using parameters.
-        //       There's probably a much better way of doing this
-        void EvaluateScreen(Dictionary<string, object> expected, Moq.Mock<ICompanyGUI> mockView)
+        void EvaluateScreen(Dictionary<string, object> expected, Mock<ICompanyGUI> mockView)
         {
             // Declare actual values
             Dictionary<string, object> actual = new Dictionary<string, object>

@@ -35,7 +35,7 @@ namespace ADP_Bookings
                 Activity a = new Activity(0, "CLI_TEST", 36, "NotesTest");
                 unitOfWork.Activities.Add(a);
 
-                Company c = new Company(0, "CLI_TEST");
+                Company c = new Company(0, "CLI_TEST2");
                 unitOfWork.Companies.Add(c);
 
                 Department d = new Department(0, "CLI_TEST", c);

@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace ADP_Bookings.Models
 {
-    public class BookingModel : IBookingModel
+    public class BookingModel : RecordModel, IBookingModel
     {
-        public BookingModel() { /* */ }
+        public BookingModel(IUnitOfWorkFactory unitOfWorkFactory = null) : base(unitOfWorkFactory) { }
 
-        private IUnitOfWork GetNewUnitOfWork() => GetNewUnitOfWork();
-        
         // Retrieve all records from Bookings table
         public List<Booking> GetAllBookings()
         {

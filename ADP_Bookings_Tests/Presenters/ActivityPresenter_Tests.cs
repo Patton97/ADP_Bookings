@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Autofac.Extras.Moq;
 using Moq;
 
-// Required due to folder/namespace structure
+// Required to create mocks of these layers
 using ADP_Bookings.Views;
 using ADP_Bookings.Models;
 

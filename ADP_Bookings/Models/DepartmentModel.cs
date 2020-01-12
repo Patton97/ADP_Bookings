@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace ADP_Bookings.Models
 {
-    public class DepartmentModel : IDepartmentModel
+    public class DepartmentModel : RecordModel, IDepartmentModel
     {
-        public DepartmentModel() { }
-
-        private IUnitOfWork GetNewUnitOfWork() => new UnitOfWork(new ADP_DBContext());
+        public DepartmentModel(IUnitOfWorkFactory unitOfWorkFactory = null) : base(unitOfWorkFactory) { }
 
         // Retrieve all records in Departments table
         public List<Department> GetAllDepartments()
