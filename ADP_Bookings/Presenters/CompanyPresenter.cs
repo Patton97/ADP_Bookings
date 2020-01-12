@@ -15,12 +15,16 @@ namespace ADP_Bookings.Presenters
     public class CompanyPresenter : RecordPresenter<Company> 
     {
         ICompanyGUI screen; //view
+        ICompanyModel model;
 
-        public CompanyPresenter(ICompanyGUI screen) : base()
+        public CompanyPresenter(ICompanyGUI screen, ICompanyModel model) : base(screen)
         {
             this.screen = screen;
             screen.Register(this);
+            this.model = model;
+            InitialiseForm();
         }
+        public CompanyPresenter(ICompanyGUI screen) : this(screen, new CompanyModel()) { /* */}
 
         public override void InitialiseForm()
         {
@@ -90,12 +94,12 @@ namespace ADP_Bookings.Presenters
         {
             if (selectedRecord == null)
             {
-                MessageBox.Show("No company selected.", "Cannot delete company", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                screen.ShowMessageBox("No company selected.", "Cannot delete company", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            var confirmResult = MessageBox.Show("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
-                                                "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            var confirmResult = screen.ShowMessageBox("This company and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                  "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirmResult == DialogResult.Yes)
             {
                 DeleteCompany(selectedRecord);
@@ -124,15 +128,15 @@ namespace ADP_Bookings.Presenters
         //Save company data back to database
         protected override void SaveRecord()
         {
-            // Update any editable fields
-            // NOTE: Future development pass could instead map the below and iterate
-            selectedRecord.Name = screen.CurrentCompanyName;
+            // Only perform save if record has been changed
+            if (ChangesPending)
+            {
+                // Update any editable fields
+                selectedRecord.Name = screen.CurrentCompanyName;
 
-            // Send to DB
-            if (CompanyExists(selectedRecord))
-                UpdateCompany(selectedRecord);
-            else
-                InsertNewCompany(selectedRecord);
+                // Send to Model
+                SaveCompany(selectedRecord);
+            }
 
             // Reload form components to reflect changes
             ClearCurrentRecord();
@@ -166,31 +170,21 @@ namespace ADP_Bookings.Presenters
 
         // ********************************************************************************
         // Model (UoW) Communication ******************************************************
-        // ********************************************************************************
-
-        // Static class used because it solely act as a communication window to the UoW
-        // NOTE: Not all functions here are necessarily used by the current application,
-        //       their inclusion is in anticipation of future development requirements
-        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc) but moved
-        //       to presenter to reflect format given in week 5 lecture slides.
-        //       Arguably violates single-responsibility principle
-
-        // Create new record in Companies table
-        public void InsertNewCompany(Company company) => CompanyModel.InsertNewCompany(company, unitOfWorkFactory.Create());
+        // ********************************************************************************        
 
         // Retrieve all records in Companies table
-        public List<Company> GetAllCompanies() => CompanyModel.GetAllCompanies(unitOfWorkFactory.Create());
+        public List<Company> GetAllCompanies() => model.GetAllCompanies();
 
         // Retrieve company from specified ID
-        public Company FindCompany(Company company) => CompanyModel.FindCompany(company.CompanyID, unitOfWorkFactory.Create());
+        public Company FindCompany(Company company) => model.FindCompany(company.CompanyID);
 
         // Reports purely success/failure of company retrieval
-        public bool CompanyExists(Company company) => CompanyModel.CompanyExists(company, unitOfWorkFactory.Create());
+        public bool CompanyExists(Company company) => model.CompanyExists(company);
 
-        // Update existing record in Companies table
-        public void UpdateCompany(Company company) => CompanyModel.UpdateCompany(company, unitOfWorkFactory.Create());
+        // Save record in Companies table - model will determine whether to Create/Update
+        public void SaveCompany(Company company) => model.SaveCompany(company);
 
         // Delete record in Companies table
-        public void DeleteCompany(Company company) => CompanyModel.DeleteCompany(company, unitOfWorkFactory.Create());
+        public void DeleteCompany(Company company) => model.DeleteCompany(company);        
     }
 }

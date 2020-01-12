@@ -15,15 +15,18 @@ namespace ADP_Bookings.Presenters
     public class ActivityPresenter : RecordPresenter<Activity>
     {
         IActivityGUI screen; //view
+        IActivityModel model;
         Booking booking; //The booking the displayed activities belong to
 
-        public ActivityPresenter(IActivityGUI screen, int bookingID)
+        public ActivityPresenter(IActivityGUI screen, IActivityModel model, int bookingID) : base(screen)
         {
             this.screen = screen;
             screen.Register(this);
             this.booking = FindBooking(bookingID);
+            this.model = model;
             InitialiseForm();
         }
+        public ActivityPresenter(IActivityGUI screen, int bookingID) : this(screen, new ActivityModel(), bookingID) { /* */ }
 
         public override void InitialiseForm()
         {
@@ -86,18 +89,17 @@ namespace ADP_Bookings.Presenters
         //Save activity data back to database
         protected override void SaveRecord()
         {
-            // Update any editable fields
-            // NOTE: Future development pass could instead map the below and iterate
-            selectedRecord.Name = screen.CurrentActivityName;
-            selectedRecord.Cost = float.Parse(screen.CurrentActivityCost.ToString());
-            selectedRecord.Notes = screen.CurrentActivityNotes;
+            if (ChangesPending)
+            {
+                // Update any editable fields
+                // NOTE: Future development pass could instead map the below and iterate
+                selectedRecord.Name = screen.CurrentActivityName;
+                selectedRecord.Cost = float.Parse(screen.CurrentActivityCost.ToString());
+                selectedRecord.Notes = screen.CurrentActivityNotes;
 
-            // Send to DB
-            if (ActivityExists(selectedRecord))
-                UpdateActivity(selectedRecord);
-            else
-                InsertNewActivity(selectedRecord);
-
+                // Send to DB
+                SaveActivity(selectedRecord);
+            }
             // Reload form components to reflect changes
             ClearCurrentRecord();
             LoadActivityList();
@@ -123,11 +125,11 @@ namespace ADP_Bookings.Presenters
         {
             if (selectedRecord == null)
             {
-                MessageBox.Show("No booking selected.", "Cannot delete booking", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                screen.ShowMessageBox("No booking selected.", "Cannot delete booking", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            var confirmResult = MessageBox.Show("This activity will be deleted and removed from all bookings.\nThis cannot be undone!",
+            var confirmResult = screen.ShowMessageBox("This activity will be deleted and removed from all bookings.\nThis cannot be undone!",
                                                 "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirmResult == DialogResult.Yes)
             {
@@ -145,26 +147,7 @@ namespace ADP_Bookings.Presenters
         void DisableActivityListDisplay() => screen.ActivityList_Enabled = false;
         //Current Activity Display
         void EnableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = true;
-        void DisableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = false;
-
-        // This function is required as Activity records do not hold an FK to bookings which posses them
-        // so any changes regarding CHOSEN activities need to be sent back to the Bookings table itself
-        void UpdateBooking()
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                List<Activity> activities = unitOfWork.Bookings.Get(booking.BookingID).Activities.ToList();
-                //First remove all activities from DB record
-                foreach(Activity a in activities)
-                    unitOfWork.Bookings.Get(booking.BookingID).Activities.Remove(a);
-                
-                //Then add new selection
-                foreach (int i in screen.GetChosenActivities())
-                    unitOfWork.Bookings.Get(booking.BookingID).Activities.Add(unitOfWork.Activities.Get(records[i].ActivityID));
-
-                unitOfWork.SaveChanges();
-            }
-        }
+        void DisableCurrentActivityDisplay() => screen.CurrentActivity_Enabled = false;        
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
@@ -187,73 +170,27 @@ namespace ADP_Bookings.Presenters
         // Model (UoW) Communication ******************************************************
         // ********************************************************************************
 
-        // Static classes used because they solely act as a communication window to the UoW
-        // NOTE: Not all functions here are necessarily used by the current application,
-        //       their inclusion is in anticipation of future development requirements
-        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc)
-        //       but moved to presenter to reflect format given in week 5 lecture slides
-
-        // Creates new record in Activities table
-        public static void InsertNewActivity(Activity activity)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Activities.Add(activity);
-                unitOfWork.SaveChanges();
-            }
-        }
-
         // Retrieve all records from the Activities table
-        public static List<Activity> GetAllActivities()
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Activities.GetAll().ToList();
-            }
-        }
+        public List<Activity> GetAllActivities() => model.GetAllActivities();
 
         // Retrieve activity from specified ID
-        public static Activity FindActivity(int activityID)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Activities.Get(activityID);
-            }
-        }
-        public static Activity FindActivity(Activity activity) => FindActivity(activity.ActivityID);
+        public Activity FindActivity(int activityID)    => model.FindActivity(activityID);
+        public Activity FindActivity(Activity activity) => model.FindActivity(activity);
 
         // Reports purely success/failure of activity retrieval
-        public static bool ActivityExists(Activity activity) => FindActivity(activity) != null;
+        public bool ActivityExists(Activity activity) => model.ActivityExists(activity);
 
-        // Update existing record in Activities table
-        public static void UpdateActivity(Activity activity)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Activities.Update(activity);
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void SaveActivity(Activity activity) => model.SaveActivity(activity);
 
         // Delete record from Activities table
-        public static void DeleteActivity(Activity activity)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Activities.Remove(unitOfWork.Activities.Get(activity.ActivityID));
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void DeleteActivity(Activity activity) => model.DeleteActivity(activity);
 
-        
         // Retrieve booking from a specified ID
-        public static Booking FindBooking(int bookingID)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Bookings.Get(bookingID, true);
-            }
-        }
-        public static Booking FindBooking(Booking booking) => FindBooking(booking.BookingID);
+        public Booking FindBooking(int bookingID)   => model.FindBooking(bookingID);
+        public Booking FindBooking(Booking booking) => model.FindBooking(booking);
+
+        // This function is required as Activity records do not hold an FK to bookings which posses them
+        // so any changes regarding CHOSEN activities need to be sent back to the Bookings table itself
+        void UpdateBooking() => model.UpdateBooking(booking, screen.GetChosenActivities().ToList());
     }
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ADP_Bookings.Models;
 
 // Project Specific imports
 // Required due to folder structure
@@ -108,6 +109,11 @@ namespace ADP_Bookings.Forms
             EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_DepartmentID.TextChanged += handler;
             txt_DepartmentName.TextChanged += handler;
+        }
+
+        public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            return MessageBox.Show(text, caption, buttons, icon);
         }
 
         public int[] GetSelectedIndices() => lvw_Departments.SelectedIndices.Cast<int>().ToArray();

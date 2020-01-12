@@ -6,71 +6,60 @@ using System.Threading.Tasks;
 
 namespace ADP_Bookings.Models
 {
-    public static class DepartmentModel
+    public class DepartmentModel : IDepartmentModel
     {
-        // Create new record in Departments table
-        public static void InsertNewDepartment(Department department, IUnitOfWork uow)
+        public DepartmentModel() { }
+
+        private IUnitOfWork GetNewUnitOfWork() => new UnitOfWork(new ADP_DBContext());
+
+        // Retrieve all records in Departments table
+        public List<Department> GetAllDepartments()
         {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
-                //Force department to use correct company - ambiguity can arise leading to record duplication
-                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
-                unitOfWork.Departments.Add(department);
-                unitOfWork.SaveChanges();
+                return unitOfWork.Departments.GetAll(true).ToList(); //bool param specifies eager loading of FK data
             }
         }
 
         // Retrieve all records in Departments table
-        public static List<Department> GetAllDepartments(IUnitOfWork uow)
+        public List<Department> GetAllDepartmentsFrom(Company company)
         {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
-                return unitOfWork.Departments.GetAll().ToList();
+                return unitOfWork.Departments.GetDepartmentsFromCompany(company,true).ToList(); //bool param specifies eager loading of FK data
             }
         }
 
-        // Retrieve all departments belonging to a specfied company
-        public static List<Department> GetAllDepartmentsFrom(Company company, IUnitOfWork uow)
+        // Retrieve department from specified ID
+        public Department FindDepartment(int departmentID)
         {
-            using (var unitOfWork = uow)
-            {
-                return unitOfWork.Departments.GetDepartmentsFromCompany(company, true).ToList();
-            }
-        }
-
-        // Retrieve Department from specified ID
-        public static Department FindDepartment(int departmentID, IUnitOfWork uow)
-        {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
                 return unitOfWork.Departments.Get(departmentID);
             }
         }
-        public static Department FindDepartment(Department department, IUnitOfWork uow) => FindDepartment(department.DepartmentID, uow);
+        public Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
 
-        // Reports purely success/failure of company retrieval
-        public static bool DepartmentExists(Department department, IUnitOfWork uow) => FindDepartment(department, uow) != null;
+        // Reports purely success/failure of department retrieval
+        public bool DepartmentExists(Department department) => FindDepartment(department) != null;
 
-        // Update existing record in Departments table
-        public static void UpdateDepartment(Department department, IUnitOfWork uow)
+        // Save record in Departments table
+        public void SaveDepartment(Department department)
         {
-            using (var unitOfWork = uow)
-            {
-                //Force department to use correct company - ambiguity can arise leading to record duplication
-                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
-                unitOfWork.Departments.Update(department);
-                unitOfWork.SaveChanges();
-            }
+            // Determine whether to Create/Update
+            if (DepartmentExists(department))
+                UpdateDepartment(department);
+            else
+                CreateDepartment(department);
         }
 
-        // Delete record from Departments table
-        public static void DeleteDepartment(Department department, IUnitOfWork uow)
+        // Delete record in Departments table
+        public void DeleteDepartment(Department department)
         {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
                 //Ensure record actually exists before attempting to delete
-                //Current uow var is sent so both operations occur within same UoW
-                if (!DepartmentExists(department, uow))
+                if (!DepartmentExists(department))
                 {
                     Console.WriteLine("ERROR: Record delete failed!\n"
                                     + "       Department: #" + department.DepartmentID + "could not be found.");
@@ -82,5 +71,41 @@ namespace ADP_Bookings.Models
                 }
             }
         }
+
+        // The below functions are private to force any Presenter to simply 
+        // call SaveDepartment(), and allow the Model to take over from there
+
+        // Create new record in Departments table
+        private void CreateDepartment(Department department)
+        {
+            using (var unitOfWork = GetNewUnitOfWork())
+            {
+                unitOfWork.Departments.Add(department);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Update existing record in Departments table
+        private void UpdateDepartment(Department department)
+        {
+            using (var unitOfWork = GetNewUnitOfWork())
+            {
+                unitOfWork.Departments.Update(department);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // The below functions access the CompanyRepo, which breaks SRP
+        // but given time constraints this acts as a quick fix
+
+        // Retrieve company from specified ID
+        public Company FindCompany(int companyID)
+        {
+            using (var unitOfWork = GetNewUnitOfWork())
+            {
+                return unitOfWork.Companies.Get(companyID);
+            }
+        }
+        public Company FindCompany(Company company) => FindCompany(company.CompanyID);
     }
 }

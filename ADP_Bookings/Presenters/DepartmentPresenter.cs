@@ -15,15 +15,18 @@ namespace ADP_Bookings.Presenters
     public class DepartmentPresenter : RecordPresenter<Department>
     {
         IDepartmentGUI screen; //view
+        IDepartmentModel model; //model
         Company company; //The company the displayed departments belong to
 
-        public DepartmentPresenter(IDepartmentGUI screen, int companyID)
+        public DepartmentPresenter(IDepartmentGUI screen, IDepartmentModel model, int companyID ) : base(screen)
         {
             this.screen = screen;
             screen.Register(this);
-            this.company = FindCompany(companyID);
+            this.model = model;
+            this.company = model.FindCompany(companyID);
             InitialiseForm();
         }
+        public DepartmentPresenter(IDepartmentGUI screen, int companyID) : this(screen, new DepartmentModel(), companyID) { /* */ }
 
         public override void InitialiseForm()
         {
@@ -95,15 +98,15 @@ namespace ADP_Bookings.Presenters
         //Save department record back to database
         protected override void SaveRecord()
         {
-            // Update any editable fields
-            // NOTE: Future development pass could instead map the below and iterate
-            selectedRecord.Name = screen.CurrentDepartmentName;
+            // Only perform save if record has been changed
+            if (ChangesPending)
+            {
+                // Update any editable fields
+                selectedRecord.Name = screen.CurrentDepartmentName;
 
-            // Send to DB
-            if (DepartmentExists(selectedRecord))
-                UpdateDepartment(selectedRecord);
-            else
-                InsertNewDepartment(selectedRecord);
+                // Send to Model
+                SaveDepartment(selectedRecord);
+            }
 
             // Reload form components to reflect changes
             ClearCurrentRecord();
@@ -114,12 +117,12 @@ namespace ADP_Bookings.Presenters
         {
             if (selectedRecord == null)
             {
-                MessageBox.Show("No department selected.", "Cannot delete department", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                screen.ShowMessageBox("No department selected.", "Cannot delete department", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                var confirmResult = MessageBox.Show("This department and all associated records will be permenantly deleted.\nThis cannot be undone!",
-                                                    "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var confirmResult = screen.ShowMessageBox("This department and all associated records will be permenantly deleted.\nThis cannot be undone!",
+                                                          "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (confirmResult == DialogResult.Yes)
                 {
                     DeleteDepartment(selectedRecord);
@@ -181,32 +184,30 @@ namespace ADP_Bookings.Presenters
         //       their inclusion is in anticipation of future development requirements
         // NOTE: Originally stored in separate classes (DepartmentModel.cs, etc)
         //       but moved to presenter to reflect format given in week 5 lecture slides
-
-        // Create new record in Departments table
-        public void InsertNewDepartment(Department department) => DepartmentModel.InsertNewDepartment(department, unitOfWorkFactory.Create());
-
+        
         // Retrieve all records in Departments table
-        public List<Department> GetAllDepartments() => DepartmentModel.GetAllDepartments(unitOfWorkFactory.Create());
+        public List<Department> GetAllDepartments() => model.GetAllDepartments();
 
         // Retrieve all departments belonging to a specfied company
-        public List<Department> GetAllDepartmentsFrom(Company company) => DepartmentModel.GetAllDepartmentsFrom(company, unitOfWorkFactory.Create());
+        public List<Department> GetAllDepartmentsFrom(Company company) => model.GetAllDepartmentsFrom(company);
 
         // Retrieve Department from specified ID
-        public Department FindDepartment(int departmentID) => DepartmentModel.FindDepartment(departmentID, unitOfWorkFactory.Create());
+        public Department FindDepartment(int departmentID) => model.FindDepartment(departmentID);
         public Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
 
         // Reports purely success/failure of company retrieval
-        public bool DepartmentExists(Department department) => DepartmentModel.DepartmentExists(department, unitOfWorkFactory.Create());
-
-        // Update existing record in Departments table
-        public void UpdateDepartment(Department department) => DepartmentModel.UpdateDepartment(department, unitOfWorkFactory.Create());
+        public bool DepartmentExists(Department department) => model.DepartmentExists(department);
 
         // Delete record from Departments table
-        public void DeleteDepartment(Department department) => DepartmentModel.DeleteDepartment(department, unitOfWorkFactory.Create());
+        public void DeleteDepartment(Department department) => model.DeleteDepartment(department);
+
+        // Save record in Departments table - model will determine whether to Create/Update
+        public void SaveDepartment(Department department) => model.SaveDepartment(department);
 
         // Retrieve company from specified ID
         // NOTE: These methods cause DepartmentPresenter to be couple with CompanyModel
-        public Company FindCompany(int companyID) => CompanyModel.FindCompany(companyID, unitOfWorkFactory.Create());
-        public Company FindCompany(Company company) => CompanyModel.FindCompany(company, unitOfWorkFactory.Create());
+        //public Company FindCompany(int companyID) => CompanyModel.FindCompany(companyID);
+        //public Company FindCompany(Company company) => CompanyModel.FindCompany(company);
+        //public Company FindCompany(Company company) => CompanyModel.FindCompany(company);
     }
 }

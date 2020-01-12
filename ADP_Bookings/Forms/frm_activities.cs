@@ -122,6 +122,10 @@ namespace ADP_Bookings.Forms
             rtx_ActivityNotes.TextChanged += handler;
         }
 
+        public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            return MessageBox.Show(text, caption, buttons, icon);
+        }
 
         public int[] GetSelectedIndices() => lvw_Activities.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];

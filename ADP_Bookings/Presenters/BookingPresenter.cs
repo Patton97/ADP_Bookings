@@ -15,15 +15,18 @@ namespace ADP_Bookings.Presenters
     public class BookingPresenter : RecordPresenter<Booking>
     {
         IBookingGUI screen; //view
+        IBookingModel model;
         Department department; //The department the displayed bookings belong to
 
-        public BookingPresenter(IBookingGUI screen, int departmentID)
+        public BookingPresenter(IBookingGUI screen, IBookingModel model, int departmentID) : base(screen)
         {
             this.screen = screen;
             screen.Register(this);
-            this.department = FindDepartment(departmentID);
+            this.model = model;
+            this.department = FindDepartment(departmentID);            
             InitialiseForm();
         }
+        public BookingPresenter(IBookingGUI screen, int departmentID) : this(screen, new BookingModel(), departmentID) { /* */ }
 
         public override void InitialiseForm()
         {
@@ -84,17 +87,16 @@ namespace ADP_Bookings.Presenters
         //Save department data back to database
         protected override void SaveRecord()
         {
-            // Update any editable fields
-            // NOTE: Future development pass could instead map the below and iterate
-            selectedRecord.Name = screen.CurrentBookingName;
-            selectedRecord.Date = screen.CurrentBookingDate;
-            selectedRecord.EstimatedCost = float.Parse(screen.CurrentBookingCost.ToString());
+            if (ChangesPending)
+            {
+                // Update any editable fields
+                // NOTE: Future development pass could instead map the below and iterate
+                selectedRecord.Name = screen.CurrentBookingName;
+                selectedRecord.Date = screen.CurrentBookingDate;
+                selectedRecord.EstimatedCost = float.Parse(screen.CurrentBookingCost.ToString());
 
-            // Send to DB
-            if (BookingExists(selectedRecord))
-                UpdateBooking(selectedRecord);
-            else
-                InsertNewBooking(selectedRecord);
+                SaveBooking(selectedRecord);
+            }
 
             //Reload form components to reflect changes
             ClearCurrentRecord();
@@ -122,13 +124,13 @@ namespace ADP_Bookings.Presenters
             //Reject attempts to delete non-existent records
             if (selectedRecord == null)
             {
-                MessageBox.Show("No booking selected.", "Cannot delete booking", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                screen.ShowMessageBox("No booking selected.", "Cannot delete booking", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             
             //selectedRecord is not null
-            var confirmResult = MessageBox.Show("This booking will be permenantly deleted.\nThis cannot be undone!",
-                                                "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            var confirmResult = screen.ShowMessageBox("This booking will be permenantly deleted.\nThis cannot be undone!",
+                                                      "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (confirmResult == DialogResult.Yes)
             {
                 DeleteBooking(selectedRecord);
@@ -183,83 +185,26 @@ namespace ADP_Bookings.Presenters
         // Model (UoW) Communication ******************************************************
         // ********************************************************************************
 
-        // Static classes used because they solely act as a communication window to the UoW
-        // NOTE: Not all functions here are necessarily used by the current application,
-        //       their inclusion is in anticipation of future development requirements
-        // NOTE: Originally stored in separate classes (CompanyModel.cs, etc)
-        //       but moved to presenter to reflect format given in week 5 lecture slides
-
-        // Create new record in Bookings table
-        public static void InsertNewBooking(Booking booking)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                //Force booking to use correct department - ambiguity can arise leading to record duplication
-                booking.Department = unitOfWork.Departments.Get(booking.Department.DepartmentID);
-                unitOfWork.Bookings.Add(booking);
-                unitOfWork.SaveChanges();
-            }
-        }
-
         // Retrieve all records from Bookings table
-        public static List<Booking> GetAllBookings()
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Bookings.GetAll().ToList();
-            }
-        }
+        public List<Booking> GetAllBookings() => model.GetAllBookings();
 
         // Retrieve all bookings belonging to a specified department
-        public static List<Booking> GetAllBookingsFrom(Department department)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Bookings.GetAllBookingsFromDepartment(department, true).ToList();
-            }
-        }
+        public List<Booking> GetAllBookingsFrom(Department department) => model.GetAllBookingsFrom(department);
 
         // Retrieve booking from a specified ID
-        public static Booking FindBooking(Booking booking)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Bookings.Get(booking.BookingID);
-            }
-        }
-        // Reports purely on the success/failure of booking retrieval
-        public static bool BookingExists(Booking booking) => FindBooking(booking) != null;
+        public Booking FindBooking(Booking booking) => model.FindBooking(booking);
 
-        // Update existing record in Bookings table
-        public static void UpdateBooking(Booking booking)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                //Force booking to use correct department - ambiguity can arise leading to record duplication
-                booking.Department = unitOfWork.Departments.Get(booking.Department.DepartmentID);
-                unitOfWork.Bookings.Update(booking);
-                unitOfWork.SaveChanges();
-            }
-        }
+        // Reports purely on the success/failure of booking retrieval
+        public bool BookingExists(Booking booking) => model.FindBooking(booking) != null;
+
+        // Save record in Bookings table - model will determine whether to Create/Update
+        public void SaveBooking(Booking booking) => model.SaveBooking(booking);
 
         // Delete record from Bookings table
-        public static void DeleteBooking(Booking booking)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                unitOfWork.Bookings.Remove(unitOfWork.Bookings.Get(booking.BookingID));
-                unitOfWork.SaveChanges();
-            }
-        }
+        public void DeleteBooking(Booking booking) => model.DeleteBooking(booking);
 
         // Retrieve Department from specified ID
-        public static Department FindDepartment(int departmentID)
-        {
-            using (var unitOfWork = new UnitOfWork(new ADP_DBContext()))
-            {
-                return unitOfWork.Departments.Get(departmentID,true);
-            }
-        }
-        public static Department FindDepartment(Department department) => FindDepartment(department.DepartmentID);
+        public Department FindDepartment(int departmentID) => model.FindDepartment(departmentID);
+        public Department FindDepartment(Department department) => model.FindDepartment(department.DepartmentID);
     }
 }

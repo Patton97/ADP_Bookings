@@ -121,6 +121,11 @@ namespace ADP_Bookings.Forms
             nud_BookingCost.ValueChanged += handler;
         }
 
+        public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            return MessageBox.Show(text, caption, buttons, icon);
+        }
+
         public int[] GetSelectedIndices() => lvw_Bookings.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
 

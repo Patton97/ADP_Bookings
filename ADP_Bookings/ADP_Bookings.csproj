@@ -128,14 +128,18 @@
     <Compile Include="Migrations\202001051326198_Test.designer.cs">
       <DependentUpon>202001051326198_Test.cs</DependentUpon>
     </Compile>
-    <Compile Include="Models\Activity.cs" />
-    <Compile Include="Models\Booking.cs" />
+    <Compile Include="Models\ActivityModel.cs" />
+    <Compile Include="Models\IActivityModel.cs" />
+    <Compile Include="Models\Schemas\Activity.cs" />
+    <Compile Include="Models\Schemas\Booking.cs" />
+    <Compile Include="Models\BookingModel.cs" />
     <Compile Include="Models\DepartmentModel.cs" />
     <Compile Include="Models\CompanyModel.cs" />
-    <Compile Include="Models\IRecord.cs" />
+    <Compile Include="Models\IBookingModel.cs" />
+    <Compile Include="Models\ICompanyModel.cs" />
+    <Compile Include="Models\IDepartmentModel.cs" />
+    <Compile Include="Models\Schemas\IRecord.cs" />
     <Compile Include="Models\Unit of Work\IADP_DBContext.cs" />
-    <Compile Include="Models\Unit of Work\IUnitOfWorkFactory.cs" />
-    <Compile Include="Models\Unit of Work\UnitOfWorkFactory.cs" />
     <Compile Include="Presenters\ActivityPresenter.cs" />
     <Compile Include="Presenters\BookingPresenter.cs" />
     <Compile Include="Presenters\CompanyPresenter.cs" />
@@ -153,8 +157,8 @@
     <Compile Include="Models\Repositories\DepartmentRepository.cs" />
     <Compile Include="Models\Repositories\CompanyRepository.cs" />
     <Compile Include="Models\Repositories\BookingRepository.cs" />
-    <Compile Include="Models\Company.cs" />
-    <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\Schemas\Company.cs" />
+    <Compile Include="Models\Schemas\Department.cs" />
     <Compile Include="Models\Unit of Work\ADP_DBContext.cs" />
     <Compile Include="Models\Repositories\IActivityRepository.cs" />
     <Compile Include="Models\Repositories\IDepartmentRepository.cs" />

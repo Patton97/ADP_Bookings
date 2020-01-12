@@ -6,58 +6,51 @@ using System.Threading.Tasks;
 
 namespace ADP_Bookings.Models
 {
-    public static class CompanyModel
+    public class CompanyModel : ICompanyModel
     {
-        // Create new record in Companies table
-        public static void InsertNewCompany(Company company, IUnitOfWork uow)
-        {
-            using (var unitOfWork = uow)
-            {
-                unitOfWork.Companies.Add(company);
-                unitOfWork.SaveChanges();
-            }
-        }
+        public CompanyModel() { }
+
+        private IUnitOfWork GetNewUnitOfWork() => new UnitOfWork(new ADP_DBContext());        
 
         // Retrieve all records in Companies table
-        public static List<Company> GetAllCompanies(IUnitOfWork uow)
+        public List<Company> GetAllCompanies()
         {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
                 return unitOfWork.Companies.GetAll(true).ToList(); //bool param specifies eager loading of FK data
             }
         }
 
         // Retrieve company from specified ID
-        public static Company FindCompany(int companyID, IUnitOfWork uow)
+        public Company FindCompany(int companyID)
         {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
                 return unitOfWork.Companies.Get(companyID);
             }
         }
-        public static Company FindCompany(Company company, IUnitOfWork uow) => FindCompany(company.CompanyID, uow);
+        public Company FindCompany(Company company) => FindCompany(company.CompanyID);
 
         // Reports purely success/failure of company retrieval
-        public static bool CompanyExists(Company company, IUnitOfWork uow) => FindCompany(company, uow) != null;
-
-        // Update existing record in Companies table
-        public static void UpdateCompany(Company company, IUnitOfWork uow)
+        public bool CompanyExists(Company company) => FindCompany(company) != null;
+        
+        // Save record in Companies table
+        public void SaveCompany(Company company)
         {
-            using (var unitOfWork = uow)
-            {
-                unitOfWork.Companies.Update(company);
-                unitOfWork.SaveChanges();
-            }
+            // Determine whether to Create/Update
+            if (CompanyExists(company))
+                UpdateCompany(company);
+            else
+                CreateCompany(company);
         }
 
         // Delete record in Companies table
-        public static void DeleteCompany(Company company, IUnitOfWork uow)
+        public void DeleteCompany(Company company)
         {
-            using (var unitOfWork = uow)
+            using (var unitOfWork = GetNewUnitOfWork())
             {
                 //Ensure record actually exists before attempting to delete
-                //Current uow var is sent so both operations occur within same UoW
-                if (!CompanyExists(company,uow)) 
+                if (!CompanyExists(company)) 
                 {
                     Console.WriteLine("ERROR: Record delete failed!\n"
                                     + "       Company: #" + company.CompanyID + "could not be found.");
@@ -67,6 +60,31 @@ namespace ADP_Bookings.Models
                     unitOfWork.Companies.Remove(unitOfWork.Companies.Get(company.CompanyID));
                     unitOfWork.SaveChanges();
                 }
+            }
+        }
+
+        
+
+        // The below functions are private to force any Presenter to simply 
+        // call SaveCompany(), and allow the Model to take over from there
+
+        // Create new record in Companies table
+        private void CreateCompany(Company company)
+        {
+            using (var unitOfWork = GetNewUnitOfWork())
+            {
+                unitOfWork.Companies.Add(company);
+                unitOfWork.SaveChanges();
+            }
+        }
+
+        // Update existing record in Companies table
+        private void UpdateCompany(Company company)
+        {
+            using (var unitOfWork = GetNewUnitOfWork())
+            {
+                unitOfWork.Companies.Update(company);
+                unitOfWork.SaveChanges();
             }
         }
     }

@@ -107,12 +107,21 @@ namespace ADP_Bookings.Forms
             txt_CompanyName.TextChanged += tracker;
         }
 
+        // Allows MessageBox calls to be abstracted to View layer only
+        // Also means tests do not *actually* show a messagebox
+        public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            return MessageBox.Show(text, caption, buttons, icon);
+        }
+
         // Utility functions to retrieve currently selected list indices
         public int[] GetSelectedIndices() => lvw_companies.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
         // Allows presenter to manually override selected indices
         public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_companies.Items[index].Selected = true);
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[]{index});
+
+        
 
         // ********************************************************************************
         // Event Handlers *****************************************************************

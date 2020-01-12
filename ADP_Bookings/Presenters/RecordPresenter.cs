@@ -14,15 +14,15 @@ namespace ADP_Bookings.Presenters
 {
     public abstract class RecordPresenter<T> where T : IRecord
     {
-        protected IUnitOfWorkFactory unitOfWorkFactory; //Enables dependecy injection during testing
+        private IRecordGUI screen;
         protected List<T> records;
         protected T selectedRecord;
         protected bool ChangesPending = false; //Has the user begun editing the record yet
 
-        protected RecordPresenter()
+        protected RecordPresenter(IRecordGUI screen)
         {
+            this.screen = screen;
             records = new List<T>();
-            unitOfWorkFactory = new UnitOfWorkFactory();
         }
 
         // ********************************************************************************
@@ -61,8 +61,8 @@ namespace ADP_Bookings.Presenters
             //If a company is already being edited
             if (ChangesPending)
             {
-                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?",
-                                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                var confirmResult = screen.ShowMessageBox("Would you like to save your changes?", "Save Changes?",
+                                                           MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 //Save changes, add new record
                 if (confirmResult == DialogResult.Yes)
                     SaveRecord();
@@ -82,7 +82,8 @@ namespace ADP_Bookings.Presenters
             //If changes have been made, request approval
             if (ChangesPending)
             {
-                var confirmResult = MessageBox.Show("All changes will be lost!", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                var confirmResult = screen.ShowMessageBox("All changes will be lost!", "Are you sure?", 
+                                                          MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (confirmResult == DialogResult.No)
                     ClearCurrentRecord();
             }
@@ -98,7 +99,8 @@ namespace ADP_Bookings.Presenters
             //First, check if company is currently being edited
             if (ChangesPending)
             {
-                var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+                var confirmResult = screen.ShowMessageBox("Would you like to save your changes?", "Save Changes?", 
+                                                          MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                 if (confirmResult == DialogResult.Yes)
                     SaveRecord();
                 else if (confirmResult == DialogResult.No)
@@ -130,9 +132,8 @@ namespace ADP_Bookings.Presenters
                 return;
 
             //If changes have been made, ask how to proceed
-            var confirmResult = MessageBox.Show("Would you like to save your changes?", "Save Changes?",
-                                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-
+            var confirmResult = screen.ShowMessageBox("Would you like to save your changes?", "Save Changes?",
+                                                      MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
             //Save changes, close form
             if (confirmResult == DialogResult.Yes)
                 SaveRecord();

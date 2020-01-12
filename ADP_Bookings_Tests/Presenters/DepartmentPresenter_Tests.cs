@@ -24,264 +24,226 @@ namespace ADP_Bookings.Presenters.Tests
         // Test Methods *******************************************************************
         // ********************************************************************************
 
-        // Test ID: CP1
+        // Test ID: DP1
         // Purpose: Test the presenter's response to the "Add Department" button being pressed
         [TestMethod()]
         public void LoadNewRecord_Test()
         {
             #region Arrange
-            // Mimic a frm_companies being loaded
-            var screen = InitMockScreen();
 
-            // Send null screen param, automock will fill in for it later
-            DepartmentPresenter presenter = new DepartmentPresenter(screen.Object, 1);
+            // Create mock layers
+            var mockView = GetMockView();
+            var mockModel = GetMockModel();
+
+            // Create presenter to be tested, inject our mock view & model
+            DepartmentPresenter presenter = new DepartmentPresenter(mockView.Object, mockModel.Object, 1);
+            
+            // Set the screen's CurrentDepartmentName to "Foobar"
+            // Our presenter will reset this to an empty string
+            mockView.Object.CurrentDepartmentName = "FooBar";            
+
             #endregion Arrange
 
-            #region Act
-            // Set the screen's CurrentDepartmentName to "Foobar" so our
-            // presenter can (attempt to) overwrite it with an empty string
-            screen.Object.CurrentDepartmentName = "FooBar";
+            #region Act            
 
             //Invoke the call being tested
             presenter.btn_AddDepartment_Click();
+
             #endregion Act
 
             #region Assert
-            // Declare expected values
+            // Request evaluation of screen properties
             Dictionary<string, object> expected = new Dictionary<string, object>
             {
                 { "DepartmentID",   "0" },
                 { "DepartmentName", "" },
                 { "CurrentDepartment_Enabled", true }
             };
-
-            // Request evaluation of screen properties
-            EvaluateScreen(expected, screen);
+            EvaluateScreen(expected, mockView);
             #endregion Assert
         }
 
-        // Test ID: CP2
+        // Test ID: DP2
         // Purpose: Test the presenter's response to a new item being selected
-
         [TestMethod()]
         public void LoadRecord_Test()
         {
             #region Arrange
-            // Mimic a frm_companies being loaded
-            var screen = InitMockScreen();
 
-            // Create presenter to be tested
-            DepartmentPresenter presenter = new DepartmentPresenter(screen.Object, 1);
+            // Create mock layers
+            var mockView = GetMockView();
+            var mockModel = GetMockModel();
 
-            // This is the department we will be asking the presenter to load
-            Department department = new Department() { DepartmentID = 1, Name = "Legal", };
+            // Create presenter to be tested, inject our mock view & model
+            DepartmentPresenter presenter = new DepartmentPresenter(mockView.Object, mockModel.Object, 1);
 
-            // Place our test record amongst a list of other companies to ensure not
-            // only the presenter both selects the correct department and then loads it
-            // This is in place of the presenter collecting the list from the DB
+            // Keep a copy of the facade records list our presenter will be working with
             List<Department> records = Mock_GetAllDepartments().ToList();
 
-            // Store position to ensure the test itself does not mimic selecting the wrong record
-            int testCasePosition = 2;
-            records[testCasePosition] = department;
+            // Declare which record shall be selected from the list
+            int index = 2;
 
-            // NOTE: Accessing the presenter's private member(s) is poor practice 
-            //       during testing and can be avoided but due to documented teamwork 
-            //       issues I am short on time for this assignment..
-            new PrivateObject(presenter).SetField("records", records);
+            // Keep a copy of which record the presenter SHOULD select & push to view
+            Department department = records[index];
+
             #endregion Arrange
 
+            /**************************************************/
+
             #region Act
-            // Mimic a new item being selected from the form's lvw_companies
-            presenter.lvw_Departments_SelectedIndexChanged(new int[] { testCasePosition });
+
+            // Select our test case company, mimicking the user selecting it from a ListView
+            presenter.lvw_Departments_SelectedIndexChanged(new int[] { index });
+
             #endregion Act
 
+            /**************************************************/
+
             #region Assert
+
             // Declare expected values
             Dictionary<string, object> expected = new Dictionary<string, object>
             {
-                { "DepartmentID",   records[testCasePosition].DepartmentID.ToString() },
-                { "DepartmentName", records[testCasePosition].Name },
+                { "DepartmentID",   department.DepartmentID.ToString() },
+                { "DepartmentName", department.Name },
                 { "CurrentDepartment_Enabled", true }
             };
 
             // Request evaluation of screen properties
-            EvaluateScreen(expected, screen);
+            EvaluateScreen(expected, mockView);
+
             #endregion Assert
         }
 
-        // Test ID: CP3
-        // Purpose: Test the presenter's response to the "Confirm" button being  
-        //          pressed when the selected record is an existing record
+        // Test ID: DP3
+        // Purpose: Test the presenter's response to the "Confirm" button being pressed
         [TestMethod()]
-        public void SaveExistingRecord_Test()
+        [DataRow(true)]  // DP3a | Changes pending
+        [DataRow(false)] // DP3b | No changes pending
+        public void SaveRecord_Test(bool makeChanges)
         {
             using (var mock = AutoMock.GetLoose())
             {
                 #region Arrange
-                // Mimic a frm_companies being loaded
-                var screen = InitMockScreen();
+                // Create mock layers
+                var mockView = GetMockView();
+                var mockModel = GetMockModel();
 
-                // Create presenter to be tested
-                DepartmentPresenter presenter = new DepartmentPresenter(screen.Object, 1);
+                // Create presenter to be tested, inject our mock model
+                DepartmentPresenter presenter = new DepartmentPresenter(mockView.Object, mockModel.Object, 1);
 
-                // This is the department we will be asking the presenter to save
-                Department department = new Department() { DepartmentID = 1, Name = "Legal_NewName" };
+                // Keep a copy of the facade records list our presenter will be working with
+                List<Department> records = Mock_GetAllDepartments().ToList();
 
-                // This function attempts to touch the Model layer (UoW, DB), 
-                // so we need to mock the required elements from that environment
-                var mockSet_Departments = GetMockSet_Departments();
-                var mockSet_Companies = GetMockSet_Companies();
-                var mockContext = GetMockContext(mockSet_Departments.Object, mockSet_Companies.Object);
-                var mockRepo = GetMockRepo();
-                var mockUoW = GetMockUoW(mockRepo.Object);
-                var mockUoWFactory = GetMockUoWFactory(mockUoW.Object);
+                // Declare which record shall be selected from the list
+                int index = 0;
 
-                // Inject mock UoW factory
-                // Again, using PrivateObject is a poor practice way to go about this
-                // and it should be done via the public API but I am short on time
-                new PrivateObject(presenter).SetField("unitOfWorkFactory", mockUoWFactory.Object);
+                // Keep a copy of which record the presenter SHOULD select & push to view
+                Department department = records[index];
 
-                // Inject our test case department as the presenter's currently selected record
-                new PrivateObject(presenter).SetField("selectedRecord", department);
+                // Select a company record
+                presenter.lvw_Departments_SelectedIndexChanged(new int[] { index });
+
+                // Tell the presenter there are changes pending
+                if (makeChanges)
+                    presenter.NewChangePending();
+
                 #endregion Arrange
 
-                #region Act
-                //Invoke the call being tested
+                /**************************************************/
+
+                #region Act                
+
+                // Save changes
                 presenter.btn_ConfirmChanges_Click();
+
                 #endregion Act
 
-                #region Assert
-                // Ensure the presenter told the model to update the record
-                mockRepo.Verify(x => x.Update(It.IsAny<Department>()), Times.Exactly(1));
+                /**************************************************/
+
+                #region Assert               
+
+                // Ensure the presenter told the model to save the record, only if changes were pending
+                if (makeChanges)
+                    mockModel.Verify(x => x.SaveDepartment(It.Is<Department>(d => d.DepartmentID == department.DepartmentID)), Times.Once);
+                else
+                    mockModel.Verify(x => x.SaveDepartment(It.IsAny<Department>()), Times.Never);
 
                 // Request evaluation of screen properties
-                Dictionary<string, object> expected = new Dictionary<string, object>
-                {
-                    { "DepartmentID",   "" },
-                    { "DepartmentName", "" },
-                    { "CurrentDepartment_Enabled", false }
-                };
-                EvaluateScreen(expected, screen);
+                Dictionary<string, object> expected = GetClearedScreen();
+                EvaluateScreen(expected, mockView);
 
                 #endregion Assert
             }
         }
 
-        // Test ID: CP4
-        // Purpose: Test the presenter's response to the "Confirm" button
-        //          being pressed when the select record is a new record
+        // Test ID: DP4
+        // Purpose: Test the presenter's response to the "Delete Department" button being pressed
         [TestMethod()]
-        public void SaveNewRecord_Test()
+        [DataRow(true)]  //DP4a | Record is currently selected
+        [DataRow(false)] //DP4b | No record currently selected
+        public void DeleteRecord_Test(bool recordSelected)
         {
             using (var mock = AutoMock.GetLoose())
             {
                 #region Arrange
-                // Mimic a frm_companies being loaded
-                var screen = InitMockScreen();
 
-                // Create presenter to be tested
-                // We pass it CompanyID = 1 to satisfy the constructor, 
-                // but this will have no affect on our tests
-                DepartmentPresenter presenter = new DepartmentPresenter(screen.Object, 1);
+                // Create mock layers
+                var mockView = GetMockView();
+                var mockModel = GetMockModel();
 
-                // This is the department we will be asking the presenter to save
-                Department department = new Department() { DepartmentID = 5, Name = "Marketing" };
+                // Create presenter to be tested, inject our mock model
+                DepartmentPresenter presenter = new DepartmentPresenter(mockView.Object, mockModel.Object, 1);
 
-                // This function attempts to touch the Model layer (UoW, DB), 
-                // so we need to mock the required elements from that environment
-                var mockSet_Departments = GetMockSet_Departments();
-                var mockSet_Companies = GetMockSet_Companies();
-                var mockContext = GetMockContext(mockSet_Departments.Object, mockSet_Companies.Object);
-                var mockRepo = GetMockRepo();
-                var mockUoW = GetMockUoW(mockRepo.Object);
-                var mockUoWFactory = GetMockUoWFactory(mockUoW.Object);
+                // Declare that the user will select "Yes" on the confirmation messagebox
+                mockView.Setup(x => x.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(),
+                                                     It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
+                                                     .Returns(DialogResult.Yes);
 
-                // Inject mock UoW factory
-                // Again, using PrivateObject is a poor practice way to go about this
-                // and it should be done via the public API but I am short on time
-                new PrivateObject(presenter).SetField("unitOfWorkFactory", mockUoWFactory.Object);
+                // Keep a copy of the facade records list our presenter will be working with
+                List<Department> records = Mock_GetAllDepartments().ToList();
 
-                // Inject our test case department as the presenter's currently selected record
-                new PrivateObject(presenter).SetField("selectedRecord", department);
+                // Declare which record shall be selected from the list
+                int index = 0;
+
+                // Keep a copy of which record the presenter SHOULD select & push to view
+                Department department = records[index];
+
+                // Select our test case company, mimicking the user selecting it from a ListView
+                if (recordSelected)
+                    presenter.lvw_Departments_SelectedIndexChanged(new int[] { index });
+
                 #endregion Arrange
 
-                #region Act
-                //Invoke the call being tested
-                presenter.btn_ConfirmChanges_Click();
-                #endregion Act
-
-                #region Assert
-
-                // Ensure the presenter told the model to add the record
-                mockRepo.Verify(x => x.Add(It.IsAny<Department>()), Times.Exactly(1));
-
-                // Request evaluation of screen properties
-                Dictionary<string, object> expected = new Dictionary<string, object>
-                {
-                    { "DepartmentID",   "" },
-                    { "DepartmentName", "" },
-                    { "CurrentDepartment_Enabled", false }
-                };
-                EvaluateScreen(expected, screen);
-
-                #endregion Assert
-            }
-        }
-
-        // Test ID: CP4
-        // Purpose: Test the presenter's response to the "Confirm" button
-        //          being pressed when the select record is a new record
-        [TestMethod()]
-        public void DeleteRecord_Test()
-        {
-            using (var mock = AutoMock.GetLoose())
-            {
-                #region Arrange
-                // Mimic a frm_companies being loaded
-                var screen = InitMockScreen();
-
-                // Create presenter to be tested
-                DepartmentPresenter presenter = new DepartmentPresenter(screen.Object, 1);
-
-                // This is the department we will be asking the presenter to save
-                Department department = new Department() { DepartmentID = 1, Name = "Legal" };
-
-                // This function attempts to touch the Model layer (UoW, DB), 
-                // so we need to mock the required elements from that environment
-                var mockSet_Departments = GetMockSet_Departments();
-                var mockSet_Companies = GetMockSet_Companies();
-                var mockContext = GetMockContext(mockSet_Departments.Object, mockSet_Companies.Object);
-                var mockRepo = GetMockRepo();
-                var mockUoW = GetMockUoW(mockRepo.Object);
-                var mockUoWFactory = GetMockUoWFactory(mockUoW.Object);
-
-                // Inject mock UoW factory
-                // Again, using PrivateObject is a poor practice way to go about this
-                // and it should be done via the public API but I am short on time
-                new PrivateObject(presenter).SetField("unitOfWorkFactory", mockUoWFactory.Object);
-
-                // Inject our test case department as the presenter's currently selected record
-                new PrivateObject(presenter).SetField("selectedRecord", department);
-                #endregion Arrange
+                /**************************************************/
 
                 #region Act
+
                 //Invoke the call being tested
                 presenter.btn_DeleteDepartment_Click();
+
                 #endregion Act
 
+                /**************************************************/
+
                 #region Assert
-                // Ensure the presenter told the model to delete the record
-                mockRepo.Verify(x => x.Remove(It.IsAny<Department>()), Times.Exactly(1));
+
+                // Ensure the presenter told the model to delete the record, only if a record was selected
+                // Only passes if the CORRECT company was sent to the model
+                if (recordSelected)
+                {
+                    mockModel.Verify(r => r.DeleteDepartment(It.Is<Department>(d => d.DepartmentID == department.DepartmentID)), Times.Once);
+                }
+                else
+                {
+                    mockModel.Verify(r => r.DeleteDepartment(It.IsAny<Department>()), Times.Never);
+                    mockView.Verify(r => r.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(),
+                                                          It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
+                }
 
                 // Request evaluation of screen properties
-                Dictionary<string, object> expected = new Dictionary<string, object>
-                {
-                    { "DepartmentID",   "" },
-                    { "DepartmentName", "" },
-                    { "CurrentDepartment_Enabled", false }
-                };
-                EvaluateScreen(expected, screen);
+                Dictionary<string, object> expected = GetClearedScreen();
+                EvaluateScreen(expected, mockView);
 
                 #endregion Assert
             }
@@ -313,6 +275,18 @@ namespace ADP_Bookings.Presenters.Tests
                 if (expected.ContainsKey(entry.Key))
                     Assert.AreEqual(expected[entry.Key], entry.Value);
             }
+        }
+        // Get a dictionary of screen properties for when the presenter 
+        // is expected to have cleared the view
+        // Purely to reduce code duplication
+        Dictionary<string, object> GetClearedScreen()
+        {
+            return new Dictionary<string, object>
+            {
+                { "DepartmentID",   "" },
+                { "DepartmentName", "" },
+                { "CurrentDepartment_Enabled", false }
+            };
         }
 
         // ********************************************************************************
@@ -348,66 +322,80 @@ namespace ADP_Bookings.Presenters.Tests
         }
 
         // ********************************************************************************
+        // View Layer Mocking *************************************************************
+        // ********************************************************************************
+
+        // Initialises the mock screen to what mimic a form that has just loaded
+        Moq.Mock<IDepartmentGUI> GetMockView()
+        {
+            using (var mock = AutoMock.GetLoose())
+            {
+                var screen = mock.Mock<IDepartmentGUI>();
+                screen.SetupAllProperties();
+                // Screen mock needs to provide facade for properties changing
+                // so the test can check they are correctly assigned
+                screen.SetupProperty(x => x.CurrentDepartmentID)
+                      .SetReturnsDefault("");
+                screen.SetupProperty(x => x.CurrentDepartmentName)
+                      .SetReturnsDefault("");
+                screen.SetupProperty(x => x.CurrentDepartment_Enabled)
+                      .SetReturnsDefault(false);
+                screen.SetupGet(x => x.DepartmentList)
+                      .Returns(new ListView.ListViewItemCollection(new ListView()) { new ListViewItem() });
+                screen.SetupGet(x => x.CurrentDepartmentBookings)
+                      .Returns(new ListView.ListViewItemCollection(new ListView()) { new ListViewItem() });
+
+                return screen;
+            }
+        }
+
+        // ********************************************************************************
         // Model Layer Mocking ************************************************************
         // ********************************************************************************
 
-        // This test class only cares about checking the presenter logic is correct.
-        // The below functions provide a false data access layer. Presenter tests passing is
-        // therefore directly tied to the integrity of the presenter logic, regardless of the model
+        // This test class only focuses on verifying the presenter logic is correct.
+        // The below functions provide a false model layer. Presenter tests results
+        // are therefore solely tied to the integrity of the presenter logic.
 
-        // Mock data storage
-        Mock<DbSet<Department>> GetMockSet_Departments() => new Mock<DbSet<Department>>();
-
-        Mock<DbSet<Company>> GetMockSet_Companies() => new Mock<DbSet<Company>>();
-
-        // Mock DB connection
-        Mock<IADP_DBContext> GetMockContext(DbSet<Department> mockSet_Departments, DbSet<Company> mockSet_Companies)
+        // Create mock model
+        Mock<IDepartmentModel> GetMockModel()
         {
-            var mockContext = new Mock<IADP_DBContext>();
-            mockContext.Setup(ctx => ctx.Departments).Returns(mockSet_Departments);
-            mockContext.Setup(ctx => ctx.Companies).Returns(mockSet_Companies);
-            return mockContext;
+            var mockModel = new Mock<IDepartmentModel>();
+            mockModel.Setup(r => r.GetAllDepartments()).Returns(Mock_GetAllDepartments().ToList());
+            mockModel.Setup(r => r.GetAllDepartmentsFrom(It.IsAny<Company>())).Returns(Mock_GetAllDepartments().ToList());
+            mockModel.Setup(r => r.FindDepartment(It.IsAny<int>())).Returns<int>((id) => Mock_GetDepartment(id));
+            mockModel.Setup(r => r.SaveDepartment(It.IsAny<Department>())).Verifiable();
+            mockModel.Setup(r => r.DeleteDepartment(It.IsAny<Department>())).Verifiable();
+            mockModel.Setup(r => r.FindCompany(It.IsAny<int>())).Returns<int>((id) => Mock_GetCompany(id));
+            return mockModel;
         }
 
-        // Mock Repo pattern
-        Mock<IDepartmentRepository> GetMockRepo()
+        // Mock Company Data
+        IQueryable<Company> Mock_GetAllCompanies()
         {
-            var mockRepo = new Mock<IDepartmentRepository>();
-            mockRepo.Setup(r => r.Add(It.IsAny<Department>()));
-            mockRepo.Setup(r => r.GetAll()).Returns(Mock_GetAllDepartments());
-            mockRepo.Setup(r => r.Get(It.IsAny<int>())).Returns<int>((id) => Mock_GetDepartment(id));
-            mockRepo.Setup(r => r.Update(It.IsAny<Department>()));
-            mockRepo.Setup(r => r.Remove(It.IsAny<Department>()));
-
-            return mockRepo;
+            return new List<Company>
+            {
+                new Company { CompanyID = 1, Name = "Asda"   },
+                new Company { CompanyID = 2, Name = "Boots"  },
+                new Company { CompanyID = 3, Name = "Costco" },
+                new Company { CompanyID = 4, Name = "Dixons" }
+            }.AsQueryable();
         }
+        Company Mock_GetCompany(int id) => Mock_GetAllCompanies().Where(c => c.CompanyID == id).FirstOrDefault();
 
-        // Mock Unit of Work pattern
-        Mock<IUnitOfWork> GetMockUoW(IDepartmentRepository mockRepo)
-        {
-            var mockUoW = new Mock<IUnitOfWork>();
-            mockUoW.Setup(uow => uow.Departments).Returns(mockRepo);
-            return mockUoW;
-        }
-
-        Mock<IUnitOfWorkFactory> GetMockUoWFactory(IUnitOfWork mockUoW)
-        {
-            var mockUowFactory = new Mock<IUnitOfWorkFactory>();
-            mockUowFactory.Setup(x => x.Create()).Returns(mockUoW);
-
-            return mockUowFactory;
-        }
-
+        // Mock Department Data
         IQueryable<Department> Mock_GetAllDepartments()
         {
             return new List<Department>
             {
-                new Department { DepartmentID = 1, Name = "Legal"   },
-                new Department { DepartmentID = 2, Name = "HR"  },
-                new Department { DepartmentID = 3, Name = "Marketing" }
+                new Department { DepartmentID = 1, Name = "HR"   },
+                new Department { DepartmentID = 2, Name = "Legal"  },
+                new Department { DepartmentID = 3, Name = "Marketing" },
+                new Department { DepartmentID = 4, Name = "IT" }
             }.AsQueryable();
         }
-
         Department Mock_GetDepartment(int id) => Mock_GetAllDepartments().Where(d => d.DepartmentID == id).FirstOrDefault();
     }
+
+
 }
