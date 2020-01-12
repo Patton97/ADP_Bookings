@@ -1,31 +1,30 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ADP_Bookings.Presenters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-
+// Testing inclusions
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Autofac.Extras.Moq;
 using Moq;
 
-using ADP_Bookings.Models;
+// Required due to folder/namespace structure
 using ADP_Bookings.Views;
-using System.Data.Entity;
-using System.Windows.Forms;
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings.Presenters.Tests
 {
     [TestClass()]
-    public class BookingPresenter_Tests
+    public class ActivityPresenter_Tests
     {
         // ********************************************************************************
         // Test Methods *******************************************************************
         // ********************************************************************************
 
         // Test ID: AP1
-        // Purpose: Test the presenter's response to the "Add Booking" button being pressed
+        // Purpose: Test the presenter's response to the "Add Activity" button being pressed
         [TestMethod()]
         public void LoadNewRecord_Test()
         {
@@ -36,30 +35,38 @@ namespace ADP_Bookings.Presenters.Tests
             var mockModel = GetMockModel();
 
             // Create presenter to be tested, inject our mock view & model
-            BookingPresenter presenter = new BookingPresenter(mockView.Object, mockModel.Object, 1);
-            
-            // Set the screen's CurrentBookingName to "Foobar"
+            ActivityPresenter presenter = new ActivityPresenter(mockView.Object, mockModel.Object, 1);
+
+            // Set the screen's CurrentActivityName to "Foobar"
             // Our presenter will reset this to an empty string
-            mockView.Object.CurrentBookingName = "FooBar";            
+            mockView.Object.CurrentActivityName = "FooBar";
 
             #endregion Arrange
+
+            /**************************************************/
 
             #region Act            
 
             //Invoke the call being tested
-            presenter.btn_AddBooking_Click();
+            presenter.btn_AddActivity_Click();
 
             #endregion Act
 
+            /**************************************************/
+
             #region Assert
+
             // Request evaluation of screen properties
             Dictionary<string, object> expected = new Dictionary<string, object>
             {
-                { "BookingID",   "0" },
-                { "BookingName", "" },
-                { "CurrentBooking_Enabled", true }
+                { "ActivityID",    "0" },
+                { "ActivityName",  ""  },
+                { "ActivityCost",  0m  },
+                { "ActivityNotes", ""  },
+                { "CurrentDepartment_Enabled", true }
             };
             EvaluateScreen(expected, mockView);
+
             #endregion Assert
         }
 
@@ -75,16 +82,16 @@ namespace ADP_Bookings.Presenters.Tests
             var mockModel = GetMockModel();
 
             // Create presenter to be tested, inject our mock view & model
-            BookingPresenter presenter = new BookingPresenter(mockView.Object, mockModel.Object, 1);
+            ActivityPresenter presenter = new ActivityPresenter(mockView.Object, mockModel.Object, 1);
 
             // Keep a copy of the facade records list our presenter will be working with
-            List<Booking> records = Mock_GetAllBookings().ToList();
+            List<Activity> records = Mock_GetAllActivities().ToList();
 
             // Declare which record shall be selected from the list
             int index = 2;
 
             // Keep a copy of which record the presenter SHOULD select & push to view
-            Booking booking = records[index];
+            Activity activity = records[index];
 
             #endregion Arrange
 
@@ -92,8 +99,8 @@ namespace ADP_Bookings.Presenters.Tests
 
             #region Act
 
-            // Select our test case department, mimicking the user selecting it from a ListView
-            presenter.lvw_Bookings_SelectedIndexChanged(new int[] { index });
+            // Select our test case company, mimicking the user selecting it from a ListView
+            presenter.lvw_Activities_SelectedIndexChanged(new int[] { index });
 
             #endregion Act
 
@@ -104,9 +111,11 @@ namespace ADP_Bookings.Presenters.Tests
             // Declare expected values
             Dictionary<string, object> expected = new Dictionary<string, object>
             {
-                { "BookingID",   booking.BookingID.ToString() },
-                { "BookingName", booking.Name },
-                { "CurrentBooking_Enabled", true }
+                { "ActivityID",    activity.ActivityID.ToString() },
+                { "ActivityName",  activity.Name  },
+                { "ActivityCost",  (decimal)activity.Cost },
+                { "ActivityNotes", activity.Notes },
+                { "CurrentDepartment_Enabled", true }
             };
 
             // Request evaluation of screen properties
@@ -130,19 +139,19 @@ namespace ADP_Bookings.Presenters.Tests
                 var mockModel = GetMockModel();
 
                 // Create presenter to be tested, inject our mock model
-                BookingPresenter presenter = new BookingPresenter(mockView.Object, mockModel.Object, 1);
+                ActivityPresenter presenter = new ActivityPresenter(mockView.Object, mockModel.Object, 1);
 
                 // Keep a copy of the facade records list our presenter will be working with
-                List<Booking> records = Mock_GetAllBookings().ToList();
+                List<Activity> records = Mock_GetAllActivities().ToList();
 
                 // Declare which record shall be selected from the list
                 int index = 0;
 
                 // Keep a copy of which record the presenter SHOULD select & push to view
-                Booking booking = records[index];
+                Activity activity = records[index];
 
-                // Select a department record
-                presenter.lvw_Bookings_SelectedIndexChanged(new int[] { index });
+                // Select a record
+                presenter.lvw_Activities_SelectedIndexChanged(new int[] { index });
 
                 // Tell the presenter there are changes pending
                 if (makeChanges)
@@ -165,9 +174,9 @@ namespace ADP_Bookings.Presenters.Tests
 
                 // Ensure the presenter told the model to save the record, only if changes were pending
                 if (makeChanges)
-                    mockModel.Verify(x => x.SaveBooking(It.Is<Booking>(d => d.BookingID == booking.BookingID)), Times.Once);
+                    mockModel.Verify(x => x.SaveActivity(It.Is<Activity>(a => a.ActivityID == activity.ActivityID)), Times.Once);
                 else
-                    mockModel.Verify(x => x.SaveBooking(It.IsAny<Booking>()), Times.Never);
+                    mockModel.Verify(x => x.SaveActivity(It.IsAny<Activity>()), Times.Never);
 
                 // Request evaluation of screen properties
                 Dictionary<string, object> expected = GetClearedScreen();
@@ -178,10 +187,10 @@ namespace ADP_Bookings.Presenters.Tests
         }
 
         // Test ID: AP4
-        // Purpose: Test the presenter's response to the "Delete Booking" button being pressed
+        // Purpose: Test the presenter's response to the "Delete Activity" button being pressed
         [TestMethod()]
-        [DataRow(true)]  //DP4a | Record is currently selected
-        [DataRow(false)] //DP4b | No record currently selected
+        [DataRow(true)]  //AP4a | Record is currently selected
+        [DataRow(false)] //AP4b | No record currently selected
         public void DeleteRecord_Test(bool recordSelected)
         {
             using (var mock = AutoMock.GetLoose())
@@ -193,7 +202,7 @@ namespace ADP_Bookings.Presenters.Tests
                 var mockModel = GetMockModel();
 
                 // Create presenter to be tested, inject our mock model
-                BookingPresenter presenter = new BookingPresenter(mockView.Object, mockModel.Object, 1);
+                ActivityPresenter presenter = new ActivityPresenter(mockView.Object, mockModel.Object, 1);
 
                 // Declare that the user will select "Yes" on the confirmation messagebox
                 mockView.Setup(x => x.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(),
@@ -201,17 +210,17 @@ namespace ADP_Bookings.Presenters.Tests
                                                      .Returns(DialogResult.Yes);
 
                 // Keep a copy of the facade records list our presenter will be working with
-                List<Booking> records = Mock_GetAllBookings().ToList();
+                List<Activity> records = Mock_GetAllActivities().ToList();
 
                 // Declare which record shall be selected from the list
                 int index = 0;
 
                 // Keep a copy of which record the presenter SHOULD select & push to view
-                Booking booking = records[index];
+                Activity activity = records[index];
 
-                // Select our test case department, mimicking the user selecting it from a ListView
+                // Select our test case company, mimicking the user selecting it from a ListView
                 if (recordSelected)
-                    presenter.lvw_Bookings_SelectedIndexChanged(new int[] { index });
+                    presenter.lvw_Activities_SelectedIndexChanged(new int[] { index });
 
                 #endregion Arrange
 
@@ -220,7 +229,7 @@ namespace ADP_Bookings.Presenters.Tests
                 #region Act
 
                 //Invoke the call being tested
-                presenter.btn_DeleteBooking_Click();
+                presenter.btn_DeleteActivity_Click();
 
                 #endregion Act
 
@@ -229,14 +238,14 @@ namespace ADP_Bookings.Presenters.Tests
                 #region Assert
 
                 // Ensure the presenter told the model to delete the record, only if a record was selected
-                // Only passes if the CORRECT department was sent to the model
+                // Only passes if the CORRECT company was sent to the model
                 if (recordSelected)
                 {
-                    mockModel.Verify(r => r.DeleteBooking(It.Is<Booking>(d => d.BookingID == booking.BookingID)), Times.Once);
+                    mockModel.Verify(r => r.DeleteActivity(It.Is<Activity>(a => a.ActivityID == activity.ActivityID)), Times.Once);
                 }
                 else
                 {
-                    mockModel.Verify(r => r.DeleteBooking(It.IsAny<Booking>()), Times.Never);
+                    mockModel.Verify(r => r.DeleteActivity(It.IsAny<Activity>()), Times.Never);
                     mockView.Verify(r => r.ShowMessageBox(It.IsAny<string>(), It.IsAny<string>(),
                                                           It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
                 }
@@ -254,19 +263,16 @@ namespace ADP_Bookings.Presenters.Tests
         // ******************************************************************************** 
 
         // Evaluate the current properties on screen following test - entire function is "Assert"
-        // NOTE: Reduces code duplication, but there is dispute 
-        //       as to whether Unit Tests should be intra-dependant
-        // NOTE: VS throws a warning about TestMethods using parameters.
-        //       There's probably a much better way of doing this
-        void EvaluateScreen(Dictionary<string, object> expected, Mock<IBookingGUI> screen)
+        void EvaluateScreen(Dictionary<string, object> expected, Mock<IActivityGUI> screen)
         {
             // Declare actual values
             Dictionary<string, object> actual = new Dictionary<string, object>
             {
-                { "BookingID",   screen.Object.CurrentBookingID },
-                { "BookingName", screen.Object.CurrentBookingName },
-                { "BookingDate", screen.Object.CurrentBookingDate },
-                { "CurrentBooking_Enabled", screen.Object.CurrentBooking_Enabled }
+                { "ActivityID",    screen.Object.CurrentActivityID    },
+                { "ActivityName",  screen.Object.CurrentActivityName  },
+                { "ActivityCost",  screen.Object.CurrentActivityCost  },
+                { "ActivityNotes", screen.Object.CurrentActivityNotes },
+                { "CurrentDepartment_Enabled", screen.Object.CurrentActivity_Enabled }
             };
 
             // Compare expected values with actual values
@@ -284,10 +290,11 @@ namespace ADP_Bookings.Presenters.Tests
         {
             return new Dictionary<string, object>
             {
-                { "BookingID",   "" },
-                { "BookingName", "" },
-                { "BookingDate", DateTime.Today },
-                { "CurrentBooking_Enabled", false }
+                { "ActivityID",    "" },
+                { "ActivityName",  "" },
+                { "ActivityCost",  0m },
+                { "ActivityNotes", "" },
+                { "CurrentDepartment_Enabled", false }
             };
         }
 
@@ -296,23 +303,25 @@ namespace ADP_Bookings.Presenters.Tests
         // ********************************************************************************
 
         // Initialises the mock screen to what mimic a form that has just loaded
-        Mock<IBookingGUI> GetMockView()
+        Mock<IActivityGUI> GetMockView()
         {
             using (var mock = AutoMock.GetLoose())
             {
-                var screen = mock.Mock<IBookingGUI>();
+                var screen = mock.Mock<IActivityGUI>();
                 screen.SetupAllProperties();
                 // Screen mock needs to provide facade for properties changing
                 // so the test can check they are correctly assigned
-                screen.SetupProperty(x => x.CurrentBookingID)
+                screen.SetupProperty(x => x.CurrentActivityID)
                       .SetReturnsDefault("");
-                screen.SetupProperty(x => x.CurrentBookingName)
+                screen.SetupProperty(x => x.CurrentActivityName)
                       .SetReturnsDefault("");
-                screen.SetupProperty(x => x.CurrentBooking_Enabled)
+                screen.SetupProperty(x => x.CurrentActivityCost)
+                      .SetReturnsDefault(decimal.Zero);
+                screen.SetupProperty(x => x.CurrentActivityNotes)
+                      .SetReturnsDefault("");
+                screen.SetupProperty(x => x.CurrentActivity_Enabled)
                       .SetReturnsDefault(false);
-                screen.SetupGet(x => x.BookingList)
-                      .Returns(new ListView.ListViewItemCollection(new ListView()) { new ListViewItem() });
-                screen.SetupGet(x => x.CurrentBookingActivities)
+                screen.SetupGet(x => x.ActivityList)
                       .Returns(new ListView.ListViewItemCollection(new ListView()) { new ListViewItem() });
 
                 return screen;
@@ -328,43 +337,47 @@ namespace ADP_Bookings.Presenters.Tests
         // are therefore solely tied to the integrity of the presenter logic.
 
         // Create mock model
-        Mock<IBookingModel> GetMockModel()
+        Mock<IActivityModel> GetMockModel()
         {
-            var mockModel = new Mock<IBookingModel>();
-            mockModel.Setup(r => r.GetAllBookings()).Returns(Mock_GetAllBookings().ToList());
-            mockModel.Setup(r => r.GetAllBookingsFrom(It.IsAny<Department>())).Returns(Mock_GetAllBookings().ToList());
+            var mockModel = new Mock<IActivityModel>();
+            mockModel.Setup(r => r.GetAllActivities()).Returns(Mock_GetAllActivities().ToList());
+            mockModel.Setup(r => r.GetAllActivitiesFrom(It.IsAny<Booking>())).Returns(Mock_GetAllActivities().ToList());
+            mockModel.Setup(r => r.FindActivity(It.IsAny<int>())).Returns<int>((id) => Mock_GetActivity(id));
+            mockModel.Setup(r => r.FindActivity(It.IsAny<Activity>())).Returns<Activity>((a) => Mock_GetActivity(a.ActivityID));
+            mockModel.Setup(r => r.SaveActivity(It.IsAny<Activity>())).Verifiable();
+            mockModel.Setup(r => r.DeleteActivity(It.IsAny<Activity>())).Verifiable();
             mockModel.Setup(r => r.FindBooking(It.IsAny<int>())).Returns<int>((id) => Mock_GetBooking(id));
             mockModel.Setup(r => r.FindBooking(It.IsAny<Booking>())).Returns<Booking>((b) => Mock_GetBooking(b.BookingID));
-            mockModel.Setup(r => r.SaveBooking(It.IsAny<Booking>())).Verifiable();
-            mockModel.Setup(r => r.DeleteBooking(It.IsAny<Booking>())).Verifiable();
-            mockModel.Setup(r => r.FindDepartment(It.IsAny<int>())).Returns<int>((id) => Mock_GetDepartment(id));
+            mockModel.Setup(r => r.UpdateBooking(It.IsAny<Booking>(), It.IsAny<List<int>>())).Verifiable();
             return mockModel;
         }
-
-        // Mock Department Data
-        IQueryable<Department> Mock_GetAllDepartments()
-        {
-            Company company = new Company { CompanyID = 1, Name = "Asda" };
-            return new List<Department>
-            {
-                new Department { DepartmentID = 1, Name = "HR",        Company = company },
-                new Department { DepartmentID = 2, Name = "Legal",     Company = company },
-                new Department { DepartmentID = 3, Name = "Marketing", Company = company },
-                new Department { DepartmentID = 4, Name = "IT",        Company = company }
-            }.AsQueryable();
-        }
-        Department Mock_GetDepartment(int id) => Mock_GetAllDepartments().Where(c => c.DepartmentID == id).FirstOrDefault();
 
         // Mock Booking Data
         IQueryable<Booking> Mock_GetAllBookings()
         {
+            Company    c = new Company    { CompanyID    = 1, Name = "Asda" };
+            Department d = new Department { DepartmentID = 1, Name = "HR", Company = c };
             return new List<Booking>
             {
-                new Booking { BookingID = 1, Name = "Xmas Party"   },
-                new Booking { BookingID = 2, Name = "Dave's 40th"  },
-                new Booking { BookingID = 3, Name = "Team Building" }
+                new Booking { BookingID = 1, Name = "Xmas Party",    Department = d },
+                new Booking { BookingID = 2, Name = "Dave's 40th",   Department = d },
+                new Booking { BookingID = 3, Name = "Team Building", Department = d }
             }.AsQueryable();
         }
         Booking Mock_GetBooking(int id) => Mock_GetAllBookings().Where(d => d.BookingID == id).FirstOrDefault();
+
+        // Mock Booking Data
+        IQueryable<Activity> Mock_GetAllActivities()
+        {
+            return new List<Activity>
+            {
+                new Activity { ActivityID = 1, Name = "Chocolate producing and marketing",     Cost =  750, Notes = "" },
+                new Activity { ActivityID = 2, Name = "Team building outdoor problem solving", Cost =  850, Notes = "" },
+                new Activity { ActivityID = 3, Name = "Meditation and mindfulness workshop",   Cost =  500, Notes = "" },
+                new Activity { ActivityID = 4, Name = "Wall climbing experience",              Cost =  500, Notes = "" },
+                new Activity { ActivityID = 5, Name = "Go-cart Experience",                    Cost = 1400, Notes = "" }
+            }.AsQueryable();
+        }
+        Activity Mock_GetActivity(int id) => Mock_GetAllActivities().Where(a => a.ActivityID == id).FirstOrDefault();
     }
 }

@@ -1,19 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ADP_Bookings.Presenters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-
+// Testing inclusions
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Autofac.Extras.Moq;
 using Moq;
 
-using ADP_Bookings.Models;
+// Required due to folder/namespace structure
 using ADP_Bookings.Views;
-using System.Data.Entity;
-using System.Windows.Forms;
+using ADP_Bookings.Models;
 
 namespace ADP_Bookings.Presenters.Tests
 {
@@ -294,39 +293,7 @@ namespace ADP_Bookings.Presenters.Tests
         // ********************************************************************************
 
         // Initialises the mock screen to what mimic a form that has just loaded
-        Moq.Mock<IDepartmentGUI> InitMockScreen()
-        {
-            using (var mock = AutoMock.GetLoose())
-            {
-                var screen = mock.Mock<IDepartmentGUI>();
-
-                // Screen mock needs to provide facade for both ListViews because
-                // presenter attempts to clear them when creating a new record
-                screen.SetupGet(x => x.DepartmentList)
-                      .Returns(new ListView.ListViewItemCollection(new ListView()) { new ListViewItem() });
-                screen.SetupGet(x => x.CurrentDepartmentBookings)
-                      .Returns(new ListView.ListViewItemCollection(new ListView()) { new ListViewItem() });
-
-                screen.SetupProperty(x => x.CurrentDepartment_Enabled)
-                          .SetReturnsDefault(false);
-
-                // Screen mock needs to provide facade for ID & Name 
-                // so the test can check they are correctly assigned            
-                screen.SetupProperty(x => x.CurrentDepartmentID)
-                      .SetReturnsDefault("");
-                screen.SetupProperty(x => x.CurrentDepartmentName)
-                      .SetReturnsDefault("");
-
-                return screen;
-            }
-        }
-
-        // ********************************************************************************
-        // View Layer Mocking *************************************************************
-        // ********************************************************************************
-
-        // Initialises the mock screen to what mimic a form that has just loaded
-        Moq.Mock<IDepartmentGUI> GetMockView()
+        Mock<IDepartmentGUI> GetMockView()
         {
             using (var mock = AutoMock.GetLoose())
             {

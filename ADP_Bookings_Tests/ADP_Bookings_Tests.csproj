@@ -89,6 +89,7 @@
   <ItemGroup>
     <Compile Include="Models\Repositories\CompanyRepository_Tests.cs" />
     <Compile Include="Models\Unit of Work\UnitOfWork_Tests.cs" />
+    <Compile Include="Presenters\ActivityPresenter_Tests.cs" />
     <Compile Include="Presenters\BookingPresenter_Tests.cs" />
     <Compile Include="Presenters\CompanyPresenter_Tests.cs" />
     <Compile Include="Presenters\DepartmentPresenter_Tests.cs" />

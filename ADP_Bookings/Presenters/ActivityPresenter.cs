@@ -22,8 +22,8 @@ namespace ADP_Bookings.Presenters
         {
             this.screen = screen;
             screen.Register(this);
-            this.booking = FindBooking(bookingID);
             this.model = model;
+            this.booking = FindBooking(bookingID);            
             InitialiseForm();
         }
         public ActivityPresenter(IActivityGUI screen, int bookingID) : this(screen, new ActivityModel(), bookingID) { /* */ }
