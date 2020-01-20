@@ -13,124 +13,12 @@ namespace ADP_Bookings.Models.Tests
     [TestClass()]
     public class CompanyModel_Tests
     {
-        // Retrieve all records in Companies table
+        // Test ID: CM1 & CM2
+        // Purpose: Ensure "Create"/"Update" operations are correctly performed
         [TestMethod]
-        public void GetAllCompanies_Test()
-        {
-            #region Arrange
-            // Mock Data-Access Layer
-            var mockUoWFactory = GetMockUoWFactory();
-
-            // Create model to be tested, inject our mock uowfactory
-            CompanyModel model = new CompanyModel(mockUoWFactory.Object);
-
-            // Declare the expected return 
-            List<Company> expected = Mock_GetAllCompanies().ToList();
-
-            #endregion Arrange
-
-            /**************************************************/
-
-            #region Act
-
-            List<Company> actual = model.GetAllCompanies();
-
-            #endregion Act
-
-            /**************************************************/
-
-            #region Assert
-
-            // Ensure size of list is as expected
-            Assert.AreEqual(expected.Count, actual.Count);
-
-            // Ensure contents of list is as expected
-            // Assert.AreEqual is strict on instances, so we manually comb each record
-            for (int i = 0; i < expected.Count; i++)
-                Evaluate(expected[i], actual[i]);
-
-            #endregion Assert
-        }
-
-        // Retrieve company from specified ID
-        [TestMethod]
-        [DataRow(1)]
-        [DataRow(2)]
-        [DataRow(3)]
-        [DataRow(4)]
-        public void FindCompany_Test(int companyID)
-        {
-            #region Arrange
-
-            // Mock Data-Access Layer
-            var mockUoWFactory = GetMockUoWFactory();
-
-            // Create model to be tested, inject our mock uowfactory
-            CompanyModel model = new CompanyModel(mockUoWFactory.Object);
-
-            // Declare the expected return
-            Company expected = Mock_GetCompany(companyID);
-
-            #endregion Arrange
-
-            /**************************************************/
-
-            #region Act
-
-            Company actual = model.FindCompany(companyID);
-
-            #endregion Act
-
-            /**************************************************/
-
-            #region Assert
-
-            Evaluate(expected, actual);            
-
-            #endregion Assert
-        }
-
-        // Reports purely success/failure of company retrieval
-        [TestMethod]
-        [DataRow(1, true)]
-        [DataRow(3, true)]
-        [DataRow(5, false)]
-        public void CompanyExists_Test(int companyID, bool exists)
-        {
-            #region Arrange
-
-            // Mock Data-Access Layer
-            var mockUoWFactory = GetMockUoWFactory();
-
-            // Create model to be tested, inject our mock uowfactory
-            CompanyModel model = new CompanyModel(mockUoWFactory.Object);
-
-            // Declare the expected return
-            bool expected = exists;
-
-            // Get the Company we wish to look for
-            Company company = Mock_GetCompany(companyID);
-
-            #endregion Arrange
-
-            /**************************************************/
-
-            #region Act & Assert
-
-            //For this test, act & assert overlap
-            if(exists)
-                Assert.AreEqual(expected, model.CompanyExists(company));
-            else
-                Assert.ThrowsException<NullReferenceException>(() => model.CompanyExists(company)); 
-
-            #endregion Act & Assert
-        }
-
-        // Save record to Companies table - determine whether to Create/Update
-        [TestMethod]
-        [DataRow(1, true, "Asda_NewName")]
-        [DataRow(3, true, "Costco_NewName")]
-        [DataRow(5, false, "eBay")]
+        [DataRow(1, true, "Asda_NewName")] //CM1a
+        [DataRow(3, true, "Costco_NewName")] //CM1b
+        [DataRow(5, false, "eBay")] //CM2
         public void SaveCompany_Test(int companyID, bool exists, string newName)
         {
             #region Arrange
@@ -176,11 +64,131 @@ namespace ADP_Bookings.Models.Tests
             #endregion Assert
         }
 
-        // Delete record in Companies table
+        // Test ID: CM3
+        // Purpose: Retrieve all records in Companies table
         [TestMethod]
-        [DataRow(1, true)]
-        [DataRow(2, true)]
-        [DataRow(5, false)]
+        public void GetAllCompanies_Test()
+        {
+            #region Arrange
+            // Mock Data-Access Layer
+            var mockUoWFactory = GetMockUoWFactory();
+
+            // Create model to be tested, inject our mock uowfactory
+            CompanyModel model = new CompanyModel(mockUoWFactory.Object);
+
+            // Declare the expected return 
+            List<Company> expected = Mock_GetAllCompanies().ToList();
+
+            #endregion Arrange
+
+            /**************************************************/
+
+            #region Act
+
+            List<Company> actual = model.GetAllCompanies();
+
+            #endregion Act
+
+            /**************************************************/
+
+            #region Assert
+
+            // Ensure size of list is as expected
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            // Ensure contents of list is as expected
+            // Assert.AreEqual is strict on instances, so we manually comb each record
+            for (int i = 0; i < expected.Count; i++)
+                Evaluate(expected[i], actual[i]);
+
+            #endregion Assert
+        }
+
+        // Test ID: CM4
+        // Purpose: Retrieve company from specified ID
+        [TestMethod]
+        [DataRow(1)] //CM4a
+        [DataRow(2)] //CM4b
+        [DataRow(3)] //CM4c
+        [DataRow(4)] //CM4d
+        public void FindCompany_Test(int companyID)
+        {
+            #region Arrange
+
+            // Mock Data-Access Layer
+            var mockUoWFactory = GetMockUoWFactory();
+
+            // Create model to be tested, inject our mock uowfactory
+            CompanyModel model = new CompanyModel(mockUoWFactory.Object);
+
+            // Declare the expected return
+            Company expected = Mock_GetCompany(companyID);
+
+            #endregion Arrange
+
+            /**************************************************/
+
+            #region Act
+
+            Company actual = model.FindCompany(companyID);
+
+            #endregion Act
+
+            /**************************************************/
+
+            #region Assert
+
+            Evaluate(expected, actual);            
+
+            #endregion Assert
+        }
+
+        // Test ID: CM5
+        // Purpose: Reports purely success/failure of company retrieval
+        [TestMethod]
+        [DataRow(1, true)]  //CM5a
+        [DataRow(3, true)]  //CM5b
+        [DataRow(5, false)] //CM5c
+        public void CompanyExists_Test(int companyID, bool exists)
+        {
+            #region Arrange
+
+            // Mock Data-Access Layer
+            var mockUoWFactory = GetMockUoWFactory();
+
+            // Create model to be tested, inject our mock uowfactory
+            CompanyModel model = new CompanyModel(mockUoWFactory.Object);
+
+            // Declare the expected return
+            bool expected = exists;
+
+            // Get the Company we wish to look for
+            Company company = Mock_GetCompany(companyID);
+
+            #endregion Arrange
+
+            /**************************************************/
+
+            #region Act & Assert
+
+            //For this test, act & assert overlap
+            if(exists)
+                Assert.AreEqual(expected, model.CompanyExists(company));
+            else
+                Assert.ThrowsException<NullReferenceException>(() => model.CompanyExists(company)); 
+
+            #endregion Act & Assert
+        }
+
+        
+
+        // Test ID: CM6
+        // Purpose: Ensure "Delete" operation is correctly performed
+
+        [TestMethod]
+        [DataRow(1, true)]  //CM6a
+        [DataRow(2, true)]  //CM6b
+        [DataRow(5, false)] //CM6c
         public void DeleteCompany_Test(int companyID, bool exists)
         {
             #region Arrange

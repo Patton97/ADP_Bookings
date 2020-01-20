@@ -13,6 +13,56 @@ namespace ADP_Bookings.Models.Tests
     [TestClass()]
     public class DepartmentModel_Tests
     {
+        // Save record to Departments table - determine whether to Create/Update
+        [TestMethod]
+        [DataRow(1, true, "HR_NewName")]
+        [DataRow(3, true, "Legal_NewName")]
+        [DataRow(5, false, "R&D")]
+        public void SaveDepartment_Test(int departmentID, bool exists, string newName)
+        {
+            #region Arrange
+
+            // Mock Data-Access Layer
+            // Verbose in this test as we need a reference to mockRepo to verify its behaviour
+            var mockRepo = GetMockDepartmentRepo();
+            var mockUoW = GetMockUoW(mockRepo.Object);
+            var mockUoWFactory = GetMockUoWFactory(mockUoW.Object);
+
+            // Create model to be tested, inject our mock uowfactory
+            DepartmentModel model = new DepartmentModel(mockUoWFactory.Object);
+
+            // Get a department to save
+            // If test case is marked as existing, retrieve it from mock data list, otherwise create it
+            Department department = exists ? Mock_GetDepartment(departmentID) : new Department(departmentID, "", new Company(1, "Asda"));
+
+            // Update the department's name
+            department.Name = newName;
+
+            #endregion Arrange
+
+            /**************************************************/
+
+            #region Act
+
+            // Tell the model we wish to save the department
+            model.SaveDepartment(department);
+
+            #endregion Act
+
+            /**************************************************/
+
+            #region Assert
+
+            // Ensure the repo was told to update/add depending on the record's prior existance
+            // NOTE: ONLY passes if the *exact* department was passed
+            if (exists)
+                mockRepo.Verify(x => x.Update(department));
+            else
+                mockRepo.Verify(x => x.Add(department));
+
+            #endregion Assert
+        }
+
         // Retrieve all records in Departments table
         [TestMethod]
         public void GetAllDepartments_Test()
@@ -170,55 +220,7 @@ namespace ADP_Bookings.Models.Tests
             #endregion Act & Assert
         }
 
-        // Save record to Departments table - determine whether to Create/Update
-        [TestMethod]
-        [DataRow(1, true, "HR_NewName")]
-        [DataRow(3, true, "Legal_NewName")]
-        [DataRow(5, false, "R&D")]
-        public void SaveDepartment_Test(int departmentID, bool exists, string newName)
-        {
-            #region Arrange
-
-            // Mock Data-Access Layer
-            // Verbose in this test as we need a reference to mockRepo to verify its behaviour
-            var mockRepo = GetMockDepartmentRepo();
-            var mockUoW = GetMockUoW(mockRepo.Object);
-            var mockUoWFactory = GetMockUoWFactory(mockUoW.Object);
-
-            // Create model to be tested, inject our mock uowfactory
-            DepartmentModel model = new DepartmentModel(mockUoWFactory.Object);
-
-            // Get a department to save
-            // If test case is marked as existing, retrieve it from mock data list, otherwise create it
-            Department department = exists ? Mock_GetDepartment(departmentID) : new Department(departmentID, "", new Company(1, "Asda"));
-
-            // Update the department's name
-            department.Name = newName;
-
-            #endregion Arrange
-
-            /**************************************************/
-
-            #region Act
-
-            // Tell the model we wish to save the department
-            model.SaveDepartment(department);
-
-            #endregion Act
-
-            /**************************************************/
-
-            #region Assert
-
-            // Ensure the repo was told to update/add depending on the record's prior existance
-            // NOTE: ONLY passes if the *exact* department was passed
-            if (exists)
-                mockRepo.Verify(x => x.Update(department));
-            else
-                mockRepo.Verify(x => x.Add(department));
-
-            #endregion Assert
-        }
+        
 
         // Delete record in Departments table
         [TestMethod]
