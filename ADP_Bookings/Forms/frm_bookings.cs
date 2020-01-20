@@ -21,6 +21,10 @@ namespace ADP_Bookings.Forms
         public List<Control> ctrls_BookingList;
         public List<Control> ctrls_CurrentBooking;
 
+        // ********************************************************************************
+        // View Properties ****************************************************************
+        // ******************************************************************************** 
+
         public string CurrentBookingID
         {
             get => txt_BookingID.Text;
@@ -62,6 +66,10 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentBooking.ForEach(ctrl => ctrl.Enabled = value);
         }
 
+        // ********************************************************************************
+        // Form Functions *****************************************************************
+        // ******************************************************************************** 
+
         public frm_bookings(int departmentID)
         {
             InitializeComponent();
@@ -75,8 +83,6 @@ namespace ADP_Bookings.Forms
         public void Register(BookingPresenter presenter) => this.presenter = presenter;
                 
         //Control groups allow for mass-enabling/disabling of form controls
-        //This prevents unauthorised editing and helps focus user attention
-        //Long-winded, slightly ugly, but very useful!
         void InitialiseControlGroups()
         {
             //Controls relating to the full booking list display (left hand side)
@@ -106,12 +112,9 @@ namespace ADP_Bookings.Forms
             };
         }
 
-        //To track if the user has begun to edit the open record,
-        //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
-        //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
-        //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        //To track if the user has begun to edit the open record
         //NOTE: Only the presenter itself can reset this to false.
-        void InitialiseChangeTracker() //Admittedly poor function name, can't think of anything better
+        void InitialiseChangeTracker() 
         {
             EventHandler handler = new EventHandler(delegate { presenter.NewChangePending(); });
             txt_BookingID.TextChanged += handler;
@@ -121,6 +124,7 @@ namespace ADP_Bookings.Forms
             nud_BookingCost.ValueChanged += handler;
         }
 
+        //Encapsulates MessageBox calls in View - rather than calling it from Presenter layer
         public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             return MessageBox.Show(text, caption, buttons, icon);
@@ -154,8 +158,6 @@ namespace ADP_Bookings.Forms
         private void btn_CancelChanges_Click(object sender, EventArgs e) => presenter.btn_CancelChanges_Click();
 
         // Form is being closed
-        private void frm_bookings_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_bookings_FormClosing(e);
-
-        
+        private void frm_bookings_FormClosing(object sender, FormClosingEventArgs e) => presenter.frm_bookings_FormClosing(e);        
     }
 }

@@ -178,13 +178,7 @@ namespace ADP_Bookings.Presenters
         // ********************************************************************************
         // Model (UoW) Communication ******************************************************
         // ********************************************************************************
-
-        // Static classes used because they solely act as a communication window to the UoW
-        // NOTE: Not all functions here are necessarily used by the current application,
-        //       their inclusion is in anticipation of future development requirements
-        // NOTE: Originally stored in separate classes (DepartmentModel.cs, etc)
-        //       but moved to presenter to reflect format given in week 5 lecture slides
-        
+                
         // Retrieve all records in Departments table
         public List<Department> GetAllDepartments() => model.GetAllDepartments();
 
@@ -203,11 +197,5 @@ namespace ADP_Bookings.Presenters
 
         // Save record in Departments table - model will determine whether to Create/Update
         public void SaveDepartment(Department department) => model.SaveDepartment(department);
-
-        // Retrieve company from specified ID
-        // NOTE: These methods cause DepartmentPresenter to be couple with CompanyModel
-        //public Company FindCompany(int companyID) => CompanyModel.FindCompany(companyID);
-        //public Company FindCompany(Company company) => CompanyModel.FindCompany(company);
-        //public Company FindCompany(Company company) => CompanyModel.FindCompany(company);
     }
 }

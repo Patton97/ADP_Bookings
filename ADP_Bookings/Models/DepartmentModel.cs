@@ -78,6 +78,9 @@ namespace ADP_Bookings.Models
         {
             using (var unitOfWork = GetNewUnitOfWork())
             {
+                //Ensure department references correct company
+                department.Company = unitOfWork.Companies.Get(department.Company.CompanyID);
+
                 unitOfWork.Departments.Add(department);
                 unitOfWork.SaveChanges();
             }

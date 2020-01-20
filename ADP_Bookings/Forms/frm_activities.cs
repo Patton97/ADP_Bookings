@@ -24,8 +24,6 @@ namespace ADP_Bookings.Forms
         // ********************************************************************************
         // View Properties ****************************************************************
         // ******************************************************************************** 
-        
-        // Facilitates presenter in puppeting the view
 
         public string CurrentActivityID
         {
@@ -63,6 +61,10 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentActivity.ForEach(ctrl => ctrl.Enabled = value);
         }
 
+        // ********************************************************************************
+        // Form Functions *****************************************************************
+        // ******************************************************************************** 
+
         public frm_activities(int bookingID)
         {
             InitializeComponent();
@@ -77,8 +79,6 @@ namespace ADP_Bookings.Forms
         public void Register(ActivityPresenter presenter) => this.presenter = presenter;
 
         //Control groups allow for mass-enabling/disabling of form controls
-        //This prevents unauthorised editing and helps focus user attention
-        //Long-winded, slightly ugly, but very useful!
         void InitialiseControlGroups()
         {
             //Controls relating to the full activity list display (left hand side)
@@ -108,10 +108,7 @@ namespace ADP_Bookings.Forms
             };
         }
 
-        // To track if the user has begun to edit the open record,
-        // we create a custom EventHandler containing a delegate which updates a bool within the presenter
-        // then subscribe to any relevant events (TextChanged, CheckChanged, etc)
-        // This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        // To track if the user has begun to edit the open record
         // NOTE: Only the presenter itself can reset this to false.
         void InitialiseChangeTracker()
         {
@@ -122,6 +119,7 @@ namespace ADP_Bookings.Forms
             rtx_ActivityNotes.TextChanged += handler;
         }
 
+        //Encapsulates MessageBox calls in View - rather than calling it from Presenter layer
         public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             return MessageBox.Show(text, caption, buttons, icon);
@@ -134,13 +132,10 @@ namespace ADP_Bookings.Forms
         public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_Activities.Items[index].Selected = true);
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });
 
-        // Get indices of items in listview which have been checked
-        // NOTE: This function is specific to Activity as it (currently) is the only 
-        //       disconnected table, where updates to other records need to be sent backwards
+        // Get indices of items in lvw_Activities which have been checked
         public int[] GetChosenActivities() => lvw_Activities.CheckedIndices.Cast<int>().ToArray();
 
         // NUD controls don't have a "FullSelect" property, this function emulates that
-        // NOTE: Could be moved to either the RecordPresenter superclass or some sort of generic form superclass 
         void nud_ActivityCost_FullSelect() => nud_ActivityCost.Select(0, nud_ActivityCost.Text.Length);
 
         // ********************************************************************************
@@ -148,6 +143,7 @@ namespace ADP_Bookings.Forms
         // ********************************************************************************        
         // Activity List - new item selected
         private void lvw_Activities_SelectedIndexChanged(object sender, EventArgs e) => presenter.lvw_Activities_SelectedIndexChanged(GetSelectedIndices());
+
         // Activity Cost - control is selected 
         private void nud_ActivityCost_Enter(object sender, EventArgs e) => nud_ActivityCost_FullSelect();
         private void nud_ActivityCost_Click(object sender, EventArgs e) => nud_ActivityCost_FullSelect();

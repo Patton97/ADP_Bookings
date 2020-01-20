@@ -23,6 +23,10 @@ namespace ADP_Bookings.Forms
         public List<Control> ctrls_DepartmentList;
         public List<Control> ctrls_CurrentDepartment;
 
+        // ********************************************************************************
+        // View Properties ****************************************************************
+        // ******************************************************************************** 
+
         public string CurrentDepartmentID
         {
             get => txt_DepartmentID.Text;
@@ -54,25 +58,23 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentDepartment.ForEach(ctrl => ctrl.Enabled = value);
         }
 
+        // ********************************************************************************
+        // Form Functions *****************************************************************
+        // ******************************************************************************** 
 
         public frm_departments(int companyID)
         {
             InitializeComponent();
-
-            //Define groups of controls
             InitialiseControlGroups();
             InitialiseChangeTracker();
-            //Assign presenter
             presenter = new DepartmentPresenter(this, companyID);
         }
-        private void frm_departments_Load(object sender, EventArgs e) {  /**/ }
+        private void frm_departments_Load(object sender, EventArgs e) { /* */ }
 
         //Used by presenter to register itself once succesfully constructed
         public void Register(DepartmentPresenter presenter) => this.presenter = presenter;
 
         //Control groups allow for mass-enabling/disabling of form controls
-        //This prevents unauthorised editing and helps focus user attention
-        //Long-winded, slightly ugly, but very useful!
         void InitialiseControlGroups()
         {
             //Controls relating to the full department list display (left hand side)
@@ -99,10 +101,7 @@ namespace ADP_Bookings.Forms
             };
         }
 
-        //To track if the user has begun to edit the open record,
-        //  we create a custom EventHandler containing a delegate which updates a bool within the presenter
-        //  then subscribe to any relevant events (TextChanged, CheckChanged, etc)
-        //This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        //Track if the user has begun to edit the open record
         //NOTE: Only the presenter itself can reset this to false.
         void InitialiseChangeTracker()
         {
@@ -111,6 +110,7 @@ namespace ADP_Bookings.Forms
             txt_DepartmentName.TextChanged += handler;
         }
 
+        //Encapsulates MessageBox calls in View - rather than calling it from Presenter layer
         public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             return MessageBox.Show(text, caption, buttons, icon);
@@ -123,9 +123,8 @@ namespace ADP_Bookings.Forms
         public void SetSelectedIndices(int[] indices)
         {
             foreach (int index in indices)
-            {
                 lvw_Departments.Items[index].Selected = true;
-            }
+
             lvw_Departments.Select();
         }
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[] { index });

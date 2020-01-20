@@ -22,6 +22,10 @@ namespace ADP_Bookings.Forms
         public List<Control> ctrls_CurrentCompany;
         public List<EventHandler> ctrls_Editable; //Helps track whether record has been edited
 
+        // ********************************************************************************
+        // View Properties ****************************************************************
+        // ******************************************************************************** 
+
         public string CurrentCompanyID
         {
             get => txt_CompanyID.Text;
@@ -53,6 +57,10 @@ namespace ADP_Bookings.Forms
             set => ctrls_CurrentCompany.ForEach(ctrl => ctrl.Enabled = value);
         }
 
+        // ********************************************************************************
+        // Form Functions *****************************************************************
+        // ******************************************************************************** 
+
         public frm_companies()
         {
             InitializeComponent();
@@ -66,8 +74,6 @@ namespace ADP_Bookings.Forms
         public void Register(CompanyPresenter presenter) => this.presenter = presenter;
 
         //Control groups allow for mass-enabling/disabling of form controls
-        //This prevents unauthorised editing and helps focus user attention
-        //Long-winded, slightly ugly, but very useful!
         void InitialiseControlGroups()
         {
             //Controls relating to the full company list display (left hand side)
@@ -95,10 +101,7 @@ namespace ADP_Bookings.Forms
             };
         }
 
-        // To track if the user has begun to edit the open record,
-        //   we subscribe to their relevant events (TextChanged, CheckChanged, etc)
-        //   and attach a delegate which will update a bool within the presenter. 
-        // This proves very useful when there are several editable controls on the form (eg: Booking, Activity)
+        // To track if the user has begun to edit the open record
         // NOTE: Only the presenter itself can reset this to false.
         void InitialiseChangeTracker()
         {
@@ -107,8 +110,7 @@ namespace ADP_Bookings.Forms
             txt_CompanyName.TextChanged += tracker;
         }
 
-        // Allows MessageBox calls to be abstracted to View layer only
-        // Also means tests do not *actually* show a messagebox
+        //Encapsulates MessageBox calls in View - rather than calling it from Presenter layer
         public DialogResult ShowMessageBox(string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             return MessageBox.Show(text, caption, buttons, icon);
@@ -117,11 +119,11 @@ namespace ADP_Bookings.Forms
         // Utility functions to retrieve currently selected list indices
         public int[] GetSelectedIndices() => lvw_companies.SelectedIndices.Cast<int>().ToArray();
         public int GetSelectedIndex() => GetSelectedIndices()[0];
+
         // Allows presenter to manually override selected indices
         public void SetSelectedIndices(int[] indices) => Array.ForEach(indices, index => lvw_companies.Items[index].Selected = true);
         public void SetSelectedIndex(int index) => SetSelectedIndices(new int[]{index});
 
-        
 
         // ********************************************************************************
         // Event Handlers *****************************************************************
