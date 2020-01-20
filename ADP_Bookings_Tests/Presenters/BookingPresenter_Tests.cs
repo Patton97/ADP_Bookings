@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//16007006 Andrew Patton
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ADP_Bookings.Presenters;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace ADP_Bookings.Presenters.Tests
         // Test Methods *******************************************************************
         // ********************************************************************************
 
-        // Test ID: AP1
+        // Test ID: BP1
         // Purpose: Test the presenter's response to the "Add Booking" button being pressed
         [TestMethod()]
         public void LoadNewRecord_Test()
@@ -63,7 +64,7 @@ namespace ADP_Bookings.Presenters.Tests
             #endregion Assert
         }
 
-        // Test ID: AP2
+        // Test ID: BP2
         // Purpose: Test the presenter's response to a new item being selected
         [TestMethod()]
         public void LoadRecord_Test()
@@ -115,11 +116,11 @@ namespace ADP_Bookings.Presenters.Tests
             #endregion Assert
         }
 
-        // Test ID: AP3
+        // Test ID: BP3
         // Purpose: Test the presenter's response to the "Confirm" button being pressed
         [TestMethod()]
-        [DataRow(true)]  // AP3a | Changes pending
-        [DataRow(false)] // AP3b | No changes pending
+        [DataRow(true)]  // BP3a | Changes pending
+        [DataRow(false)] // BP3b | No changes pending
         public void SaveRecord_Test(bool makeChanges)
         {
             using (var mock = AutoMock.GetLoose())
@@ -177,11 +178,11 @@ namespace ADP_Bookings.Presenters.Tests
             }
         }
 
-        // Test ID: AP4
+        // Test ID: BP4
         // Purpose: Test the presenter's response to the "Delete Booking" button being pressed
         [TestMethod()]
-        [DataRow(true)]  //DP4a | Record is currently selected
-        [DataRow(false)] //DP4b | No record currently selected
+        [DataRow(true)]  //BP4a | Record is currently selected
+        [DataRow(false)] //BP4b | No record currently selected
         public void DeleteRecord_Test(bool recordSelected)
         {
             using (var mock = AutoMock.GetLoose())

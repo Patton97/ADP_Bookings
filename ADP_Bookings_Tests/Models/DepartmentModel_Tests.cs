@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿//16007006 Andrew Patton
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ADP_Bookings.Models;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,12 @@ namespace ADP_Bookings.Models.Tests
     [TestClass()]
     public class DepartmentModel_Tests
     {
-        // Save record to Departments table - determine whether to Create/Update
+        // Test ID: DM1 & DM2
+        // Purpose: Ensure "Create"/"Update" operations are correctly performed
         [TestMethod]
-        [DataRow(1, true, "HR_NewName")]
-        [DataRow(3, true, "Legal_NewName")]
-        [DataRow(5, false, "R&D")]
+        [DataRow(1, true, "HR_NewName")] //DM1a
+        [DataRow(3, true, "Legal_NewName")]//DM1b
+        [DataRow(5, false, "R&D")]//DM2
         public void SaveDepartment_Test(int departmentID, bool exists, string newName)
         {
             #region Arrange
@@ -63,7 +65,8 @@ namespace ADP_Bookings.Models.Tests
             #endregion Assert
         }
 
-        // Retrieve all records in Departments table
+        // Test ID: DM3
+        // Purpose: Ensure "GetAll" operation is correctly performed when retrieving all companies
         [TestMethod]
         public void GetAllDepartments_Test()
         {
@@ -102,56 +105,15 @@ namespace ADP_Bookings.Models.Tests
             #endregion Assert
         }
 
-        // Retrieve all records in Departments table from a specific company
+
+
+        //Test ID: DM4
+        // Ensure "Find" operation is correctly performed when retrieving 1 company
         [TestMethod]
-        [DataRow(1)]
-        [DataRow(2)]
-        public void GetAllDepartmentsFromCompany_Test(int companyID)
-        {
-            #region Arrange
-            // Mock Data-Access Layer
-            var mockUoWFactory = GetMockUoWFactory();
-
-            // Create model to be tested, inject our mock uowfactory
-            DepartmentModel model = new DepartmentModel(mockUoWFactory.Object);
-
-            // Create the company - only ID matters to the department, name is irrelevant
-            Company company = new Company() { CompanyID = companyID, Name = "Test" };
-
-            // Declare the expected return 
-            List<Department> expected = Mock_GetAllDepartments().Where(d=>d.Company.CompanyID == companyID).ToList();
-
-            #endregion Arrange
-
-            /**************************************************/
-
-            #region Act
-
-            List<Department> actual = model.GetAllDepartmentsFrom(company);
-
-            #endregion Act
-
-            /**************************************************/
-
-            #region Assert
-
-            // Ensure size of list is as expected
-            Assert.AreEqual(expected.Count, actual.Count);
-
-            // Ensure contents of list is as expected
-            // Assert.AreEqual is strict on instances, so we manually comb each record
-            for (int i = 0; i < expected.Count; i++)
-                Evaluate(expected[i], actual[i]);
-
-            #endregion Assert
-        }
-
-        // Retrieve department from specified ID
-        [TestMethod]
-        [DataRow(1)]
-        [DataRow(2)]
-        [DataRow(3)]
-        [DataRow(4)]
+        [DataRow(1)] //DM4a
+        [DataRow(2)] //DM4b
+        [DataRow(3)] //DM4c
+        [DataRow(4)] //DM4d
         public void FindDepartment_Test(int departmentID)
         {
             #region Arrange
@@ -184,11 +146,12 @@ namespace ADP_Bookings.Models.Tests
             #endregion Assert
         }
 
-        // Reports purely success/failure of department retrieval
+        // Test ID: DM5
+        // Purpose: Ensure "Exists" operation correctly reports the success/failure of the "Find" operation
         [TestMethod]
-        [DataRow(1, true)]
-        [DataRow(3, true)]
-        [DataRow(5, false)]
+        [DataRow(1, true)]  //DM5a
+        [DataRow(3, true)]  //DM5b
+        [DataRow(5, false)] //DM5c
         public void DepartmentExists_Test(int departmentID, bool exists)
         {
             #region Arrange
@@ -220,13 +183,13 @@ namespace ADP_Bookings.Models.Tests
             #endregion Act & Assert
         }
 
-        
 
-        // Delete record in Departments table
+        // Test ID: DM6
+        // Purpose: Ensure "Delete" operation is correctly performed
         [TestMethod]
-        [DataRow(1, true)]
-        [DataRow(2, true)]
-        [DataRow(5, false)]
+        [DataRow(1, true)]  //DM6a
+        [DataRow(2, true)]  //DM6b
+        [DataRow(5, false)] //DM6c
         public void DeleteDepartment_Test(int departmentID, bool exists)
         {
             #region Arrange
@@ -264,6 +227,50 @@ namespace ADP_Bookings.Models.Tests
                 mockRepo.Verify(x => x.Remove(It.IsAny<Department>()), Times.Once);
             else
                 mockRepo.Verify(x => x.Remove(It.IsAny<Department>()), Times.Never);
+
+            #endregion Assert
+        }
+
+        // Retrieve all records in Departments table from a specific company
+        [TestMethod]
+        [DataRow(1)]
+        [DataRow(2)]
+        public void GetAllDepartmentsFromCompany_Test(int companyID)
+        {
+            #region Arrange
+            // Mock Data-Access Layer
+            var mockUoWFactory = GetMockUoWFactory();
+
+            // Create model to be tested, inject our mock uowfactory
+            DepartmentModel model = new DepartmentModel(mockUoWFactory.Object);
+
+            // Create the company - only ID matters to the department, name is irrelevant
+            Company company = new Company() { CompanyID = companyID, Name = "Test" };
+
+            // Declare the expected return 
+            List<Department> expected = Mock_GetAllDepartments().Where(d => d.Company.CompanyID == companyID).ToList();
+
+            #endregion Arrange
+
+            /**************************************************/
+
+            #region Act
+
+            List<Department> actual = model.GetAllDepartmentsFrom(company);
+
+            #endregion Act
+
+            /**************************************************/
+
+            #region Assert
+
+            // Ensure size of list is as expected
+            Assert.AreEqual(expected.Count, actual.Count);
+
+            // Ensure contents of list is as expected
+            // Assert.AreEqual is strict on instances, so we manually comb each record
+            for (int i = 0; i < expected.Count; i++)
+                Evaluate(expected[i], actual[i]);
 
             #endregion Assert
         }
